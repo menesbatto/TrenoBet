@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.myApp</groupId>
-	<artifactId>trenobetweb</artifactId>
+	<artifactId>trenobet</artifactId>
 	<version>0.1.0</version>
 
-	<name>TrenoBetWeb</name>
+	<name>TrenoBet</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
