@@ -223,6 +223,7 @@ public class GoodnessCalculator {
 		ArrayList<WinRangeStatsBean> rangesStatsByTeamFieldTimeHome = mapTeamWinRangStats.get(teamName).get(playingField).get(timeType);
 		ResultGoodnessWDLBean winCleanResultGoodnessH = calculateAllWinResultsGoodness(rangesStatsByTeamFieldTimeHome, oddsToWin);
 		resultGoodnessHome.setWinClean(winCleanResultGoodnessH);
+		resultGoodnessHome.setWinFinal(winCleanResultGoodnessH);
 		
 		// UO
 		GoalsStatsBean goalsStatsByTeamFieldTimeHome = mapTeamGoalsStats.get(teamName).get(playingField).get(timeType);
@@ -719,9 +720,18 @@ public class GoodnessCalculator {
 				return false;
 		} 
 		else {
-			if (rangesStats.get(i).getTotal() + rangesStats.get(i+1).getTotal() < 2 )
-				return false;
-			//sistema
+			
+			if (AppConstants.ENABLE_ODD_IMPROVEMENTS_ALGHORITM) {
+				if (rangesStats.get(i).getTotal() + rangesStats.get(i+1).getTotal() < 2 ) {
+					return false;
+				}
+			}
+			else {
+				if (rangesStats.get(i).getTotal() == 0 ) {
+					return false;
+				}
+			}
+			
 		}
 		
 		

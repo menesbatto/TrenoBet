@@ -263,12 +263,12 @@ public class ResultAnalyzer {
 					if (AppConstants.PERCENTIFY_ODDS_ON)
 						oddsOfTeamAnalyzed = homeOddsAdjusted;
 					else
-						oddsOfTeamAnalyzed = percHome;
+						oddsOfTeamAnalyzed = homeOdds;
 				else 
 					if (AppConstants.PERCENTIFY_ODDS_ON)
 						oddsOfTeamAnalyzed = awayOddsAdjusted;
 					else
-						oddsOfTeamAnalyzed = percAway;
+						oddsOfTeamAnalyzed = awayOdds;
 				
 				updateRangeStats(ranges, resultEnum, oddsOfTeamAnalyzed);
 				

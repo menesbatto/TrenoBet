@@ -10,8 +10,10 @@ public class AppConstants {
 	
 	
 	public static final int DAYS_FAR = 6;
-	public static final int DAYS_FAR_BET_TO = 3;
+	
+	public static final int DAYS_FAR_BET_TO = 7;
 	public static final int DAYS_FAR_BET_FROM = 0;
+	
 	public static final int BET_AMOUNT = 5;
 	public static final int TREND_SIZE_UO = 10;
 	public static final int TREND_SIZE_WIN = 5;

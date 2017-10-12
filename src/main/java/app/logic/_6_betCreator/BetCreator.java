@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -15,9 +16,15 @@ import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.RankingRowDao;
 import app.logic._1_matchesDownlaoder.model.BetType;
 import app.logic._1_matchesDownlaoder.model.EventOddsBean;
+import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 import app.logic._1_matchesDownlaoder.model.MatchResult;
 import app.logic._1_matchesDownlaoder.model.MatchResultEnum;
 import app.logic._1_matchesDownlaoder.model.ResultGoodnessBean;
+import app.logic._1_matchesDownlaoder.model.ResultGoodnessUoBean;
+import app.logic._1_matchesDownlaoder.model.ResultGoodnessWDLBean;
+import app.logic._1_matchesDownlaoder.model.UoLeaf;
+import app.logic._1_matchesDownlaoder.model.UoThresholdEnum;
+import app.logic._1_matchesDownlaoder.model._1x2Leaf;
 import app.logic._3_rankingCalculator.RankingCalculator;
 import app.logic._3_rankingCalculator.model.RankingRow;
 import app.logic._5_goodnessCalculator.GoodnessCalculator;
@@ -75,7 +82,7 @@ public class BetCreator {
 //		
 		
 		
-		IOUtils.write(AppConstants.MAIN_BET_PATH, mainBet);
+//		IOUtils.write(AppConstants.MAIN_BET_PATH, mainBet);
 	}
 	
 	private void calculateGoodnessOfChamp(ChampEnum champ) {
@@ -91,7 +98,7 @@ public class BetCreator {
 			Double goodnessHD = homeResultGoodness.getWinClean().getGoodnessD() != null ? homeResultGoodness.getWinClean().getGoodnessD() : 0;
 			Double goodnessAD = awayResultGoodness.getWinClean().getGoodnessD() != null ? awayResultGoodness.getWinClean().getGoodnessD() : 0;
 			
-			// Niente
+			// Clean
 //			Double goodnessHW = homeResultGoodness.getGoodnessW() != null ? homeResultGoodness.getGoodnessW() : 0;
 //			Double goodnessHL = homeResultGoodness.getGoodnessL() != null ? homeResultGoodness.getGoodnessL() : 0;
 //			Double goodnessAW = awayResultGoodness.getGoodnessW() != null ? awayResultGoodness.getGoodnessW() : 0;
@@ -123,76 +130,35 @@ public class BetCreator {
 			
 // 			//############################# SURPRISE ############################# 
 //			addSurpriseMatches(champ, eo, homeMot, awayMot);
-			
-			//############################# 1/2 ############################# 
-			add12matches(champ, eo, goodnessHW, goodnessHL, goodnessAW, goodnessAL);
-			
-			//#############################  X  #############################	
-			addXmatches(champ, eo, goodnessHD, goodnessAD);	
-				
-			//############################# U/O ############################# 
+//			
+//			//############################# 1/2 ############################# 
+//			add12matches(champ, eo, goodnessHW, goodnessHL, goodnessAW, goodnessAL);
+//			
+//			//#############################  X  #############################	
+//			addXmatches(champ, eo, goodnessHD, goodnessAD);	
+//				
+			//############################# UO ############################# 
 //			addUOmatches(champ, eo, homeResultGoodness, awayResultGoodness);
 		
+			//############################# EH ############################# 
+			addEhmatches(champ, eo, homeResultGoodness, awayResultGoodness);
 			
 			
 		}
 	}
-
-
-
-//	private static void addUOmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness) {
-//		Boolean conditionO = homeResultGoodness.getGoodnessO() >= 0.75 || awayResultGoodness.getGoodnessO() >= 0.75;
-//		//Boolean conditionO = homeResultGoodness.getGoodnessO() >= 0.75 && awayResultGoodness.getGoodnessO() >= 0.75 || homeResultGoodness.getGoodnessO() + awayResultGoodness.getGoodnessO() >= 1.3
-//		Boolean conditionU = homeResultGoodness.getGoodnessU() >= 0.75 || awayResultGoodness.getGoodnessU() >= 0.75;
-//		//Boolean conditionU = homeResultGoodness.getGoodnessU() >= 0.75 && awayResultGoodness.getGoodnessU() >= 0.75 || homeResultGoodness.getGoodnessU() + awayResultGoodness.getGoodnessU() >= 1.3
-//		
-//		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {		
-//			// UO di entrambe alto
-//			if ( conditionO ){
-//				if (eo.getOddsO() != null && eo.getOddsO()>= 1.7){
-//					eo.setBetType(BetType.UNDER_OVER);
-//					eo.setMatchResult(MatchResultEnum.O);
-//					eo.setWinOdds(eo.getOddsO());
-//					mainBet.get(champ).add(SerializationUtils.clone(eo));
-//				}
-//			}
-//			else if ( conditionU ){
-//				if (eo.getOddsU() != null && eo.getOddsU()>= 1.7){
-//					eo.setBetType(BetType.UNDER_OVER);
-//					eo.setMatchResult(MatchResultEnum.U);
-//					
-//					eo.setWinOdds(eo.getOddsU());
-//					mainBet.get(champ).add(SerializationUtils.clone(eo));
-//				}
-//			}
-//		}
-//	}
-
-
-
-	private EventOddsBean addXmatches(ChampEnum champ, EventOddsBean eo, Double goodnessHD, Double goodnessAD) {
-		Boolean conditionX = goodnessHD >= 0.4 && goodnessAD >= 0.4;
-		
-		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
-				if ( conditionX ){
-					eo.setBetType(BetType.WIN);
-					eo.setMatchResult(MatchResultEnum.D);
-					eo.setWinOdds(eo.getOddsD());
-//					mainBet.get(champ).add(SerializationUtils.clone(eo));
-				}
-		}
-		return eo;
-	}
-
-
 
 	private EventOddsBean add12matches(ChampEnum champ, EventOddsBean eo, Double goodnessHW, Double goodnessHL, Double goodnessAW, Double goodnessAL) {
-		Boolean condition1 = goodnessHW >= 0.8 && goodnessAL >= 0.8;
-		//Boolean condition1 = goodnessHW + goodnessAL >= 1.6 && if (eo.getOddsH() <= 1.4){
-		Boolean condition2 = goodnessHL >= 0.8 && goodnessAW >= 0.8;
-		//Boolean condition2 = goodnessHL + goodnessAW >= 1.6 && if (eo.getOddsA() <= 1.4){ 
 		
-//rimetti		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
+		Double limit = 0.5;
+//		Double limit = 0.1;
+//		Double limitSum = 1.5;
+		
+		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
+//		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4){
+		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
+//		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
+
+		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
 			// Esito finale vittoria/sconfitta di entrambe alto
 			if ( condition1	) {
 				eo.setBetType(BetType.WIN);
@@ -208,9 +174,162 @@ public class BetCreator {
 				System.out.println(eo);
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 			}
-//		}
-			return eo;
+		}
+		return eo;
 	}
+
+	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness) {
+		
+		Double limit = 0.1;
+		Double limitMix =3.0;
+		
+		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
+		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();
+		Map<HomeVariationEnum, _1x2Leaf> ehOddsMap = eo.getEhOddsMap();
+		
+		
+		
+		for (HomeVariationEnum homeVar: HomeVariationEnum.getSubSet()) {
+
+			ResultGoodnessWDLBean ehGoodnessH = ehGoodnessMapH.get(homeVar);
+			ResultGoodnessWDLBean ehGoodnessA = ehGoodnessMapA.get(homeVar);
+			
+			if (ehGoodnessH.getGoodnessW() == null || ehGoodnessA.getGoodnessL() == null)
+				continue;
+			
+			_1x2Leaf _1x2leaf = ehOddsMap.get(homeVar);
+			if (_1x2leaf == null)	// la scommessa non è quotata
+				continue;
+			
+			
+//			Boolean condition1 = ehGoodnessH.getGoodnessW() >= limit && ehGoodnessA.getGoodnessL() >= limit;
+			//Boolean condition1 = ehGoodnessH.getGoodnessW() + ehGoodnessA.getGoodnessL() >= 1.6 && if (eo.getOddsH() <= 1.4){
+			Boolean condition1 = ehGoodnessH.getGoodnessW() * (_1x2leaf.getOdd1() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessL() * (_1x2leaf.getOdd1() - 1.0)  >= limitMix;
+			
+			
+//			Boolean conditionX = ehGoodnessH.getGoodnessD() >= limit && ehGoodnessA.getGoodnessD() >= limit;
+			//Boolean condition2 = ehGoodnessH.getGoodnessD() + ehGoodnessA.getGoodnessD() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
+			Boolean conditionX = ehGoodnessH.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)  >= limitMix;
+			
+			
+//			Boolean condition2 = ehGoodnessH.getGoodnessL() >= limit && ehGoodnessA.getGoodnessW() >= limit;
+			//Boolean condition2 = ehGoodnessH.getGoodnessL() + ehGoodnessA.getGoodnessW() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
+			Boolean condition2 = ehGoodnessH.getGoodnessL() * (_1x2leaf.getOdd2() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessW() * (_1x2leaf.getOdd2() - 1.0)  >= limitMix;
+			
+			
+			
+			if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
+				// Esito finale vittoria/sconfitta di entrambe alto
+				BetType betType = BetType.valueOf(homeVar.name());
+				
+				if ( condition1	) {
+					eo.setBetType(betType);
+					eo.setMatchResult(MatchResultEnum.H);
+					eo.setWinOdds(_1x2leaf.getOdd1());
+					System.out.println(eo.toStringInner(null, homeVar));
+//					mainBet.get(champ).add(SerializationUtils.clone(eo));
+				}
+				else if ( conditionX ) {
+					eo.setBetType(betType);
+					eo.setMatchResult(MatchResultEnum.D);
+					eo.setWinOdds(_1x2leaf.getOddX());
+					System.out.println(eo.toStringInner(null, homeVar));
+//					mainBet.get(champ).add(SerializationUtils.clone(eo));
+				}
+				else if ( condition2 ) {
+					eo.setBetType(betType);
+					eo.setMatchResult(MatchResultEnum.A);
+					eo.setWinOdds(_1x2leaf.getOdd2());
+					System.out.println(eo.toStringInner(null, homeVar));
+//					mainBet.get(champ).add(SerializationUtils.clone(eo));
+				}
+			}
+		}
+		
+	}
+
+	private static void addUOmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness) {
+//		Double limitGoodness = 0.75;
+		Double limitGoodness = 1.0;
+//		Double limitOdds = 1.7;
+		Double limitOdds = 1.1;
+		Double limitMix = 1.0;
+		
+		Map<UoThresholdEnum, ResultGoodnessUoBean> uoGoodnessMapHome = homeResultGoodness.getUoGoodness();
+		Map<UoThresholdEnum, ResultGoodnessUoBean> uoGoodnessMapAway = awayResultGoodness.getUoGoodness();
+		Map<UoThresholdEnum, UoLeaf> uoOddsMap = eo.getUoOddsMap();
+		
+		for (UoThresholdEnum uoThr : UoThresholdEnum.values()) {
+			
+			ResultGoodnessUoBean uoGoodnessH = uoGoodnessMapHome.get(uoThr);
+			ResultGoodnessUoBean uoGoodnessA = uoGoodnessMapAway.get(uoThr);
+			UoLeaf uoLeaf = uoOddsMap.get(uoThr);
+			if (uoLeaf == null)	// la scommessa non è quotata
+				continue;
+			
+//			Boolean conditionO = uoGoodnessH.getGoodnessO() >= limitGoodness 	|| uoGoodnessA.getGoodnessO() >= limitGoodness;
+//			Boolean conditionO = uoGoodnessH.getGoodnessO() >= limitGoodness 	&& uoGoodnessA.getGoodnessO() >= limitGoodness;
+//			Boolean conditionO = uoGoodnessH.getGoodnessO() 					+ uoGoodnessA.getGoodnessO() >= 1.3;
+			Boolean conditionO = uoGoodnessH.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix 	&& uoGoodnessA.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix;
+			
+			
+			
+//			Boolean conditionU = uoGoodnessH.getGoodnessU() >= limitGoodness 	|| uoGoodnessA.getGoodnessU() >= limitGoodness;
+//			Boolean conditionU = uoGoodnessH.getGoodnessU() >= limitGoodness	&& uoGoodnessA.getGoodnessU() >= limitGoodness;
+//			Boolean conditionU = uoGoodnessH.getGoodnessU() 					+ uoGoodnessA.getGoodnessU() >= 1.3:
+			Boolean conditionU = uoGoodnessH.getGoodnessU() * (uoLeaf.getU() - 1.0)>= limitMix 	&& uoGoodnessA.getGoodnessU() * (uoLeaf.getU() - 1.0)  >= limitMix;
+			
+			
+			if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {		
+				// UO di entrambe alto
+				
+				BetType betType = BetType.valueOf(uoThr.name());
+				
+				if ( conditionO ){
+					if (uoLeaf.getO() != null && uoLeaf.getO() >= limitOdds){
+						eo.setBetType(betType);
+						eo.setMatchResult(MatchResultEnum.O);
+						eo.setWinOdds(uoLeaf.getO());
+						//mainBet.get(champ).add(SerializationUtils.clone(eo));
+						System.out.println(eo.toStringInner(uoThr, null));
+					}
+				}
+				else if ( conditionU ){
+					if (uoLeaf.getU() != null && uoLeaf.getU() >= limitOdds){
+						eo.setBetType(betType);
+						eo.setMatchResult(MatchResultEnum.U);
+						
+						eo.setWinOdds(uoLeaf.getU());
+//						mainBet.get(champ).add(SerializationUtils.clone(eo));
+						System.out.println(eo.toStringInner(uoThr, null));
+					}
+				}
+			}
+		}
+	}
+
+
+
+	private EventOddsBean addXmatches(ChampEnum champ, EventOddsBean eo, Double goodnessHD, Double goodnessAD) {
+//		Double limit = 0.4;
+		Double limit = 0.1;
+		
+		Boolean conditionX = goodnessHD >= limit && goodnessAD >= limit;
+		
+		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
+			if ( conditionX ){
+				eo.setBetType(BetType.WIN);
+				eo.setMatchResult(MatchResultEnum.D);
+				eo.setWinOdds(eo.getOddsD());
+//				mainBet.get(champ).add(SerializationUtils.clone(eo));
+			}
+		}
+		return eo;
+	}
+
+
+
+	
 
 
 
@@ -222,7 +341,7 @@ public class BetCreator {
 //		Boolean conditionMot2 = awayMot - homeMot > 1.0;
 		
 		
-//rimetti		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
+		if (Utils.isMatchInTemporalRange(eo.getDate(), AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
 			if ( conditionMot1 ){
 				eo.setBetType(BetType.WIN);
 				eo.setMatchResult(MatchResultEnum.H);
@@ -247,7 +366,7 @@ public class BetCreator {
 //					mainBet.get(champ).add(SerializationUtils.clone(eo));
 //				}
 			}
-//		}
+		}
 		
 		return eo;
 	}
