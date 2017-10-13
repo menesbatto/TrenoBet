@@ -61,9 +61,11 @@ public class WinRangeStatsDao {
 				HomeVariationEnum homeVariationBean = homeVariationTypeDao.findBeanByEnt(homeVariation);
 				bean.setHomeVariationBean(homeVariationBean);
 			}
-			bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
-			bean.setEdgeDown(ent.getRange().getValueDown());
-			bean.setEdgeUp(ent.getRange().getValueUp());
+			if (ent.getRange() != null) {
+				bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
+				bean.setEdgeDown(ent.getRange().getValueDown());
+				bean.setEdgeUp(ent.getRange().getValueUp());
+			}
 			bean.setTeamName(ent.getTeam().getName());
 			timeTypeBean = timeTypeDao.findBeanByEnt(ent.getTimeType());
 			bean.setTimeTypeBean(timeTypeBean);
@@ -115,13 +117,19 @@ public class WinRangeStatsDao {
 
 
 	private void initSingleWinRangeStatsForTeam(Team team, List<WinRangeStats> winRangeStatsList, List<OddsRange> oddsRangeList, String playingField, TimeType timeType) {
+		WinRangeStats winRange;
 		for(OddsRange range: oddsRangeList) {
-			WinRangeStats winRange = new WinRangeStats(range, team);
+			winRange = new WinRangeStats(range, team);
 			winRange.setTimeType(timeType);
 			winRange.setPlayingField(playingField);
 			
 			winRangeStatsList.add(winRange);			
 		}
+		winRange = new WinRangeStats();
+		winRange.setTeam(team);
+		winRange.setTimeType(timeType);
+		winRange.setPlayingField(playingField);
+		winRangeStatsList.add(winRange);		
 	}
 
 	
@@ -155,7 +163,8 @@ public class WinRangeStatsDao {
 			for (WinRangeStatsBean bean : listBean) {
 				for (WinRangeStats ent : winRangeStatsByTime) {
 					if (bean.getTimeTypeBean().equals(timeTypeBean)) {
-						if (bean.getEdgeUp().equals(ent.getRange().getValueUp())) {
+						if ( bean.getEdgeUp() == null && ent.getRange() == null 		|| 			
+							bean.getEdgeUp() != null && ent.getRange() != null && bean.getEdgeUp().equals(ent.getRange().getValueUp())) {
 							mapper.map(bean, ent);
 							ent.setPlayingField(playingField);
 							if (homeVariationEnum != null) {
@@ -163,6 +172,7 @@ public class WinRangeStatsDao {
 								ent.setHomeVariation(homeVariationEnt);
 							}
 						}
+						
 					}
 				}
 			}

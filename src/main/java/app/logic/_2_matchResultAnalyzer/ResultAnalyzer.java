@@ -25,6 +25,7 @@ import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
 import app.logic._1_matchesDownlaoder.model.UoThresholdEnum;
 import app.logic._1_matchesDownlaoder.model._1x2Leaf;
 import app.logic._2_matchResultAnalyzer.model.GoalsStatsBean;
+import app.logic._2_matchResultAnalyzer.model.TeamResultEnum;
 import app.logic._2_matchResultAnalyzer.model.UoThresholdStats;
 import app.logic._2_matchResultAnalyzer.model.WinRangeStatsBean;
 import app.utils.AppConstants;
@@ -164,6 +165,7 @@ public class ResultAnalyzer {
 		List<OddsRange> oddsRangeList = oddsRangeDao.findAll();
 		
 		ArrayList<WinRangeStatsBean> allRanges = new ArrayList<WinRangeStatsBean>();
+		String trend;
 		for (TimeTypeEnum timeType : timeTypes) {
 			ArrayList<WinRangeStatsBean> ranges = createRanges(oddsRangeList, timeType, teamName);
 			
@@ -172,8 +174,9 @@ public class ResultAnalyzer {
 			if (matches ==  null) {
 				continue;
 			}
-			
+			trend = "";
 			for (MatchResult m : matches){
+				
 				if (m.getFTHG() == null){
 					continue;
 				}
@@ -189,12 +192,7 @@ public class ResultAnalyzer {
 				else {
 					avg1x2Odds = m.getEh().get(timeType).getMap().get(homeVariation).getAvg1x2Odds();
 				}
-				if (avg1x2Odds == null) {
-					continue;
-				}
-				Double homeOdds = avg1x2Odds.getOdd1();
-				Double drawOdds = avg1x2Odds.getOddX();
-				Double awayOdds = avg1x2Odds.getOdd2();
+				
 				MatchResultEnum resultEnum = null;
 
 				switch (timeType) {
@@ -227,6 +225,21 @@ public class ResultAnalyzer {
 				else if (homeGoals == awayGoals)		resultString = "D";
 				else									resultString = "A";
 				
+			
+				// Calcolo TREND
+				if (resultString.equals("D"))
+					trend += TeamResultEnum.D.name();
+				else if (playingField.equals(resultString)) {
+					trend += TeamResultEnum.W.name();
+				}
+				else if (!playingField.equals(resultString)) {
+					trend += TeamResultEnum.L.name();
+				}
+				else {
+					System.out.println("Errore durante il calcolo del trend");
+				}
+				
+				
 				resultEnum = MatchResultEnum.valueOf(resultString);
 
 				if (homeVariation == null)
@@ -235,48 +248,56 @@ public class ResultAnalyzer {
 							System.out.println("C'è un errore nel calcolo del risultato ");
 				
 				
-				// in caso non ci sono quote da cancellare
-				if (homeOdds == null || drawOdds == null || awayOdds == null){	
-					homeOdds = 0.0;
-					drawOdds = 0.0;
-					awayOdds = 0.0;
-				}
-				
-				Double percHome = 1/homeOdds;
-				Double percDraw = 1/drawOdds;
-				Double percAway = 1/awayOdds;
-				
-				Double percTotal = percHome + percDraw + percAway;
-	
-				Double percHomeAdjusted = percHome  / percTotal;
-				Double percDrawAdjusted = percDraw  / percTotal;
-				Double percAwayAdjusted = percAway  / percTotal;
-				
-				Double homeOddsAdjusted = 1 / percHomeAdjusted;
-				Double drawOddsAdjusted = 1 / percDrawAdjusted;
-				Double awayOddsAdjusted = 1 / percAwayAdjusted;
-				
 				Double oddsOfTeamAnalyzed = null;
 				
-				// capisce se la quota su cui andare a inserire la statistica � della squadra in casa o fuoricasa
-				if (teamName.equals(m.getHomeTeam()))
-					if (AppConstants.PERCENTIFY_ODDS_ON)
-						oddsOfTeamAnalyzed = homeOddsAdjusted;
-					else
-						oddsOfTeamAnalyzed = homeOdds;
-				else 
-					if (AppConstants.PERCENTIFY_ODDS_ON)
-						oddsOfTeamAnalyzed = awayOddsAdjusted;
-					else
-						oddsOfTeamAnalyzed = awayOdds;
-				
+				// Se è quotato allora aggiorno ANCHE lo specifico range (mentre quello generale lo aggiorno sempre)
+				if (avg1x2Odds != null) {
+					Double homeOdds = avg1x2Odds.getOdd1();
+					Double drawOdds = avg1x2Odds.getOddX();
+					Double awayOdds = avg1x2Odds.getOdd2();
+					
+					// in caso non ci sono quote da cancellare
+					if (homeOdds == null || drawOdds == null || awayOdds == null){	
+						homeOdds = 0.0;
+						drawOdds = 0.0;
+						awayOdds = 0.0;
+					}
+					
+					Double percHome = 1/homeOdds;
+					Double percDraw = 1/drawOdds;
+					Double percAway = 1/awayOdds;
+					
+					Double percTotal = percHome + percDraw + percAway;
+		
+					Double percHomeAdjusted = percHome  / percTotal;
+					Double percDrawAdjusted = percDraw  / percTotal;
+					Double percAwayAdjusted = percAway  / percTotal;
+					
+					Double homeOddsAdjusted = 1 / percHomeAdjusted;
+					Double drawOddsAdjusted = 1 / percDrawAdjusted;
+					Double awayOddsAdjusted = 1 / percAwayAdjusted;
+					
+					
+					// capisce se la quota su cui andare a inserire la statistica � della squadra in casa o fuoricasa
+					if (teamName.equals(m.getHomeTeam()))
+						if (AppConstants.PERCENTIFY_ODDS_ON)
+							oddsOfTeamAnalyzed = homeOddsAdjusted;
+						else
+							oddsOfTeamAnalyzed = homeOdds;
+					else 
+						if (AppConstants.PERCENTIFY_ODDS_ON)
+							oddsOfTeamAnalyzed = awayOddsAdjusted;
+						else
+							oddsOfTeamAnalyzed = awayOdds;
+				}
 				updateRangeStats(ranges, resultEnum, oddsOfTeamAnalyzed);
 				
 			}
 			
 			if (!matches.isEmpty())
 				enrichTeamResult(ranges, playingField);
-		
+			ranges.get(ranges.size()-1).setTrend(trend);
+			
 			allRanges.addAll(ranges);
 		}
 		
@@ -289,8 +310,9 @@ public class ResultAnalyzer {
 
 	private ArrayList<WinRangeStatsBean> createRanges(List<OddsRange> oddsRangeList, TimeTypeEnum timeType, String teamName) {
 		ArrayList<WinRangeStatsBean> ranges = new ArrayList<WinRangeStatsBean>();
+		WinRangeStatsBean elem;
 		for (OddsRange elemRange : oddsRangeList) {
-			WinRangeStatsBean elem = new WinRangeStatsBean();
+			elem = new WinRangeStatsBean();
 			elem.setTeamName(teamName);
 			elem.setTimeTypeBean(timeType);
 			elem.setEdgeUp(elemRange.getValueUp());
@@ -298,32 +320,59 @@ public class ResultAnalyzer {
 			elem.setRange(elemRange.getValueDown() + "-" + elemRange.getValueUp());
 			ranges.add(elem);
 		}
+		elem = new WinRangeStatsBean();
+		elem.setTeamName(teamName);
+		elem.setTimeTypeBean(timeType);
+		ranges.add(elem);
+		
 		return ranges;
 	}
 
 	private static void updateRangeStats(List<WinRangeStatsBean> ranges, MatchResultEnum result, Double hitOdds) {
-		for (WinRangeStatsBean range : ranges) {
-			if (hitOdds < range.getEdgeUp()){
-				if (result.equals(MatchResultEnum.H)){
-					range.setHomeHits(range.getHomeHits() + 1);
-					range.setDrawMisses(range.getDrawMisses() + 1);
-					range.setAwayMisses(range.getAwayMisses() + 1);
-				}
-				else if (result.equals(MatchResultEnum.D)){
-					range.setHomeMisses(range.getHomeMisses() + 1);
-					range.setDrawHits(range.getDrawHits() + 1);
-					range.setAwayMisses(range.getAwayMisses() + 1);
-				}
-				else {//if (result.equals(Result.A)){
-					range.setHomeMisses(range.getHomeMisses() + 1);
-					range.setDrawMisses(range.getDrawMisses() + 1);
-					range.setAwayHits(range.getAwayHits() + 1);
-				}
-				range.setTotal(range.getTotal() + 1);
-				break;
-			}
+		WinRangeStatsBean total = ranges.get(ranges.size()-1);
+		
+		if (result.equals(MatchResultEnum.H)){
+			total.setHomeHits(total.getHomeHits() + 1);
+			total.setDrawMisses(total.getDrawMisses() + 1);
+			total.setAwayMisses(total.getAwayMisses() + 1);
+		}
+		else if (result.equals(MatchResultEnum.D)){
+			total.setHomeMisses(total.getHomeMisses() + 1);
+			total.setDrawHits(total.getDrawHits() + 1);
+			total.setAwayMisses(total.getAwayMisses() + 1);
+		}
+		else {//if (result.equals(Result.A)){
+			total.setHomeMisses(total.getHomeMisses() + 1);
+			total.setDrawMisses(total.getDrawMisses() + 1);
+			total.setAwayHits(total.getAwayHits() + 1);
 		}
 		
+		total.setTotal(total.getTotal() + 1);
+		
+		if (hitOdds != null) {
+		
+			for (WinRangeStatsBean range : ranges) {
+				if (hitOdds < range.getEdgeUp()){
+					if (result.equals(MatchResultEnum.H)){
+						range.setHomeHits(range.getHomeHits() + 1);
+						range.setDrawMisses(range.getDrawMisses() + 1);
+						range.setAwayMisses(range.getAwayMisses() + 1);
+					}
+					else if (result.equals(MatchResultEnum.D)){
+						range.setHomeMisses(range.getHomeMisses() + 1);
+						range.setDrawHits(range.getDrawHits() + 1);
+						range.setAwayMisses(range.getAwayMisses() + 1);
+					}
+					else {//if (result.equals(Result.A)){
+						range.setHomeMisses(range.getHomeMisses() + 1);
+						range.setDrawMisses(range.getDrawMisses() + 1);
+						range.setAwayHits(range.getAwayHits() + 1);
+					}
+					range.setTotal(range.getTotal() + 1);
+					break;
+				}
+			}
+		}
 	}
 
 	private static void enrichTeamResult(ArrayList<WinRangeStatsBean> rangeList, String where) {
@@ -378,16 +427,18 @@ public class ResultAnalyzer {
 		List<TimeTypeEnum> timeTypes = timeTypeDao.findAllTimeTypeEnum();
 		
 		ArrayList<GoalsStatsBean> goalsStatsBeans = new ArrayList<GoalsStatsBean>();
-
+		String trend;
 		for (TimeTypeEnum timeType : timeTypes) {
 			
 			GoalsStatsBean goalsStatsBean = new GoalsStatsBean();//goalsStatsDao.findByTeamNameAndChampAndTimeTypeAndPlayingField(teamName, champ, timeType, playingField);
 			goalsStatsBean.setTimeTypeBean(timeType);
 			Integer strikedGoals = 0;
 			Integer takenGoals = 0;
-			if (matches==  null) {
+			if (matches ==  null) {
 				continue;
 			}
+			trend = "";
+				
 			for (MatchResult m : matches){
 				if (m.getFTHG() == null){
 					continue;
@@ -461,15 +512,23 @@ public class ResultAnalyzer {
 		goalsStatsBean.setTotalGoals(goalsStatsBean.getTotalGoals() 				+ strikedGoals + takenGoals);
 		goalsStatsBean.setTeamName(teamName);
 		
+		String trend;
+		UoThresholdEnum key;
+		UoThresholdStats value;
 		for (Entry<UoThresholdEnum, UoThresholdStats> entry : goalsStatsBean.getThresholdMap().entrySet()){
-			UoThresholdEnum key = entry.getKey();
-			UoThresholdStats value = entry.getValue();
+			key = entry.getKey();
+			value = entry.getValue();
 			
-			if (key.getValueNum() > allGoals)
+			trend = value.getTrend();
+			if (key.getValueNum() > allGoals) {
 				value.setUnderHit( value.getUnderHit() + 1 );
-			else //if (elem.getThreshold() < allGoals)
+				trend += MatchResultEnum.U;
+			}
+			else  {//if (elem.getThreshold() < allGoals)
 				value.setOverHit( value.getOverHit() + 1 );
-
+				trend += MatchResultEnum.O;
+			}
+			 value.setTrend(trend);
 		}
 		
 	}

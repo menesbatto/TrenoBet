@@ -59,6 +59,7 @@ public class WinRangeStats {
 
 	private Integer total;
 	
+	private String trend;
 
 	
 	
@@ -203,6 +204,12 @@ public class WinRangeStats {
 	}
 	public void setHomeVariation(HomeVariationType homeVariation) {
 		this.homeVariation = homeVariation;
+	}
+	public String getTrend() {
+		return trend;
+	}
+	public void setTrend(String trend) {
+		this.trend = trend;
 	}
 
 

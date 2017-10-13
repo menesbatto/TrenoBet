@@ -43,6 +43,8 @@ public class WinRangeStatsBean implements Serializable{
 	
 	private HomeVariationEnum homeVariationBean;
 	
+	private String trend;
+	
 	
 	public WinRangeStatsBean() {
 		homeHits = 0;
@@ -248,6 +250,16 @@ public class WinRangeStatsBean implements Serializable{
 
 	public void setHomeVariationBean(HomeVariationEnum homeVariationBean) {
 		this.homeVariationBean = homeVariationBean;
+	}
+
+
+	public String getTrend() {
+		return trend;
+	}
+
+
+	public void setTrend(String trend) {
+		this.trend = trend;
 	}
 	
 

@@ -65,6 +65,7 @@ public class GoalsStatsDao {
 			thrStatsBean.setOverPerc(ent.getOverPerc());
 			thrStatsBean.setUnderHit(ent.getUnderHit());
 			thrStatsBean.setUnderPerc(ent.getUnderPerc());
+			thrStatsBean.setTrend(ent.getTrend());
 			bean.getThresholdMap().put(thrBean, thrStatsBean);
 			
 		}
@@ -166,7 +167,7 @@ public class GoalsStatsDao {
 				
 				GoalsStats ent = new GoalsStats(uoThr, teamEnt);
 				mapper.map(bean, ent);
-			
+				
 				ent.setPlayingField(bean.getPlayingField());
 				ent.setTimeType(beanTimeType);
 				
@@ -174,6 +175,7 @@ public class GoalsStatsDao {
 				ent.setOverPerc(tresStatsBean.getOverPerc());
 				ent.setUnderHit(tresStatsBean.getUnderHit());
 				ent.setUnderPerc(tresStatsBean.getUnderPerc());
+				ent.setTrend(tresStatsBean.getTrend());
 			
 			
 				beanGoalsStats.add(ent);

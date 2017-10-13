@@ -46,7 +46,7 @@ public class GoalsStats {
 
 	private String teamName;
 	
-	
+	private String trend;
 	
 	
 	public GoalsStats() {
@@ -184,6 +184,14 @@ public class GoalsStats {
 				+ strikedGoalsTotal + ", takenGoalsTotal=" + takenGoalsTotal + ", totalGoals=" + totalGoals
 				+ ", underHit=" + underHit + ", underPerc=" + underPerc + ", overHit=" + overHit + ", overPerc="
 				+ overPerc + ", totalMatches=" + totalMatches + ", teamName=" + teamName + "]";
+	}
+
+	public String getTrend() {
+		return trend;
+	}
+
+	public void setTrend(String trend) {
+		this.trend = trend;
 	}
 
 	

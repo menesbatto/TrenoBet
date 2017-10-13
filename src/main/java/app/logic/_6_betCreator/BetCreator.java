@@ -131,16 +131,16 @@ public class BetCreator {
 // 			//############################# SURPRISE ############################# 
 //			addSurpriseMatches(champ, eo, homeMot, awayMot);
 //			
-//			//############################# 1/2 ############################# 
+			//############################# 1/2 ############################# 
 //			add12matches(champ, eo, goodnessHW, goodnessHL, goodnessAW, goodnessAL);
 //			
-//			//#############################  X  #############################	
+			//#############################  X  #############################	
 //			addXmatches(champ, eo, goodnessHD, goodnessAD);	
 //				
-			//############################# UO ############################# 
+//			//############################# UO ############################# 
 //			addUOmatches(champ, eo, homeResultGoodness, awayResultGoodness);
-		
-			//############################# EH ############################# 
+//		
+//			//############################# EH ############################# 
 			addEhmatches(champ, eo, homeResultGoodness, awayResultGoodness);
 			
 			
@@ -171,7 +171,7 @@ public class BetCreator {
 				eo.setBetType(BetType.WIN);
 				eo.setMatchResult(MatchResultEnum.A);
 				eo.setWinOdds(eo.getOddsA());
-				System.out.println(eo);
+				System.out.println(eo.toStringInner(true, null, null, false));
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 			}
 		}
@@ -181,7 +181,7 @@ public class BetCreator {
 	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness) {
 		
 		Double limit = 0.1;
-		Double limitMix =3.0;
+		Double limitMix = 1.0;
 		
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();
@@ -226,21 +226,21 @@ public class BetCreator {
 					eo.setBetType(betType);
 					eo.setMatchResult(MatchResultEnum.H);
 					eo.setWinOdds(_1x2leaf.getOdd1());
-					System.out.println(eo.toStringInner(null, homeVar));
+					System.out.println(eo.toStringInner(null, null, homeVar, false));
 //					mainBet.get(champ).add(SerializationUtils.clone(eo));
 				}
 				else if ( conditionX ) {
 					eo.setBetType(betType);
 					eo.setMatchResult(MatchResultEnum.D);
 					eo.setWinOdds(_1x2leaf.getOddX());
-					System.out.println(eo.toStringInner(null, homeVar));
+					System.out.println(eo.toStringInner(null, null, homeVar, false));
 //					mainBet.get(champ).add(SerializationUtils.clone(eo));
 				}
 				else if ( condition2 ) {
 					eo.setBetType(betType);
 					eo.setMatchResult(MatchResultEnum.A);
 					eo.setWinOdds(_1x2leaf.getOdd2());
-					System.out.println(eo.toStringInner(null, homeVar));
+					System.out.println(eo.toStringInner(null, null, homeVar, false));
 //					mainBet.get(champ).add(SerializationUtils.clone(eo));
 				}
 			}
@@ -291,7 +291,7 @@ public class BetCreator {
 						eo.setMatchResult(MatchResultEnum.O);
 						eo.setWinOdds(uoLeaf.getO());
 						//mainBet.get(champ).add(SerializationUtils.clone(eo));
-						System.out.println(eo.toStringInner(uoThr, null));
+						System.out.println(eo.toStringInner(null, uoThr, null, false));
 					}
 				}
 				else if ( conditionU ){
@@ -301,7 +301,7 @@ public class BetCreator {
 						
 						eo.setWinOdds(uoLeaf.getU());
 //						mainBet.get(champ).add(SerializationUtils.clone(eo));
-						System.out.println(eo.toStringInner(uoThr, null));
+						System.out.println(eo.toStringInner(null, uoThr, null, false));
 					}
 				}
 			}
@@ -312,7 +312,7 @@ public class BetCreator {
 
 	private EventOddsBean addXmatches(ChampEnum champ, EventOddsBean eo, Double goodnessHD, Double goodnessAD) {
 //		Double limit = 0.4;
-		Double limit = 0.1;
+		Double limit = 0.4;
 		
 		Boolean conditionX = goodnessHD >= limit && goodnessAD >= limit;
 		
@@ -322,6 +322,7 @@ public class BetCreator {
 				eo.setMatchResult(MatchResultEnum.D);
 				eo.setWinOdds(eo.getOddsD());
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
+				System.out.println(eo.toStringInner(true, null, null, false));
 			}
 		}
 		return eo;

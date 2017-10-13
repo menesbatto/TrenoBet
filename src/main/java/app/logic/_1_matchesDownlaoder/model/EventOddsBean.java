@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,12 +59,21 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	
 	private Double winOdds;
 
+	
+	
+	public EventOddsBean() {
+		this.homeTrendUo = new HashMap<UoThresholdEnum, String>();
+		this.awayTrendUo = new HashMap<UoThresholdEnum, String>();
+		this.homeTrendEh = new HashMap<HomeVariationEnum, String>();
+		this.awayTrendEh = new HashMap<HomeVariationEnum, String>();
+	}
+
 	@Override
 	public String toString() {
-		return toStringInner(null, null);
+		return toStringInner(null, null, null, true);
 	}
 	
-	public String toStringInner( UoThresholdEnum uoThr, HomeVariationEnum homeVar) {
+	public String toStringInner(Boolean show1x2, UoThresholdEnum uoThr, HomeVariationEnum homeVar, Boolean full) {
 		if (homeResultGoodness == null){
 			return homeTeam + " - " + awayTeam + 
 				
@@ -72,18 +82,24 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 				"\n\tUO\t" + "via" + "\t" + "via" + "\n\n";
 		}
 		else {
+			String _trend = "";
+			
 			String _1x2odds = "";
+//			String _1x2trend = "";
 			String _1x2header = "";
 			String _1x2H = "";
 			String _1x2A = "";
 			String _1x2 = "";
-			if (homeVar == null && uoThr == null) {
+			if (show1x2 != null || full) {
 				_1x2odds = get1x2odds();
+//				_1x2trend = "\tTREND\t | " + Utils.redimString(homeTrend,16) + "\t-\t" + Utils.redimString(awayTrend,16) + " - " + "\n";
+				_trend =  Utils.redimString(homeTrend,16) + " " + Utils.redimString(awayTrend,16);
 				_1x2header = get1x2Header();
 				_1x2H = get1x2StringH();
 				_1x2A = get1x2StringA();
 				
 				_1x2 = 	"\n\t        1x2          \n" + 
+//						_1x2trend +
 						_1x2odds  +
 						_1x2header  +
 						_1x2H + 
@@ -95,16 +111,20 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			
 			
 			String uoOdds = "";
+//			String uoTrend = "";
 			String uoHeader  = "";
 			String uoH = "";
 			String uoA = "";
 			String uo = "";
-			if (homeVar == null && uoThr!= null) {
+			if (uoThr!= null || full) {
 				uoOdds = getUoOdds(uoOddsMap, uoThr);
+//				uoTrend = getUoTrend(uoThr);
+				_trend =  getUoTrend(uoThr);
 				uoHeader = getUoHeader(uoThr);
 				uoH = getUoString(homeResultGoodness.getUoGoodness(), uoThr);
 				uoA = getUoString(awayResultGoodness.getUoGoodness(), uoThr);
 				uo = 	"\t        UO          \n\n" + 
+//						"\tTREND\t | " + uoTrend + "\n" + 
 						"\tQUOTE\t | " + uoOdds + "\n" + 
 						"\t\t | " + uoHeader + "\n" + 
 						"\n\tH GOOD\t |" +
@@ -118,16 +138,20 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			
 			
 			String ehOdds = "";
+//			String ehTrend = "";
 			String ehHeader = "";
 			String ehH = "";
 			String ehA = "";
 			String eh = "";
-			if (homeVar != null && uoThr == null) {
+			if (homeVar != null || full) {
 				ehOdds = getEhOdds(ehOddsMap, homeVar);
+//				ehTrend = getEhTrend(homeVar);
+				_trend =  getEhTrend(homeVar);
 				ehHeader = getEhHeader(homeVar);
 				ehH = getEhString(homeResultGoodness.getEhGoodness(), "H", homeVar);
 				ehA = getEhString(awayResultGoodness.getEhGoodness(), "A", homeVar);
 				eh = "\t        EH          \n\n" + 
+//						"\tTREND\t | " + ehTrend + "\n" + 
 						"\tQUOTE\t | " + ehOdds + "\n" + 
 						"\t\t | " + ehHeader + "\n" + 
 						"\n\tH GOOD\t |" +
@@ -139,17 +163,14 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			
 			
 			
-			
-			
 		
 			
 			String s =  
 	
 				Utils.redimString(homeTeam,16) + " " + Utils.redimString(awayTeam,16) + "\t\t" +  timeType + "\t" + betType + "\t" + matchResult + "\t" + getFormattedDate() + "\t" + winOdds + "\n" + 
-	
-				Utils.redimString(homeTrend,16) + " " + "Utils.redimString(homeTrendUo,16)" + " - " + Utils.redimString(awayTrend,16) + " - " + "Utils.redimString(awayTrendUo,16)" + "\n\n" +
-				
-				
+			
+				  _trend + "\n" +
+				  
 				//1x2
 				
 				_1x2 +
@@ -170,6 +191,9 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		}
 	}
 
+
+
+	//##################       1x2      ##################
 
 	private String get1x2StringH() {
 		String result =
@@ -215,6 +239,13 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		return odds;
 	}
 
+	//##################       EH      ##################
+	
+	private String getEhTrend(HomeVariationEnum homeVar) {
+		String result = this.homeTrendEh.get(homeVar) + "\t-\t" + this.awayTrendEh.get(homeVar) + "";
+		return result;
+	}
+	
 	private String getEhOdds(Map<HomeVariationEnum, _1x2Leaf> ehMap, HomeVariationEnum homeVar) {
 		String result = "";
 		EnumSet<HomeVariationEnum> subSet = HomeVariationEnum.getSubSet();
@@ -292,6 +323,16 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	}
 
 
+	
+	
+
+	//##################       UO      ##################
+	
+	private String getUoTrend(UoThresholdEnum uoThr) {
+		String result = this.homeTrendUo.get(uoThr) + "\t-\t" + this.awayTrendUo.get(uoThr) + "";
+		return result;
+	}
+	
 	private String getUoOdds(Map<UoThresholdEnum, UoLeaf> uoMap, UoThresholdEnum uoThr) {
 		String result = "";
 

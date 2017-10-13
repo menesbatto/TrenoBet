@@ -26,7 +26,6 @@ public class GoalsStatsBean implements Serializable {
 	
 	
 	
-	
 	public GoalsStatsBean() {
 		strikedGoalsTotal = 0;
 		takenGoalsTotal = 0;
@@ -122,8 +121,6 @@ public class GoalsStatsBean implements Serializable {
 	public void setPlayingField(String playingField) {
 		this.playingField = playingField;
 	}
-	
-	
-	
-	
+
+
 }

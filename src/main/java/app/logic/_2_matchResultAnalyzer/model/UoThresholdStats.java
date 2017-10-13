@@ -10,7 +10,7 @@ public class UoThresholdStats implements Serializable{
 	private Double underPerc;
 	private Double overHit;
 	private Double overPerc;
-
+	private String trend;
 	
 	
 	public UoThresholdStats() {
@@ -18,6 +18,7 @@ public class UoThresholdStats implements Serializable{
 		this.underPerc = 0.0;
 		this.overHit = 0.0;
 		this.overPerc = 0.0;
+		this.trend = "";
 	}
 
 	public UoThresholdStats(Double underHit, Double underPerc, Double overHit, Double overPerc) {
@@ -63,7 +64,15 @@ public class UoThresholdStats implements Serializable{
 	@Override
 	public String toString() {
 		return "UoThresholdStats [underHit=" + underHit + ", underPerc=" + underPerc + ", overHit=" + overHit
-				+ ", overPerc=" + overPerc + "]\n";
+				+ ", overPerc=" + overPerc + ", trend=" + trend + "]\n";
+	}
+
+	public String getTrend() {
+		return trend;
+	}
+
+	public void setTrend(String trend) {
+		this.trend = trend;
 	}
 
 	

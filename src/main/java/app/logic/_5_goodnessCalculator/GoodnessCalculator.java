@@ -44,19 +44,6 @@ import app.utils.Utils;
 
 @Service
 public class GoodnessCalculator {
-//	private static HashMap<ChampEnum, HashMap<String, ArrayList<WinRangeStatsBean>>> allAnalyzedChampsWinHome;
-//	private static HashMap<ChampEnum, HashMap<String, ArrayList<WinRangeStatsBean>>> allAnalyzedChampsWinAway;
-//	private static HashMap<ChampEnum, HashMap<String, ArrayList<WinRangeStatsBean>>> allAnalyzedChampsWinAll;
-//
-//	private static HashMap<ChampEnum, HashMap<String, GoalsStatsBean>> allAnalyzedChampsUoHome;
-//	private static HashMap<ChampEnum, HashMap<String, GoalsStatsBean>> allAnalyzedChampsUoAway;
-//	
-//	private static HashMap<ChampEnum, ArrayList<String>> allTeams;
-//	private static HashMap<ChampEnum, ArrayList<EventOdds>> allMatchesOdds;
-//	
-//	private static HashMap<ChampEnum, HashMap<String, ArrayList<MatchResult>>> trends;
-//	private static HashMap<ChampEnum, ArrayList<RankingRow>> rankings; 
-
 	
 	@Autowired
 	private MatchoDao matchDao;
@@ -82,21 +69,15 @@ public class GoodnessCalculator {
 	
 	
 	public void execute(){
-//	public void execute(HashMap<ChampEnum, ArrayList<EventOdds>> allMatchesOddsInput){
-//		allMatchesOdds = allMatchesOddsInput;
-//		initStaticFields();
-		
-		
-//		matchDao.removeAllEventOdds(); HHH
 		
 		List<RankingRow> ranking;
 		for (ChampEnum champ : ChampEnum.values()){
 			calculateMatchGoodnessOfChamp(champ);
-			ranking = rankingRowDao.findByChamp(champ);
-			rankingCalculator.printRanking(ranking, champ);
+//			ranking = rankingRowDao.findByChamp(champ);
+//			rankingCalculator.printRanking(ranking, champ);
 		}
-//		System.out.println(allMatchesOdds);
-//		IOUtils.write(AppConstants.MATCHES_ODDS_WITH_GOODNESS_PATH, allMatchesOdds);
+
+	
 	}
 	
 	
@@ -217,22 +198,26 @@ public class GoodnessCalculator {
 			oddsToWin = eo.getOddsA();
 		} 
 		
-		ResultGoodnessBean resultGoodnessHome = new ResultGoodnessBean();
+		ResultGoodnessBean resultGoodness = new ResultGoodnessBean();
 		
 		// 1x2
-		ArrayList<WinRangeStatsBean> rangesStatsByTeamFieldTimeHome = mapTeamWinRangStats.get(teamName).get(playingField).get(timeType);
-		ResultGoodnessWDLBean winCleanResultGoodnessH = calculateAllWinResultsGoodness(rangesStatsByTeamFieldTimeHome, oddsToWin);
-		resultGoodnessHome.setWinClean(winCleanResultGoodnessH);
-		resultGoodnessHome.setWinFinal(winCleanResultGoodnessH);
+		ArrayList<WinRangeStatsBean> rangesStatsByTeamFieldTime = mapTeamWinRangStats.get(teamName).get(playingField).get(timeType);
+		update1x2Trend(eo, rangesStatsByTeamFieldTime, playingField);
+		ResultGoodnessWDLBean winCleanResultGoodness = calculateAllWinResultsGoodness(rangesStatsByTeamFieldTime, oddsToWin);
+		resultGoodness.setWinClean(winCleanResultGoodness);
+		resultGoodness.setWinFinal(winCleanResultGoodness);
 		
 		// UO
-		GoalsStatsBean goalsStatsByTeamFieldTimeHome = mapTeamGoalsStats.get(teamName).get(playingField).get(timeType);
-		calculateAllUoResultsGoodness(goalsStatsByTeamFieldTimeHome, resultGoodnessHome);
+		GoalsStatsBean goalsStatsByTeamFieldTime = mapTeamGoalsStats.get(teamName).get(playingField).get(timeType);
+		updateUoTrend(eo, goalsStatsByTeamFieldTime.getThresholdMap(), playingField);
+		calculateAllUoResultsGoodness(goalsStatsByTeamFieldTime, resultGoodness);
 		
 		// EH
 		// Quando l'atalanta è quotata in m2 a 1.5, nell'EH m2 allora ci azzecca questo numero di volte
 		for (HomeVariationEnum homeVariation : mapTeamWinEhRangStats.keySet()) {
-			rangesStatsByTeamFieldTimeHome = mapTeamWinEhRangStats.get(homeVariation).get(teamName).get(playingField).get(timeType);
+			rangesStatsByTeamFieldTime = mapTeamWinEhRangStats.get(homeVariation).get(teamName).get(playingField).get(timeType);
+		
+			updateEhTrend(eo, rangesStatsByTeamFieldTime, playingField, homeVariation);
 			
 			Double oddsToWinWithHomeVariation = null;
 			if (eo.getEhOddsMap().get(homeVariation) != null) {
@@ -244,12 +229,53 @@ public class GoodnessCalculator {
 				}
 			}
 			
-			ResultGoodnessWDLBean winCleanEhResultGoodnessH = calculateAllWinResultsGoodness(rangesStatsByTeamFieldTimeHome, oddsToWinWithHomeVariation);
-			resultGoodnessHome.getEhGoodness().put(homeVariation, winCleanEhResultGoodnessH);
+			ResultGoodnessWDLBean winCleanEhResultGoodnessH = calculateAllWinResultsGoodness(rangesStatsByTeamFieldTime, oddsToWinWithHomeVariation);
+			resultGoodness.getEhGoodness().put(homeVariation, winCleanEhResultGoodnessH);
 			
 		}
 		
-		return resultGoodnessHome;
+		return resultGoodness;
+	}
+
+
+
+	private void updateUoTrend(EventOddsBean eo, HashMap<UoThresholdEnum, UoThresholdStats> thrMap, String playingField) {
+		for (UoThresholdEnum thr : thrMap.keySet()) {
+			String trend = thrMap.get(thr).getTrend();
+			if (playingField.equals("H")) {
+				eo.getHomeTrendUo().put(thr, trend);
+			}
+			else {
+				eo.getAwayTrendUo().put(thr, trend);
+			}
+		}
+	}
+
+
+
+	private void updateEhTrend(EventOddsBean eo, ArrayList<WinRangeStatsBean> rangesStatsByTeamFieldTime, String playingField, HomeVariationEnum homeVariation) {
+		WinRangeStatsBean wholeStats = rangesStatsByTeamFieldTime.remove(rangesStatsByTeamFieldTime.size()-1);
+		String trend = wholeStats.getTrend();
+		if (playingField.equals("H")) {
+			eo.getHomeTrendEh().put(homeVariation, trend);
+		}
+		else {
+			eo.getAwayTrendEh().put(homeVariation, trend);
+		}
+		
+	}
+
+
+
+	private void update1x2Trend(EventOddsBean eo, ArrayList<WinRangeStatsBean> rangesStatsByTeamFieldTime, String playingField) {
+		WinRangeStatsBean wholeStats = rangesStatsByTeamFieldTime.remove(rangesStatsByTeamFieldTime.size()-1);
+		String trend = wholeStats.getTrend();
+		if (playingField.equals("H")) {
+			eo.setHomeTrend(trend);
+		}
+		else {
+			eo.setAwayTrend(trend);
+		}
 	}
 
 
