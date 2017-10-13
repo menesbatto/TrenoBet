@@ -128,19 +128,19 @@ public class BetCreator {
 			Double awayMot = eo.getAwayMotivation();
 
 			
-// 			//############################# SURPRISE ############################# 
+ 			//############################# SURPRISE ############################# 
 //			addSurpriseMatches(champ, eo, homeMot, awayMot);
-//			
+			
 			//############################# 1/2 ############################# 
-//			add12matches(champ, eo, goodnessHW, goodnessHL, goodnessAW, goodnessAL);
-//			
+			add12matches(champ, eo, goodnessHW, goodnessHL, goodnessAW, goodnessAL);
+			
 			//#############################  X  #############################	
-//			addXmatches(champ, eo, goodnessHD, goodnessAD);	
-//				
-//			//############################# UO ############################# 
-//			addUOmatches(champ, eo, homeResultGoodness, awayResultGoodness);
-//		
-//			//############################# EH ############################# 
+			addXmatches(champ, eo, goodnessHD, goodnessAD);	
+				
+			//############################# UO ############################# 
+			addUOmatches(champ, eo, homeResultGoodness, awayResultGoodness);
+		
+			//############################# EH ############################# 
 			addEhmatches(champ, eo, homeResultGoodness, awayResultGoodness);
 			
 			

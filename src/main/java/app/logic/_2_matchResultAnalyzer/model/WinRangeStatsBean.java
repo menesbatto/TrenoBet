@@ -45,6 +45,13 @@ public class WinRangeStatsBean implements Serializable{
 	
 	private String trend;
 	
+	private Integer winTot;
+
+	private Integer drawTot;
+	
+	private Integer loseTot;
+	
+	
 	
 	public WinRangeStatsBean() {
 		homeHits = 0;
@@ -54,6 +61,10 @@ public class WinRangeStatsBean implements Serializable{
 		awayHits = 0;
 		awayMisses = 0;
 		total = 0;
+		
+		winTot = 0;
+		drawTot = 0;
+		loseTot = 0;
 	}
 
 
@@ -260,6 +271,36 @@ public class WinRangeStatsBean implements Serializable{
 
 	public void setTrend(String trend) {
 		this.trend = trend;
+	}
+
+
+	public Integer getWinTot() {
+		return winTot;
+	}
+
+
+	public void setWinTot(Integer winTot) {
+		this.winTot = winTot;
+	}
+
+
+	public Integer getDrawTot() {
+		return drawTot;
+	}
+
+
+	public void setDrawTot(Integer drawTot) {
+		this.drawTot = drawTot;
+	}
+
+
+	public Integer getLoseTot() {
+		return loseTot;
+	}
+
+
+	public void setLoseTot(Integer loseTot) {
+		this.loseTot = loseTot;
 	}
 	
 

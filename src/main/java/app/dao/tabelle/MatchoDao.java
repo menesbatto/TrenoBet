@@ -318,7 +318,7 @@ public class MatchoDao {
 	@Transactional
 	public ArrayList<MatchResult> getDownloadedPastMatchByChamp(ChampEnum champEnum, boolean light) {//light = true non scarica le quote
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNotNull(champ);
+		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(champ);
 		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, listEnt, light);
 		return listBean;
 	}

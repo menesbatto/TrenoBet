@@ -94,9 +94,11 @@ public class WinRangeStatsDao {
 			if (ent.getTotal() != null)	// Per non sovrascrivere gli 0 con i null provenienti da DB, in caso metti diretto gli 0 a DB
 				mapper.map(ent, bean);
 			
-			bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
-			bean.setEdgeDown(ent.getRange().getValueDown());
-			bean.setEdgeUp(ent.getRange().getValueUp());
+			if (ent.getRange()!= null) {
+				bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
+				bean.setEdgeDown(ent.getRange().getValueDown());
+				bean.setEdgeUp(ent.getRange().getValueUp());
+			}
 			bean.setTeamName(ent.getTeam().getName());
 			
 			listBean.add(bean);
@@ -193,7 +195,9 @@ public class WinRangeStatsDao {
 			ArrayList<WinRangeStatsBean> awayStats = findByTeamNameAndChampAndTimeTypeAndPlayingField(teamName, champEnum, timeTypeEnum, "H");
 			for (WinRangeStatsBean h : homeStats) {
 				for (WinRangeStatsBean a : awayStats) {
-					if (h.getRange().equals(a.getRange())) {
+					if (h.getRange() == null && h.getRange() == null ||  
+							h.getRange().equals(a.getRange())) {
+					
 						WinRangeStatsBean t = new WinRangeStatsBean();
 
 						t.setEdgeDown(h.getEdgeDown());
@@ -201,15 +205,16 @@ public class WinRangeStatsDao {
 						t.setRange(h.getRange());
 						t.setTeamName(h.getTeamName());
 						t.setTotal(h.getTotal() + a.getTotal());
+
+						//Informazioni che non hanno senso
+//						t.setAwayHits(h.getAwayHits() + a.getAwayHits());
+//						t.setHomeHits(h.getHomeHits() + a.getHomeHits());
 						
-						t.setAwayHits(h.getAwayHits() + a.getAwayHits());
-						t.setHomeHits(h.getHomeHits() + a.getHomeHits());
+//						t.setAwayMisses(h.getAwayMisses() + a.getAwayMisses());
+//						t.setHomeMisses(h.getHomeMisses() + a.getHomeMisses());
 						
-						t.setAwayMisses(h.getAwayMisses() + a.getAwayMisses());
-						t.setHomeMisses(h.getHomeMisses() + a.getHomeMisses());
-						
-						t.setDrawHits(h.getDrawHits() + a.getDrawHits());
-						t.setDrawMisses(h.getDrawMisses() + a.getDrawMisses());
+//						t.setDrawHits(h.getDrawHits() + a.getDrawHits());
+//						t.setDrawMisses(h.getDrawMisses() + a.getDrawMisses());
 						
 						double total = h.getTotal().doubleValue() + a.getTotal().doubleValue();
 						if (total!=0) {
@@ -226,6 +231,45 @@ public class WinRangeStatsDao {
 			}
 		}
 		saveWinRangeStats(totalStats, teamName, champEnum, "T", null);
+	}
+
+
+	public List<WinRangeStats> calculateWinStatsNoPlayingField(List<WinRangeStats> homeWinStats, List<WinRangeStats> awayWinStats) {
+		WinRangeStats h;
+		WinRangeStats a;
+		WinRangeStats t;
+
+		List<WinRangeStats> totalWinStats = new ArrayList<WinRangeStats>();
+		
+		for (int i = 0; i < homeWinStats.size(); i++) {
+			h = homeWinStats.get(i);
+			a = awayWinStats.get(i);
+			
+			t = new WinRangeStats();
+
+			t.setHomeVariation(h.getHomeVariation());
+			t.setPlayingField("T");
+			t.setRange(h.getRange());
+			t.setTimeType(h.getTimeType());
+			t.setTeam(h.getTeam());
+			
+		
+			t.setTotal(h.getTotal() + a.getTotal());
+			
+			double total = h.getTotal().doubleValue() + a.getTotal().doubleValue();
+			if (total!=0) {
+				t.setWinPerc((h.getHomeHits() + a.getAwayHits()) / total);
+				t.setDrawPerc((h.getDrawHits() + a.getDrawHits()) / total);
+				t.setLosePerc((h.getAwayHits() + a.getHomeHits()) / total);
+			}
+			
+			
+			totalWinStats.add(t);
+			
+		}
+		
+		
+		return totalWinStats;
 	}
 
 
