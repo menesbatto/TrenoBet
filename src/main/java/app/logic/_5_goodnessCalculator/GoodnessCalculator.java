@@ -190,12 +190,12 @@ public class GoodnessCalculator {
 		String teamName;
 		if (playingField.equals("H")) {
 			teamName = eo.getHomeTeam();
-			oddsToWin =  eo.getOddsH(); 
+			oddsToWin =  eo.getOdds1(); 
 			
 		}
 		else {
 			teamName = eo.getAwayTeam(); 
-			oddsToWin = eo.getOddsA();
+			oddsToWin = eo.getOdds2();
 		} 
 		
 		ResultGoodnessBean resultGoodness = new ResultGoodnessBean();
@@ -384,10 +384,12 @@ public class GoodnessCalculator {
 				String awayClean = Utils.cleanString(m.getAwayTeam());
 				eo.setAwayTeam(awayClean);
 				eo.setDate(m.getMatchDate());
-				eo.setBetType(BetType.WIN);
-				eo.setOddsH(avg1x2Odds.getOdd1());
-				eo.setOddsD(avg1x2Odds.getOddX());
-				eo.setOddsA(avg1x2Odds.getOdd2());
+//				eo.setBetType(BetType.WIN);
+				eo.setOdds1(avg1x2Odds.getOdd1());
+				eo.setOddsX(avg1x2Odds.getOddX());
+				eo.setOdds2(avg1x2Odds.getOdd2());
+				
+				eo.setTimeType(timeType);
 				
 				mapOdds.get(timeType).add(eo);
 				

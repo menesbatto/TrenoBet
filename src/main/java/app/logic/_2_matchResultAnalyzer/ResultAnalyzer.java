@@ -63,12 +63,12 @@ public class ResultAnalyzer {
 			ArrayList<MatchResult> teamMatchesAway = matchDao.getDownloadedPastMatchByChampFull(champ);
 			Map<String, ArrayList<MatchResult>> homeMatchesMap = new HashMap<String, ArrayList<MatchResult>>();
 			createMatchMap(homeMatchesMap, teamMatchesAway, "H");
+			
 			Map<String, ArrayList<MatchResult>> awayMatchesMap = new HashMap<String, ArrayList<MatchResult>>();
 			createMatchMap(awayMatchesMap, teamMatchesAway, "A");
 		
 			Map<String, ArrayList<MatchResult>> matchesMapAll = new HashMap<String, ArrayList<MatchResult>>();
 			createMatchMap(matchesMapAll, teamMatchesAway, "T");
-			
 			
 			
 			ArrayList<String> teams = teamDao.findByChamp(champ);
@@ -84,7 +84,7 @@ public class ResultAnalyzer {
 			duration = (end1 - start)/1000000;  //divide by 1000000 to get milliseconds
 			System.out.println(duration);
 			
-			analyzeUnderOverOdds		(champ, homeMatchesMap, awayMatchesMap, teamsCorrect);
+			analyzeUnderOverOdds		(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect);
 			long end2 = System.nanoTime();
 			duration = (end2 - end1)/1000000;  //divide by 1000000 to get milliseconds.
 			System.out.println(duration);
@@ -143,15 +143,9 @@ public class ResultAnalyzer {
 
 	
 
-	
-
-	
-
 	private void analyzeWinOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams, HomeVariationEnum homeVariation) {
 		List<WinRangeStats> createdWinRangeToSave = new ArrayList<WinRangeStats>();
 		
-		
-	
 		for (String teamName : teams) {
 			
 			// HOME
@@ -163,47 +157,14 @@ public class ResultAnalyzer {
 			createdWinRangeToSave.addAll(awayWinStats);
 			
 			// TOTAL
-//			ArrayList<MatchResult> allMatches = new ArrayList<MatchResult>();
-//			allMatches.addAll(matchesMapHome.get(teamName));
-//			allMatches.addAll(matchesMapAway.get(teamName));
-//			List<WinRangeStats> totalWinStats = analyzeTeamResultWin(teamName, allMatches, champ, "T", homeVariation);
-			
-			
-//			ArrayList<MatchResult> allMatches = new ArrayList<MatchResult>();
-//			allMatches.addAll(matchesMapHome.get(teamName));
-//			allMatches.addAll(matchesMapAway.get(teamName));
-//			Collections.sort(allMatches, new Comparator<MatchResult>() {
-//				public int compare(MatchResult o1, MatchResult o2) {
-//					if (o1.getMatchDate().before(o2.getMatchDate()))
-//						return 1;
-//					return -1;
-//				}
-//			});
 			List<WinRangeStats> totalWinStats = analyzeTeamResultWin(teamName, matchesMapAll.get(teamName), champ, "T", homeVariation);
 			createdWinRangeToSave.addAll(totalWinStats);
-//			String trend = calculateTrend(teamName, allMatches);
-//			
-			
-//			List<WinRangeStats> totalWinStats = winRangeStatsDao.calculateWinStatsNoPlayingField(homeWinStats, awayWinStats);
-//			createdWinRangeToSave.addAll(totalWinStats);
-			
-//			winRangeStatsDao.calculateWinStatsNoPlayingField(teamName, champ);
 			
 		}
 		
 		winRangeStatsDao.saveWinRangeStats(createdWinRangeToSave);
 		
 	}
-	
-//	private String calculateTrend(String teamName, List<MatchResult> allMatches) {
-//		String trend = "";
-//		for (MatchResult m : allMatches) {
-//			if (m.getHomeTeam().equals(teamName)) {
-//				trend += m.getFTR()
-//			}
-//		}
-//		return trend;
-//	}
 
 	// Ogni volta che l'atalanta che gioca in casa � quotata a una quota che va da 1,5 a 1,7 allora finora si � comportata cosi. 
 	// Ogni volta che l'atalanta che gioca fuori casa � quotata a una quota che va da 1,5 a 1,7 allora finora si � comportata cosi. 
@@ -400,8 +361,6 @@ public class ResultAnalyzer {
 //			total.setAwayMisses(total.getAwayMisses() + 1);
 		}
 		
-		
-		
 		else if (result.equals(MatchResultEnum.D)){
 			total.setDrawTot(total.getDrawTot() + 1);
 			
@@ -492,10 +451,11 @@ public class ResultAnalyzer {
 
 	
 	
-	private void analyzeUnderOverOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, ArrayList<String> teams ) {
+	private void analyzeUnderOverOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams ) {
 		List<GoalsStatsBean> analyzeTeamResultUoAll = new ArrayList<GoalsStatsBean>();
 		List<GoalsStatsBean> analyzeTeamResultUoH;
 		List<GoalsStatsBean> analyzeTeamResultUoA;
+		List<GoalsStatsBean> analyzeTeamResultUoT;
 
 		for (String teamName : teams) {
 
@@ -505,10 +465,10 @@ public class ResultAnalyzer {
 			// AWAY
 			analyzeTeamResultUoA = analyzeTeamResultUo(teamName, matchesMapAway.get(teamName), champ, "A");
 			analyzeTeamResultUoAll.addAll(analyzeTeamResultUoA);
-			
-			
 			// TOTAL
-			//goalsStatsDao.calculateGoalsStatsNoPlayingField(teamName, champ, analyzeTeamResultUoH, analyzeTeamResultUoA);
+			analyzeTeamResultUoT = analyzeTeamResultUo(teamName, matchesMapAll.get(teamName), champ, "T");
+			analyzeTeamResultUoAll.addAll(analyzeTeamResultUoT);
+			
 		}
 		
 		goalsStatsDao.saveGoalsStats(analyzeTeamResultUoAll, champ);
@@ -519,7 +479,6 @@ public class ResultAnalyzer {
 		List<TimeTypeEnum> timeTypes = timeTypeDao.findAllTimeTypeEnum();
 		
 		ArrayList<GoalsStatsBean> goalsStatsBeans = new ArrayList<GoalsStatsBean>();
-		String trend;
 		for (TimeTypeEnum timeType : timeTypes) {
 			
 			GoalsStatsBean goalsStatsBean = new GoalsStatsBean();//goalsStatsDao.findByTeamNameAndChampAndTimeTypeAndPlayingField(teamName, champ, timeType, playingField);
@@ -529,7 +488,6 @@ public class ResultAnalyzer {
 			if (matches ==  null) {
 				continue;
 			}
-			trend = "";
 				
 			for (MatchResult m : matches){
 				if (m.getFTHG() == null){

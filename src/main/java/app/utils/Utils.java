@@ -22,6 +22,7 @@ public class Utils {
 	}
 	
 	public static boolean isMatchInTemporalRange(Date matchDate, int daysFarBetFrom, int daysFarBetTo) {
+		
 		Calendar c = Calendar.getInstance();
 		
 		c.setTime(new Date());

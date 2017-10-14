@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.dao.tabelle.entities.BetResult;
 import app.dao.tabelle.entities.Champ;
 import app.dao.tabelle.entities.EhOdds;
 import app.dao.tabelle.entities.EventOdds;
@@ -26,6 +27,7 @@ import app.dao.tipologiche.UoThresholdTypeDao;
 import app.dao.tipologiche.entities.HomeVariationType;
 import app.dao.tipologiche.entities.TimeType;
 import app.dao.tipologiche.entities.UoThresholdType;
+import app.logic._1_matchesDownlaoder.model.BetResultBean;
 import app.logic._1_matchesDownlaoder.model.EventOddsBean;
 import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 import app.logic._1_matchesDownlaoder.model.ResultGoodnessBean;
@@ -245,6 +247,8 @@ public class EventOddsDao {
 	public EventOddsBean createEventOddsBean(EventOdds ent) {
 		EventOddsBean bean = new EventOddsBean();
 		
+		bean.setId(ent.getId());
+		
 		bean.setDate(ent.getMatch().getMatchDate());
 		TimeTypeEnum timeTypeBean = timeTypeDao.findBeanByEnt(ent.getTimeType());
 		bean.setTimeType(timeTypeBean);
@@ -264,9 +268,9 @@ public class EventOddsDao {
 		//Quote 1X2
 		_1X2Odds odds = getOddsByTime(ent.getMatch().get_1X2(), ent.getTimeType());
 		
-		bean.setOddsH(odds.get_1());
-		bean.setOddsD(odds.get_X());
-		bean.setOddsA(odds.get_2());
+		bean.setOdds1(odds.get_1());
+		bean.setOddsX(odds.get_X());
+		bean.setOdds2(odds.get_2());
 		
 		//Quote Eh
 		Map<HomeVariationEnum, _1x2Leaf> ehOddsMap = createEhOddsMapBean(ent.getMatch().getEh(), ent.getTimeType());
@@ -494,6 +498,31 @@ public class EventOddsDao {
 	public void removeByMatchId(Integer idMatch) {
 		eventOddsRepo.deleteByMatchId(idMatch);
 		
+	}
+
+
+	public void saveBetResult(List<EventOddsBean> eventsOdds, ChampEnum champ) {
+		List<EventOdds> eoEntList = new ArrayList<EventOdds>();
+		EventOdds eoEnt;
+		BetResult brEnt;
+		for ( EventOddsBean eoBean : eventsOdds) {
+			if (!eoBean.getBetResults().isEmpty()) {
+				List<BetResult> brEnts = new ArrayList<BetResult>();
+				eoEnt = eventOddsRepo.findById(eoBean.getId());
+				for (BetResultBean brBean : eoBean.getBetResults()) {
+					brEnt = new BetResult();
+					brEnt.setBetType(brBean.getBetType().name());
+					brEnt.setMatchResult(brBean.getMatchResult().name());
+					brEnt.setWinOdds(brBean.getWinOdds());
+					brEnts.add(brEnt);
+					
+					eoEnt.setBetResults(brEnts);
+				}
+				eoEntList.add(eoEnt);
+			}
+		}
+		
+		eventOddsRepo.save(eoEntList);
 	}
 
 }

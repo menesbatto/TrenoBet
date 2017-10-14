@@ -15,6 +15,8 @@ import app.utils.Utils;
 public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	private static final long serialVersionUID = 7778211632531238253L;
 	
+	private int id;
+	
 	private TimeTypeEnum timeType;
 	
 	// Info sulla bonta dei due team relativamente a tutto.
@@ -31,9 +33,9 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	
 	// Quote del 1x2, uo e eh
-	private Double oddsH;
-	private Double oddsD;
-	private Double oddsA;
+	private Double odds1;
+	private Double oddsX;
+	private Double odds2;
 	
 	private Map<HomeVariationEnum, _1x2Leaf> ehOddsMap;
 	
@@ -53,11 +55,8 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 
 	//Campi per simulare la scommessa su questo evento
-	private BetType betType;
+	private List<BetResultBean> betResults;
 	
-	private MatchResultEnum matchResult;
-	
-	private Double winOdds;
 
 	
 	
@@ -66,6 +65,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		this.awayTrendUo = new HashMap<UoThresholdEnum, String>();
 		this.homeTrendEh = new HashMap<HomeVariationEnum, String>();
 		this.awayTrendEh = new HashMap<HomeVariationEnum, String>();
+		this.betResults = new ArrayList<BetResultBean>();
 	}
 
 	@Override
@@ -77,12 +77,13 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		if (homeResultGoodness == null){
 			return homeTeam + " - " + awayTeam + 
 				
-				"\n\tWIN\t" + oddsH + "\t" + oddsD + "\t" + oddsA + 
+				"\n\tWIN\t" + odds1 + "\t" + oddsX + "\t" + odds2 + 
 				
 				"\n\tUO\t" + "via" + "\t" + "via" + "\n\n";
 		}
 		else {
 			String _trend = "";
+			String bets = createBets();
 			
 			String _1x2odds = "";
 //			String _1x2trend = "";
@@ -167,7 +168,9 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			
 			String s =  
 	
-				Utils.redimString(homeTeam,16) + " " + Utils.redimString(awayTeam,16) + "\t\t" +  timeType + "\t" + betType + "\t" + matchResult + "\t" + getFormattedDate() + "\t" + winOdds + "\n" + 
+				Utils.redimString(homeTeam,16) + " " + Utils.redimString(awayTeam,16) + "\t\t" +  timeType + "\t" +  getFormattedDate() + "\n" + 
+				
+				bets +
 			
 				  _trend + "\n" +
 				  
@@ -194,6 +197,14 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 
 	//##################       1x2      ##################
+
+	private String createBets() {
+		String result = "";
+		for (BetResultBean br : betResults) {
+			result += br.getBetType() + "\t" + br.getMatchResult() + "\t" + br.getWinOdds() + "\n";
+		}
+		return result + "\n";
+	}
 
 	private String get1x2StringH() {
 		String result =
@@ -234,7 +245,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	}
 
 	private String get1x2odds() {
-		String odds = "\n\tQUOTE\t | " + "1 - " + "\t" + oddsH + "\t\t\t\t | " + "X - " + "\t" + oddsD + "\t | " + "2 - " + "\t" + oddsA + "\t\t\t\t | ";
+		String odds = "\n\tQUOTE\t | " + "1 - " + "\t" + odds1 + "\t\t\t\t | " + "X - " + "\t" + oddsX + "\t | " + "2 - " + "\t" + odds2 + "\t\t\t\t | ";
 				
 		return odds;
 	}
@@ -427,38 +438,38 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 
 
-	public Double getOddsH() {
-		return oddsH;
+	public Double getOdds1() {
+		return odds1;
 	}
 
 
 
-	public void setOddsH(Double oddsH) {
-		this.oddsH = oddsH;
+	public void setOdds1(Double oddsH) {
+		this.odds1 = oddsH;
 	}
 
 
 
-	public Double getOddsD() {
-		return oddsD;
+	public Double getOddsX() {
+		return oddsX;
 	}
 
 
 
-	public void setOddsD(Double oddsD) {
-		this.oddsD = oddsD;
+	public void setOddsX(Double oddsD) {
+		this.oddsX = oddsD;
 	}
 
 
 
-	public Double getOddsA() {
-		return oddsA;
+	public Double getOdds2() {
+		return odds2;
 	}
 
 
 
-	public void setOddsA(Double oddsA) {
-		this.oddsA = oddsA;
+	public void setOdds2(Double oddsA) {
+		this.odds2 = oddsA;
 	}
 
 
@@ -528,30 +539,6 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	public void setAwayMotivation(Double awayMotivation) {
 		this.awayMotivation = awayMotivation;
-	}
-
-	public BetType getBetType() {
-		return betType;
-	}
-
-	public void setBetType(BetType betType) {
-		this.betType = betType;
-	}
-
-	public MatchResultEnum getMatchResult() {
-		return matchResult;
-	}
-
-	public void setMatchResult(MatchResultEnum matchResult) {
-		this.matchResult = matchResult;
-	}
-	
-	public Double getWinOdds() {
-		return winOdds;
-	}
-
-	public void setWinOdds(Double winOdds) {
-		this.winOdds = winOdds;
 	}
 
 	public TimeTypeEnum getTimeType() {
@@ -627,6 +614,22 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	public void setEhOddsMap(Map<HomeVariationEnum, _1x2Leaf> ehOddsMap) {
 		this.ehOddsMap = ehOddsMap;
+	}
+
+	public List<BetResultBean> getBetResults() {
+		return betResults;
+	}
+
+	public void setBetResults(List<BetResultBean> betResults) {
+		this.betResults = betResults;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	

@@ -186,7 +186,17 @@ public class WinRangeStatsDao {
 	}
 
 
-
+	
+	
+	
+	
+	
+	
+	//#######################################################################################################################
+	
+	
+	
+	@Deprecated
 	public void calculateWinStatsNoPlayingField(String teamName, ChampEnum champEnum) {
 		ArrayList<WinRangeStatsBean> totalStats = new ArrayList<WinRangeStatsBean>(); 
 		
@@ -233,7 +243,7 @@ public class WinRangeStatsDao {
 		saveWinRangeStats(totalStats, teamName, champEnum, "T", null);
 	}
 
-
+	@Deprecated
 	public List<WinRangeStats> calculateWinStatsNoPlayingField(List<WinRangeStats> homeWinStats, List<WinRangeStats> awayWinStats) {
 		WinRangeStats h;
 		WinRangeStats a;
@@ -272,46 +282,5 @@ public class WinRangeStatsDao {
 		return totalWinStats;
 	}
 
-
-	
-
-
-
-	
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }
