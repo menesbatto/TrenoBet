@@ -17,6 +17,8 @@ import app.dao.tabelle.EventOddsDao;
 import app.dao.tabelle.EventOddsRepo;
 import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.MatchoRepo;
+import app.dao.tabelle.SingleBetDao;
+import app.dao.tabelle.SingleBetRepo;
 import app.dao.tabelle.entities.Matcho;
 import app.logic.UtilityModel;
 import app.logic._1_matchesDownlaoder.NextMatchesDownloader;
@@ -26,6 +28,7 @@ import app.logic._3_rankingCalculator.RankingCalculator;
 import app.logic._4_trendCalculator.TrendCalculator;
 import app.logic._5_goodnessCalculator.GoodnessCalculator;
 import app.logic._6_betCreator.BetCreator;
+import app.logic._7_betAnalyzer.BetAnalyzer;
 import app.utils.ChampEnum;
 
 @Controller // This means that this class is a Controller
@@ -55,6 +58,9 @@ public class FacadeController {
 	
 	@Autowired
 	private BetCreator betCreator;
+
+	@Autowired
+	private BetAnalyzer betAnalyzer;
 
 	
 	// ###################################################
@@ -161,11 +167,32 @@ public class FacadeController {
 		return response;
 	}
 
-	
+	// ###################################################
+	// ##########            8                ############
+	// ###################################################
+	@RequestMapping(value = "/analyzeBet", method = RequestMethod.GET)
+	public ResponseEntity<String>  analyzeBet8() {
+		long startTime = System.nanoTime();
+
+		betAnalyzer.execute();
+
+		long currentTime = System.nanoTime();
+		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
+		System.out.println("betAnalyzer " + duration / 1000000);
+		
+		String body = "Analyzing Bet COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
 	
 
+	@Autowired
+	private SingleBetRepo singleBetRepo;
 
-	
+	@RequestMapping(value = "/deleteBet", method = RequestMethod.GET)
+	public void  deleteBet() {
+		singleBetRepo.deleteAll();
+	}
 	
 	
 	@Autowired

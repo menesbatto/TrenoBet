@@ -346,104 +346,111 @@ public class MatchoDao {
 	private ArrayList<MatchResult> mapMatchosToMatchesResults(ChampEnum champEnum, List<Matcho> listEnt, boolean light) {
 		ArrayList<MatchResult> listBean = new ArrayList<MatchResult>();
 		for (Matcho ent : listEnt) {
-			MatchResult bean = new MatchResult();
-			
-			bean.setChamp(champEnum);
-			bean.setMatchDate(ent.getMatchDate());
-			
-			bean.setHomeTeam(ent.getHomeTeam().getName());
-			bean.setAwayTeam(ent.getAwayTeam().getName());
-			
-			bean.setFTHG(ent.getFullTimeHomeGoals());
-			bean.setFTAG(ent.getFullTimeAwayGoals());
-			bean.setHTHG(ent.getHalfTimeHomeGoals());
-			bean.setHTAG(ent.getHalfTimeAwayGoals());
-			
-			bean.setFTR(ent.getFullTimeResult());
-			bean.setHTR(ent.getHalfTimeResult());
-			
-			if (!light) {
-				
-				// Mapping 1x2
-				for (_1X2Odds oddsEnt : ent.get_1X2()) {
-					TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(oddsEnt.getTimeType());
-					
-					Double _1 = oddsEnt.get_1();
-					Double _2 = oddsEnt.get_2();
-					Double x = oddsEnt.get_X();
-					_1x2Leaf oddsBean = new _1x2Leaf(_1, x, _2);
-					
-					_1x2Full _1x2Full = bean.get_1x2().get(timeTypeEnum);
-	
-					BetHouse betHouseEnt = oddsEnt.getBetHouse();
-					if ( betHouseEnt != null) {
-						BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
-						_1x2Full.getBetHouseTo1x2Odds().put(betHouseEnum, oddsBean);
-					}
-					else {
-						_1x2Full.setAvg1x2Odds(oddsBean);
-					}
-				
-				}
-			
-				
-				
-				// Mapping Under Over
-				for (UoOdds uoOddsEnt : ent.getUo()) {
-					
-					TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(uoOddsEnt.getTimeType());
-					Double u = uoOddsEnt.getU();
-					Double o = uoOddsEnt.getO();
-					UoLeaf oddsBean = new UoLeaf(u, o);
-					
-					UoTimeType uoTimeType = bean.getUo().get(timeTypeEnum);
-					UoThresholdType uoThresTypeEnt = uoOddsEnt.getThresholdType();
-					UoThresholdEnum uoThresTypeBean = uoThresholdTypeDao.findBeanByEnt(uoThresTypeEnt);
-					
-					UoFull uoFull = uoTimeType.getMap().get(uoThresTypeBean);
-					
-					BetHouse betHouseEnt = uoOddsEnt.getBetHouse();
-					if ( betHouseEnt != null) {
-						BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
-						uoFull.getBetHouseToUoOdds().put(betHouseEnum, oddsBean);
-					}
-					else {
-						uoFull.setAvgUoOdds(oddsBean);
-					}
-					
-				}
-				
-				
-				// Mapping European Handicap
-				for (EhOdds ehOddsEnt : ent.getEh()) {
-					
-					TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(ehOddsEnt.getTimeType());
-					Double _1 = ehOddsEnt.get_1();
-					Double x = ehOddsEnt.get_X();
-					Double _2 = ehOddsEnt.get_2();
-					_1x2Leaf oddsBean = new _1x2Leaf(_1, x, _2);
-					
-					EhTimeType ehTimeType = bean.getEh().get(timeTypeEnum);
-					HomeVariationType homeVarTypeEnt = ehOddsEnt.getHomeVariationType();
-					HomeVariationEnum homeVarTypeBean = homeVariationTypeDao.findBeanByEnt(homeVarTypeEnt);
-					
-					 _1x2Full ehFull = ehTimeType.getMap().get(homeVarTypeBean);
-					
-					BetHouse betHouseEnt = ehOddsEnt.getBetHouse();
-					if ( betHouseEnt != null) {
-						BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
-						ehFull.getBetHouseTo1x2Odds().put(betHouseEnum, oddsBean);
-					}
-					else {
-						ehFull.setAvg1x2Odds(oddsBean);
-					}
-					
-				}
-			
-			}
+			MatchResult bean = mapMatchoToMatchResult(ent, light);
 			listBean.add(bean);
 		}
 		return listBean;
+	}
+
+
+	public MatchResult mapMatchoToMatchResult(Matcho ent, boolean light) {
+		MatchResult bean = new MatchResult();
+		
+		ChampEnum champEnum = champDao.findChampEnumByChamp(ent.getChamp());
+		bean.setChamp(champEnum );
+		bean.setMatchDate(ent.getMatchDate());
+		
+		bean.setHomeTeam(ent.getHomeTeam().getName());
+		bean.setAwayTeam(ent.getAwayTeam().getName());
+		
+		bean.setFTHG(ent.getFullTimeHomeGoals());
+		bean.setFTAG(ent.getFullTimeAwayGoals());
+		bean.setHTHG(ent.getHalfTimeHomeGoals());
+		bean.setHTAG(ent.getHalfTimeAwayGoals());
+		
+		bean.setFTR(ent.getFullTimeResult());
+		bean.setHTR(ent.getHalfTimeResult());
+		
+		if (!light) {
+			
+			// Mapping 1x2
+			for (_1X2Odds oddsEnt : ent.get_1X2()) {
+				TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(oddsEnt.getTimeType());
+				
+				Double _1 = oddsEnt.get_1();
+				Double _2 = oddsEnt.get_2();
+				Double x = oddsEnt.get_X();
+				_1x2Leaf oddsBean = new _1x2Leaf(_1, x, _2);
+				
+				_1x2Full _1x2Full = bean.get_1x2().get(timeTypeEnum);
+
+				BetHouse betHouseEnt = oddsEnt.getBetHouse();
+				if ( betHouseEnt != null) {
+					BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
+					_1x2Full.getBetHouseTo1x2Odds().put(betHouseEnum, oddsBean);
+				}
+				else {
+					_1x2Full.setAvg1x2Odds(oddsBean);
+				}
+			
+			}
+		
+			
+			
+			// Mapping Under Over
+			for (UoOdds uoOddsEnt : ent.getUo()) {
+				
+				TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(uoOddsEnt.getTimeType());
+				Double u = uoOddsEnt.getU();
+				Double o = uoOddsEnt.getO();
+				UoLeaf oddsBean = new UoLeaf(u, o);
+				
+				UoTimeType uoTimeType = bean.getUo().get(timeTypeEnum);
+				UoThresholdType uoThresTypeEnt = uoOddsEnt.getThresholdType();
+				UoThresholdEnum uoThresTypeBean = uoThresholdTypeDao.findBeanByEnt(uoThresTypeEnt);
+				
+				UoFull uoFull = uoTimeType.getMap().get(uoThresTypeBean);
+				
+				BetHouse betHouseEnt = uoOddsEnt.getBetHouse();
+				if ( betHouseEnt != null) {
+					BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
+					uoFull.getBetHouseToUoOdds().put(betHouseEnum, oddsBean);
+				}
+				else {
+					uoFull.setAvgUoOdds(oddsBean);
+				}
+				
+			}
+			
+			
+			// Mapping European Handicap
+			for (EhOdds ehOddsEnt : ent.getEh()) {
+				
+				TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(ehOddsEnt.getTimeType());
+				Double _1 = ehOddsEnt.get_1();
+				Double x = ehOddsEnt.get_X();
+				Double _2 = ehOddsEnt.get_2();
+				_1x2Leaf oddsBean = new _1x2Leaf(_1, x, _2);
+				
+				EhTimeType ehTimeType = bean.getEh().get(timeTypeEnum);
+				HomeVariationType homeVarTypeEnt = ehOddsEnt.getHomeVariationType();
+				HomeVariationEnum homeVarTypeBean = homeVariationTypeDao.findBeanByEnt(homeVarTypeEnt);
+				
+				 _1x2Full ehFull = ehTimeType.getMap().get(homeVarTypeBean);
+				
+				BetHouse betHouseEnt = ehOddsEnt.getBetHouse();
+				if ( betHouseEnt != null) {
+					BetHouseEnum betHouseEnum = betHouseDao.findBeanByEnt(betHouseEnt);
+					ehFull.getBetHouseTo1x2Odds().put(betHouseEnum, oddsBean);
+				}
+				else {
+					ehFull.setAvg1x2Odds(oddsBean);
+				}
+				
+			}
+		
+		}
+		return bean;
 	}
 	
 	public Matcho findByTeamAndChamp(String homeTeam, String awayTeam, ChampEnum champEnum) {

@@ -23,7 +23,21 @@ public class ChampDao {
 	private RankingCriteriaDao rankingCriteriaDao;
 	
 	private HashMap<ChampEnum, Champ> cacheMap;
+	
+//	private HashMap<Champ, ChampEnum> cacheEnumMap
 
+	
+	public ChampEnum findChampEnumByChamp(Champ champ) {
+//		ChampEnum first = findInCacheEnum(champ);
+//		if (first == null) {
+//			ChampEnum
+//			
+//		}
+		
+		
+		return ChampEnum.ENG_PREMIER;
+	}
+	
 	public Champ findByChampEnum(ChampEnum champEnum) {
 		Champ first = findInCache(champEnum);
 		if (first == null) {

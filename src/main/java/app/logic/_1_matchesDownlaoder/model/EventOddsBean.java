@@ -15,7 +15,7 @@ import app.utils.Utils;
 public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	private static final long serialVersionUID = 7778211632531238253L;
 	
-	private int id;
+	private int matchId;
 	
 	private TimeTypeEnum timeType;
 	
@@ -55,7 +55,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 
 	//Campi per simulare la scommessa su questo evento
-	private List<BetResultBean> betResults;
+//	private List<SingleBetBean> betResults;
 	
 
 	
@@ -65,7 +65,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		this.awayTrendUo = new HashMap<UoThresholdEnum, String>();
 		this.homeTrendEh = new HashMap<HomeVariationEnum, String>();
 		this.awayTrendEh = new HashMap<HomeVariationEnum, String>();
-		this.betResults = new ArrayList<BetResultBean>();
+//		this.betResults = new ArrayList<SingleBetBean>();
 	}
 
 	@Override
@@ -200,9 +200,9 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	private String createBets() {
 		String result = "";
-		for (BetResultBean br : betResults) {
-			result += br.getBetType() + "\t" + br.getMatchResult() + "\t" + br.getWinOdds() + "\n";
-		}
+//		for (SingleBetBean br : betResults) {
+//			result += br.getBetType() + "\t" + br.getMatchResult() + "\t" + br.getWinOdds() + "\n";
+//		}
 		return result + "\n";
 	}
 
@@ -616,21 +616,21 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		this.ehOddsMap = ehOddsMap;
 	}
 
-	public List<BetResultBean> getBetResults() {
-		return betResults;
+	public int getMatchId() {
+		return matchId;
 	}
 
-	public void setBetResults(List<BetResultBean> betResults) {
-		this.betResults = betResults;
+	public void setMatchId(int matchId) {
+		this.matchId = matchId;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
+//	public List<SingleBetBean> getBetResults() {
+//		return betResults;
+//	}
+//
+//	public void setBetResults(List<SingleBetBean> betResults) {
+//		this.betResults = betResults;
+//	}
 
 	
 }

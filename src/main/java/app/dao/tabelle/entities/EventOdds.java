@@ -61,7 +61,7 @@ public class EventOdds {
 
 	//Campi per simulare la scommessa
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<BetResult> betResults;		
+	private List<SingleBet> betResults;		
 	
 	
 	
@@ -168,11 +168,11 @@ public class EventOdds {
 		this.awayTrendUo = awayTrendUo;
 	}
 
-	public List<BetResult> getBetResults() {
+	public List<SingleBet> getBetResults() {
 		return betResults;
 	}
 
-	public void setBetResults(List<BetResult> betResults) {
+	public void setBetResults(List<SingleBet> betResults) {
 		this.betResults = betResults;
 	}
 
