@@ -80,7 +80,7 @@ public class FacadeController {
 	// ###################################################
 	@RequestMapping(value = "/downloadPastMatches", method = RequestMethod.GET)
 	public ResponseEntity<String>  downloadPastMatches2() {
-		matchDao.removeAllNextMatches();
+//		matchDao.removeAllNextMatches();
 		pastMatchesDownloader.execute();
 		String body = "Downloading past matches COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);

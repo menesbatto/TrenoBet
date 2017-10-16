@@ -12,7 +12,8 @@ public class MatchResult implements Serializable{
 	private static final long serialVersionUID = 5857347462773566556L;
 
 	// Key to results data:
-	
+	private int id;
+
 	private String Div;			// League division
 	private ChampEnum champ;		// League division
 	private String Date; 	 	// Match Date (dd/mm/yy)
@@ -260,6 +261,18 @@ public class MatchResult implements Serializable{
 
 	public void setPSCD(Double pSCD) {
 		PSCD = pSCD;
+	}
+
+
+
+	public int getId() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

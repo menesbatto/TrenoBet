@@ -194,7 +194,7 @@ public class MatchesDownloader {
 	}
 
 
-	private static MatchResult createMatchResult(Element row, Date matchDate, String champSubsetUrl, ArrayList<MatchResult> downloadedMatches) {
+	private MatchResult createMatchResult(Element row, Date matchDate, String champSubsetUrl, ArrayList<MatchResult> downloadedMatches) {
 		try {
 			MatchResult m = new MatchResult();
 			
@@ -221,29 +221,71 @@ public class MatchesDownloader {
 			String cleanAway = Utils.cleanString(awayTeam);
 			m.setAwayTeam(cleanAway);
 			
-			boolean isAlreadySaved = checkAlreadySavedMatch(m, downloadedMatches);
+			// Il match che si sta generando viene popolato dell'id del match a db
+			MatchResult dbMatch = checkAlreadySavedMatch(m, downloadedMatches);
+			if (dbMatch != null)
+				m = dbMatch;
 			
-			if (!isAlreadySaved) {
-				Elements tableScoreElems = row.getElementsByClass("table-score");
+			boolean isAlreadySaved = dbMatch != null;
 			
-				if (tableScoreElems != null && !tableScoreElems.isEmpty()) {
-					String result = tableScoreElems.get(0).text();
-					Integer homeScoreScoredGoals = Integer.valueOf(result.split(":")[0]);
-					m.setFTHG(homeScoreScoredGoals);
-					Integer awayScoredGoals = Integer.valueOf(result.split(":")[1]);
-					m.setFTAG(awayScoredGoals);
+			Elements tableScoreElems = row.getElementsByClass("table-score");
+			boolean isMatchPlayed = tableScoreElems != null && !tableScoreElems.isEmpty();
+			
+			boolean hasSavedMatchResult = m.getFTR() != null;
+
+			boolean firstNext =  !isAlreadySaved && !isMatchPlayed;							//Salva		Quote
+			
+			boolean firstPast = !isAlreadySaved  && isMatchPlayed;							//Salva		Risultato e Quote
+			
+			boolean nextToPast = isAlreadySaved && isMatchPlayed && !hasSavedMatchResult;	//Aggiorna	Risultato
+			
+			boolean nextToNext =  isAlreadySaved && !isMatchPlayed;							//Aggiorna	Quote
+			
+			boolean pastToPast =  isAlreadySaved && isMatchPlayed && hasSavedMatchResult;	//Niente
+			
+			if (pastToPast)
+				return null;
+			
+			if (firstPast || nextToPast) {
+			
+			
+			//	RISULTATO
+				
+				String result = tableScoreElems.get(0).text();
+				Integer homeScoreScoredGoals = Integer.valueOf(result.split(":")[0]);
+				m.setFTHG(homeScoreScoredGoals);
+				Integer awayScoredGoals = Integer.valueOf(result.split(":")[1]);
+				m.setFTAG(awayScoredGoals);
+				
+				String finalResult;
+				if (homeScoreScoredGoals > awayScoredGoals)
+					finalResult = "H";
+				else if (homeScoreScoredGoals == awayScoredGoals)
+					finalResult = "D";
+				else
+					finalResult = "A";
 					
-					String finalResult;
-					if (homeScoreScoredGoals > awayScoredGoals)
-						finalResult = "H";
-					else if (homeScoreScoredGoals == awayScoredGoals)
-						finalResult = "D";
-					else
-						finalResult = "A";
-						
-					m.setFTR(finalResult);
-				}
+				m.setFTR(finalResult);
+				
+				
+				
+				// Caricamento pagina per scaricare le informazioni relative al primo tempo
+				Elements elementsByTag = teamsElement.getElementsByTag("a");
+				String matchSuffixUrl = elementsByTag.last().attr("href");
+				String matchUrl = AppConstants.SITE_URL + matchSuffixUrl;
+				
+				String infoUrl = matchUrl + TimeTypeEnum._final.get_1x2urlSuffix();
+				Document infoPage = HttpUtils.getHtmlPage(infoUrl);
+				
+				popupateHalfTimeResultInfo(m, infoPage);
+				
+				
+			}
+
 			
+			//	QUOTE
+			if (firstNext || firstPast || nextToNext) {	
+
 				Double H = Double.valueOf(row.getElementsByClass("odds-nowrp").get(0).text());
 				Double D = Double.valueOf(row.getElementsByClass("odds-nowrp").get(1).text());
 				Double A = Double.valueOf(row.getElementsByClass("odds-nowrp").get(2).text());
@@ -252,6 +294,7 @@ public class MatchesDownloader {
 				m.setPSCA(A);
 				_1x2Leaf avg1x2Odds = new _1x2Leaf(H, D, A);
 				m.get_1x2().get(TimeTypeEnum._final).setAvg1x2Odds(avg1x2Odds);
+
 				
 				// ADDITIONAL MATCH INFO
 				Elements elementsByTag = teamsElement.getElementsByTag("a");
@@ -282,8 +325,8 @@ public class MatchesDownloader {
 		//		System.out.println(m);
 				System.out.print(".");
 		
-				return m;
 			}
+			return m;
 		}
 		catch (Exception e) {
 			System.out.println("Problema nella creazione del match. " + e.getStackTrace());
@@ -296,7 +339,7 @@ public class MatchesDownloader {
 
 	
 
-	private static boolean checkAlreadySavedMatch(MatchResult m, ArrayList<MatchResult> downloadedMatches) {
+	private MatchResult checkAlreadySavedMatch(MatchResult m, ArrayList<MatchResult> downloadedMatches) {
 		for (MatchResult dbMatch : downloadedMatches) {
 			if  (	dbMatch.getHomeTeam().equals(m.getHomeTeam()) && 
 					dbMatch.getAwayTeam().equals(m.getAwayTeam()) &&
@@ -304,10 +347,11 @@ public class MatchesDownloader {
 					dbMatch.getMatchDate().getMonth() == m.getMatchDate().getMonth() &&
 					dbMatch.getMatchDate().getDay() == m.getMatchDate().getDay()
 				) {
-				return true;
+				return dbMatch;
+				//return true;
 			}
 		}
-		return false;
+		return null;
 	}
 
 
@@ -508,27 +552,9 @@ public class MatchesDownloader {
 		// 1 X 2 - FINAL
 		String infoUrl = matchUrl + timeType.get_1x2urlSuffix();
 		Document infoPage = HttpUtils.getHtmlPage(infoUrl);
+
+//		viapopupateHalfTimeResultInfo(m, infoPage);
 		
-		Elements halfTimeResultElems = infoPage.getElementsByClass("result");		//
-		if (halfTimeResultElems != null && !halfTimeResultElems.isEmpty()) {
-		
-			String halfTimeResultString = halfTimeResultElems.get(0).text().split("\\(")[1].split(",")[0];
-			Integer hthg = Integer.valueOf(halfTimeResultString.split(":")[0]);
-			Integer htag = Integer.valueOf(halfTimeResultString.split(":")[1]);
-			m.setHTHG(hthg);
-			m.setHTAG(htag);
-			
-			String halfTimeResult;
-			if (hthg > htag)
-				halfTimeResult = "H";
-			else if (hthg == htag)
-				halfTimeResult = "D";
-			else
-				halfTimeResult = "A";
-				
-			m.setHTR(halfTimeResult);
-			
-		}
 		Elements betHouses = infoPage.getElementById("col-content").getElementsByClass("detail-odds").get(0).getElementsByClass("lo");
 		
 		_1x2Full _1x2 = m.get_1x2().get(timeType);
@@ -556,6 +582,29 @@ public class MatchesDownloader {
 		
 		
 		
+	}
+
+	private static void popupateHalfTimeResultInfo(MatchResult m, Document infoPage) {
+		Elements halfTimeResultElems = infoPage.getElementsByClass("result");		//
+		if (halfTimeResultElems != null && !halfTimeResultElems.isEmpty()) {
+		
+			String halfTimeResultString = halfTimeResultElems.get(0).text().split("\\(")[1].split(",")[0];
+			Integer hthg = Integer.valueOf(halfTimeResultString.split(":")[0]);
+			Integer htag = Integer.valueOf(halfTimeResultString.split(":")[1]);
+			m.setHTHG(hthg);
+			m.setHTAG(htag);
+			
+			String halfTimeResult;
+			if (hthg > htag)
+				halfTimeResult = "H";
+			else if (hthg == htag)
+				halfTimeResult = "D";
+			else
+				halfTimeResult = "A";
+				
+			m.setHTR(halfTimeResult);
+			
+		}
 	}
 
 	

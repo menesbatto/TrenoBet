@@ -20,7 +20,12 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 
 	List<Matcho> findByChampAndFullTimeResultIsNull(Champ champ);
 	List<Matcho> findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(Champ champ);
+	
+	// Recupera tutti match di un dato champ
+	List<Matcho> findByChampOrderByMatchDateDesc(Champ champ);
 
+	
+	
 	List<Matcho> findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
 	List<Matcho> findByChampAndAwayTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
 

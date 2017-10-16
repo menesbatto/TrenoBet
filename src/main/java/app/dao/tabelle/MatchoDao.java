@@ -98,8 +98,14 @@ public class MatchoDao {
 		return m;
 	}
 	public MatchResult save(MatchResult bean) {
-		Matcho ent = new Matcho();
-		ent = matchRepo.save(ent);
+		Matcho ent = null;
+
+		if (bean.getId() != 0) 
+			ent = matchRepo.findById(bean.getId());				// In aggiornamento
+		else 
+			ent =  new Matcho();								// Nuovo
+		
+//		ent = matchRepo.save(ent);
 		Champ champEnt = champDao.findByChampEnum(bean.getChamp());
 		ent.setChamp(champEnt);
 		
@@ -129,94 +135,100 @@ public class MatchoDao {
 //		}
 //		ent.setEventsOdds(eventsOdds);
 		
-		// _1X2 Odds
-		List<_1X2Odds> _1x2oddsEnts = new ArrayList<_1X2Odds>();
 		
-		HashMap<TimeTypeEnum, _1x2Full> _1X2 = bean.get_1x2();
-		for (Entry<TimeTypeEnum, _1x2Full> entry : _1X2.entrySet()) {
-			TimeTypeEnum timeType = entry.getKey();
-			_1x2Full value = entry.getValue();
+		boolean needToSaveOdds = bean.get_1x2().get(TimeTypeEnum._final).getAvg1x2Odds() != null;
+		
+		if (needToSaveOdds) {
 			
-			_1x2Leaf leaf = value.getAvg1x2Odds();
-			_1X2Odds oddsEnt = create1X2OddsEnt(timeType, null, leaf);
-			_1x2oddsEnts.add(oddsEnt);
+		// _1X2 Odds
+			List<_1X2Odds> _1x2oddsEnts = new ArrayList<_1X2Odds>();
 			
-			for (Entry<BetHouseEnum, _1x2Leaf> entry3 : value.getBetHouseTo1x2Odds().entrySet()) {
-				BetHouseEnum betHouse = entry3.getKey();
-				leaf = entry3.getValue();
-				oddsEnt = create1X2OddsEnt(timeType, betHouse, leaf);
-
+			HashMap<TimeTypeEnum, _1x2Full> _1X2 = bean.get_1x2();
+			for (Entry<TimeTypeEnum, _1x2Full> entry : _1X2.entrySet()) {
+				TimeTypeEnum timeType = entry.getKey();
+				_1x2Full value = entry.getValue();
+				
+				_1x2Leaf leaf = value.getAvg1x2Odds();
+				_1X2Odds oddsEnt = create1X2OddsEnt(timeType, null, leaf);
 				_1x2oddsEnts.add(oddsEnt);
 				
-			}
-		}
-		
-		ent.set_1X2(_1x2oddsEnts);
-		
-		
-		
-		// Eh Odds
-		List<EhOdds> ehOddsEnts = new ArrayList<EhOdds>();
-		
-		HashMap<TimeTypeEnum, EhTimeType> eh = bean.getEh();
-		for (Entry<TimeTypeEnum, EhTimeType> entry : eh.entrySet()) {
-			
-			TimeTypeEnum timeType = entry.getKey();
-			EhTimeType ehTimeType = entry.getValue();
-			
-			for (Entry<HomeVariationEnum, _1x2Full> entry2 : ehTimeType.getMap().entrySet()) {
-				
-				HomeVariationEnum homeVariation = entry2.getKey();
-				_1x2Full value = entry2.getValue();
-				_1x2Leaf leaf = value.getAvg1x2Odds();
-
-				if (leaf != null) {//se è null allora tale homeVariation non è bancata
-					EhOdds oddsEnt = createEhOddsEnt(timeType, homeVariation, null, leaf);
-					ehOddsEnts.add(oddsEnt);
-					
-					for (Entry<BetHouseEnum, _1x2Leaf> entry3 : value.getBetHouseTo1x2Odds().entrySet()) {
-						BetHouseEnum betHouse = entry3.getKey();
-						leaf = entry3.getValue();
-						oddsEnt = createEhOddsEnt(timeType, homeVariation, betHouse, leaf);
+				for (Entry<BetHouseEnum, _1x2Leaf> entry3 : value.getBetHouseTo1x2Odds().entrySet()) {
+					BetHouseEnum betHouse = entry3.getKey();
+					leaf = entry3.getValue();
+					oddsEnt = create1X2OddsEnt(timeType, betHouse, leaf);
 	
+					_1x2oddsEnts.add(oddsEnt);
+					
+				}
+			}
+			
+			ent.set_1X2(_1x2oddsEnts);
+			
+			
+			
+			// Eh Odds
+			List<EhOdds> ehOddsEnts = new ArrayList<EhOdds>();
+			
+			HashMap<TimeTypeEnum, EhTimeType> eh = bean.getEh();
+			for (Entry<TimeTypeEnum, EhTimeType> entry : eh.entrySet()) {
+				
+				TimeTypeEnum timeType = entry.getKey();
+				EhTimeType ehTimeType = entry.getValue();
+				
+				for (Entry<HomeVariationEnum, _1x2Full> entry2 : ehTimeType.getMap().entrySet()) {
+					
+					HomeVariationEnum homeVariation = entry2.getKey();
+					_1x2Full value = entry2.getValue();
+					_1x2Leaf leaf = value.getAvg1x2Odds();
+	
+					if (leaf != null) {//se è null allora tale homeVariation non è bancata
+						EhOdds oddsEnt = createEhOddsEnt(timeType, homeVariation, null, leaf);
 						ehOddsEnts.add(oddsEnt);
+						
+						for (Entry<BetHouseEnum, _1x2Leaf> entry3 : value.getBetHouseTo1x2Odds().entrySet()) {
+							BetHouseEnum betHouse = entry3.getKey();
+							leaf = entry3.getValue();
+							oddsEnt = createEhOddsEnt(timeType, homeVariation, betHouse, leaf);
+		
+							ehOddsEnts.add(oddsEnt);
+						}
 					}
 				}
 			}
-		}
-		ent.setEh(ehOddsEnts);
-
-
-		
-		// Uo Odds
-		List<UoOdds> uoOddsEnts = new ArrayList<UoOdds>();
-		
-		HashMap<TimeTypeEnum, UoTimeType> uo = bean.getUo();
-		for (Entry<TimeTypeEnum, UoTimeType> entry : uo.entrySet()) {
-			
-			TimeTypeEnum timeType = entry.getKey();
-			UoTimeType uoTimeType = entry.getValue();
-			
-			for (Entry<UoThresholdEnum, UoFull> entry2 : uoTimeType.getMap().entrySet()) {
-				UoThresholdEnum uoThreshold = entry2.getKey();
-				UoFull value = entry2.getValue();
-				
-				UoLeaf leaf = value.getAvgUoOdds();
-				if (leaf != null) {//se è null allora tale UoThreshold non è bancata
-					UoOdds oddsEnt = createUoOddsEnt(timeType, uoThreshold, null, leaf);
-					uoOddsEnts.add(oddsEnt);
-					
-					for (Entry<BetHouseEnum, UoLeaf> entry3 : value.getBetHouseToUoOdds().entrySet()) {
-						BetHouseEnum betHouse = entry3.getKey();
-						leaf = entry3.getValue();
-						oddsEnt = createUoOddsEnt(timeType, uoThreshold, betHouse, leaf);
+			ent.setEh(ehOddsEnts);
 	
+	
+			
+			// Uo Odds
+			List<UoOdds> uoOddsEnts = new ArrayList<UoOdds>();
+			
+			HashMap<TimeTypeEnum, UoTimeType> uo = bean.getUo();
+			for (Entry<TimeTypeEnum, UoTimeType> entry : uo.entrySet()) {
+				
+				TimeTypeEnum timeType = entry.getKey();
+				UoTimeType uoTimeType = entry.getValue();
+				
+				for (Entry<UoThresholdEnum, UoFull> entry2 : uoTimeType.getMap().entrySet()) {
+					UoThresholdEnum uoThreshold = entry2.getKey();
+					UoFull value = entry2.getValue();
+					
+					UoLeaf leaf = value.getAvgUoOdds();
+					if (leaf != null) {//se è null allora tale UoThreshold non è bancata
+						UoOdds oddsEnt = createUoOddsEnt(timeType, uoThreshold, null, leaf);
 						uoOddsEnts.add(oddsEnt);
+						
+						for (Entry<BetHouseEnum, UoLeaf> entry3 : value.getBetHouseToUoOdds().entrySet()) {
+							BetHouseEnum betHouse = entry3.getKey();
+							leaf = entry3.getValue();
+							oddsEnt = createUoOddsEnt(timeType, uoThreshold, betHouse, leaf);
+		
+							uoOddsEnts.add(oddsEnt);
+						}
 					}
 				}
 			}
+			ent.setUo(uoOddsEnts);
 		}
-		ent.setUo(uoOddsEnts);
 		
 		matchRepo.save(ent);
 		
@@ -318,7 +330,8 @@ public class MatchoDao {
 	@Transactional
 	public ArrayList<MatchResult> getDownloadedPastMatchByChamp(ChampEnum champEnum, boolean light) {//light = true non scarica le quote
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(champ);
+		List<Matcho> listEnt = matchRepo.findByChampOrderByMatchDateDesc(champ);
+//		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(champ);
 		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, listEnt, light);
 		return listBean;
 	}
@@ -357,6 +370,7 @@ public class MatchoDao {
 		MatchResult bean = new MatchResult();
 		
 		ChampEnum champEnum = champDao.findChampEnumByChamp(ent.getChamp());
+		bean.setId(ent.getId());
 		bean.setChamp(champEnum );
 		bean.setMatchDate(ent.getMatchDate());
 		
