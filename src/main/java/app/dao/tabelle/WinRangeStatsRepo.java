@@ -23,7 +23,7 @@ public interface WinRangeStatsRepo extends JpaRepository<WinRangeStats, Long> {
 
 	List<WinRangeStats> findByTeamAndTimeTypeAndPlayingField(Team team, TimeType timeType, String playingField);
 
-	List<WinRangeStats> findByTeamChampOrderByTeam(Champ champ);
+	List<WinRangeStats> findByTeamChampAndSeasonDayOrderByTeam(Champ champ, Integer seasonDay);
 	
 	
 //	List<Person> findByLastName(@Param("name") String name);

@@ -1,6 +1,7 @@
 package app.logic._5_goodnessCalculator;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +69,11 @@ public class GoodnessCalculator {
 	
 	
 	
-	public void execute(){
+	public void execute(Integer seasonDay){
 		
 		List<RankingRow> ranking;
 		for (ChampEnum champ : ChampEnum.values()){
-			calculateMatchGoodnessOfChamp(champ);
+			calculateMatchGoodnessOfChamp(champ, seasonDay);
 //			ranking = rankingRowDao.findByChamp(champ);
 //			rankingCalculator.printRanking(ranking, champ);
 		}
@@ -82,10 +83,14 @@ public class GoodnessCalculator {
 	
 	
 	
-	private void calculateMatchGoodnessOfChamp(ChampEnum champ) {
+	private void calculateMatchGoodnessOfChamp(ChampEnum champ, Integer seasonDay) {
+		
+		Date dateOfBet = Utils.getDateOfBet(seasonDay);
+
+		Date betLimitDate = Utils.getDateAfter7Days(dateOfBet);
 		
 		// Recupero dei prossimi match
-		ArrayList<MatchResult> nextMatches = matchDao.getDownloadedNextMatchByChampFull(champ);
+		List<MatchResult> nextMatches = matchDao.getDownloadedNextMatchByChampBetweenFull(champ, dateOfBet, betLimitDate);
 //		ArrayList<EventOdds> nextMatchesOdds = createNextEventsOdds(nextMatches);
 		
 		// Inizializzazione degli EventsOdds a partire dai match recuperati con le odds e le info base recuperate dal match
@@ -96,7 +101,7 @@ public class GoodnessCalculator {
 		// ##############################
 		
 		// 1x2 e EH
-		List<WinRangeStatsBean> teamWinRangeStatsAll = winRangeStatsDao.findByChamp(champ); //ordinate per team
+		List<WinRangeStatsBean> teamWinRangeStatsAll = winRangeStatsDao.findByChampInSeasonDay(champ, seasonDay); //ordinate per team
 		
 		List<WinRangeStatsBean> teamWinRangeStats = new ArrayList<WinRangeStatsBean>();
 		List<WinRangeStatsBean> teamWinEhRangeStats = new ArrayList<WinRangeStatsBean>();
@@ -108,7 +113,7 @@ public class GoodnessCalculator {
 		}
 		
 		// UO
-		List<GoalsStatsBean> teamGoalsStats = goalsStatsDao.findByChamp(champ); //ordinate per team
+		List<GoalsStatsBean> teamGoalsStats = goalsStatsDao.findByChampInSeasonDay(champ, seasonDay); //ordinate per team
 
 		// ########################################
 		// #### RIORGANIZZAZIONE STATS IN MAPS ####
@@ -157,7 +162,7 @@ public class GoodnessCalculator {
 				
 				
 				eo.setTimeType(timeType);
-				
+				eo.setSeasonDay(seasonDay);
 			}
 //			if (timeType == TimeTypeEnum._final) {
 				System.out.println("###############################");
@@ -366,7 +371,7 @@ public class GoodnessCalculator {
 	
 
 
-	private Map<TimeTypeEnum, ArrayList<EventOddsBean>> createNextEventsOdds(ArrayList<MatchResult> nextMatches) {
+	private Map<TimeTypeEnum, ArrayList<EventOddsBean>> createNextEventsOdds(List<MatchResult> nextMatches) {
 		
 		Map<TimeTypeEnum, ArrayList<EventOddsBean>> mapOdds = new HashMap<TimeTypeEnum, ArrayList<EventOddsBean>>();
 		mapOdds.put(TimeTypeEnum._1, new ArrayList<EventOddsBean>());

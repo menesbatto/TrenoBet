@@ -34,6 +34,7 @@ public class SingleBet {
 	@ManyToOne
 	private Matcho matcho;
 
+	private Integer seasonDay;
 	
 	
 	
@@ -109,6 +110,14 @@ public class SingleBet {
 
 	public void setWin(Boolean win) {
 		this.win = win;
+	}
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 

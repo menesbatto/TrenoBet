@@ -51,6 +51,8 @@ public class WinRangeStatsBean implements Serializable{
 	
 	private Integer loseTot;
 	
+	private Integer seasonDay;
+	
 	
 	
 	public WinRangeStatsBean() {
@@ -180,7 +182,7 @@ public class WinRangeStatsBean implements Serializable{
 
 	@Override
 	public String toString() {
-		return "teamName=" + teamName + ", \n\trange= "
+		return "teamName=" + teamName + ", seasonDay=" + seasonDay + ", \n\trange= "
 				+ range + ",\n\thomeHits= " + homeHits + ", homeMisses= " + homeMisses + ", \n\tdrawHits= " + drawHits
 				+ ", drawMisses= " + drawMisses + ",\n\tawayHits= " + awayHits + ", awayMisses= " + awayMisses + ",\n\ttotal="
 				+ total + 
@@ -301,6 +303,16 @@ public class WinRangeStatsBean implements Serializable{
 
 	public void setLoseTot(Integer loseTot) {
 		this.loseTot = loseTot;
+	}
+
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 	
 

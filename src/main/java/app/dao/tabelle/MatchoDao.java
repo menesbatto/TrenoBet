@@ -1,6 +1,8 @@
 package app.dao.tabelle;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -35,7 +37,9 @@ import app.logic._1_matchesDownlaoder.model.UoThresholdEnum;
 import app.logic._1_matchesDownlaoder.model.UoTimeType;
 import app.logic._1_matchesDownlaoder.model._1x2Full;
 import app.logic._1_matchesDownlaoder.model._1x2Leaf;
+import app.utils.AppConstants;
 import app.utils.ChampEnum;
+import app.utils.Utils;
 import ma.glasnost.orika.MapperFacade;
 
 @Service
@@ -303,34 +307,47 @@ public class MatchoDao {
 //		Long count = matchRepo.countByChampAndHomeTeamAndFullTimeResultIsNotNull(champ);
 //		return count.intValue();
 //	}
-	public ArrayList<MatchResult> getDownloadedNextMatchByChampFull(ChampEnum champEnum) {
-		return getDownloadedNextMatchByChamp(champEnum, false);
+	
+	// NEXT
+	public ArrayList<MatchResult> getDownloadedNextMatchByChampBetweenFull(ChampEnum champEnum, Date dateOfBet, Date limitDate) {
+		return getDownloadedNextMatchByChamp(champEnum, dateOfBet, limitDate, false);
 	}
 
 	public ArrayList<MatchResult> getDownloadedNextMatchByChampLight(ChampEnum champEnum) {
-		return getDownloadedNextMatchByChamp(champEnum, true);
+		Date limitDate;
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, +7);
+		if (AppConstants.ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES)
+			limitDate = cal.getTime();
+		Date now = new Date();
+		return getDownloadedNextMatchByChamp(champEnum, now, limitDate, true);
 	}
 	
-	public ArrayList<MatchResult> getDownloadedNextMatchByChamp(ChampEnum champEnum, Boolean light) { 
+	private ArrayList<MatchResult> getDownloadedNextMatchByChamp(ChampEnum champEnum, Date dateOfBet, Date limitDate, Boolean light) { 
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNull(champ);
+		List<Matcho> listEnt = matchRepo.findByChampAndAndMatchDateBetween(champ, dateOfBet, limitDate);
+		//List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNullAndMatchDateBetween(champ, dateOfBet, limitDate);
 		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, listEnt, light);
 		return listBean;
 	}
 	
-	public ArrayList<MatchResult> getDownloadedPastMatchByChampFull(ChampEnum champEnum) {
-		return getDownloadedPastMatchByChamp(champEnum, false);
+	
+	
+	// PAST
+	public ArrayList<MatchResult> getDownloadedPastMatchByChampBeforeDateFull(ChampEnum champEnum, Date limitDate) {
+		return getDownloadedPastMatchByChampBeforeDate(champEnum, limitDate, false);
 	}
 
 	public ArrayList<MatchResult> getDownloadedPastMatchByChampLight(ChampEnum champEnum) {
-		return getDownloadedPastMatchByChamp(champEnum, true);
+		Date limitDate = new Date();
+		return getDownloadedPastMatchByChampBeforeDate(champEnum, limitDate, true);
 	}
 	
 	
 	@Transactional
-	public ArrayList<MatchResult> getDownloadedPastMatchByChamp(ChampEnum champEnum, boolean light) {//light = true non scarica le quote
+	public ArrayList<MatchResult> getDownloadedPastMatchByChampBeforeDate(ChampEnum champEnum, Date date, boolean light) {//light = true non scarica le quote
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<Matcho> listEnt = matchRepo.findByChampOrderByMatchDateDesc(champ);
+		List<Matcho> listEnt = matchRepo.findByChampAndMatchDateBeforeOrderByMatchDateDesc(champ, date);
 //		List<Matcho> listEnt = matchRepo.findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(champ);
 		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, listEnt, light);
 		return listBean;
@@ -482,9 +499,9 @@ public class MatchoDao {
 	}
 
 	@Transactional
-	public void removeAllNextMatchesByChamp(ChampEnum champEnum) {
+	public void removeAllNextMatchesByChamp(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		eventOddsDao.removeByChamp(champ);
+		eventOddsDao.deleteByChamp(champ, seasonDay);
 		matchRepo.deleteByChampAndFullTimeResultIsNull(champ);
 		
 	}
@@ -513,14 +530,4 @@ public class MatchoDao {
    		
    	}
 
-
-	public void removeAllNextMatches() {
-		for (ChampEnum champEnum : ChampEnum.values()) {
-			removeAllNextMatchesByChamp(champEnum);
-		}
-		
-	}
-
-
-	
 }

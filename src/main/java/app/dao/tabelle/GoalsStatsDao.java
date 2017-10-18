@@ -42,9 +42,9 @@ public class GoalsStatsDao {
 	@Autowired
 	private MapperFacade mapper;
 	
-	public List<GoalsStatsBean> findByChamp(ChampEnum champEnum) {
+	public List<GoalsStatsBean> findByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<GoalsStats> ents = goalsStatsRepo.findByTeamChampOrderByTeam(champ);
+		List<GoalsStats> ents = goalsStatsRepo.findByTeamChampAndSeasonDayOrderByTeam(champ, seasonDay);
 		List<GoalsStatsBean> beans = new ArrayList<GoalsStatsBean>();
 		GoalsStatsBean bean;
 		for (GoalsStats ent : ents) {
@@ -169,6 +169,7 @@ public class GoalsStatsDao {
 				mapper.map(bean, ent);
 				
 				ent.setPlayingField(bean.getPlayingField());
+				ent.setSeasonDay(bean.getSeasonDay());
 				ent.setTimeType(beanTimeType);
 				
 				ent.setOverHit(tresStatsBean.getOverHit());
@@ -176,7 +177,6 @@ public class GoalsStatsDao {
 				ent.setUnderHit(tresStatsBean.getUnderHit());
 				ent.setUnderPerc(tresStatsBean.getUnderPerc());
 				ent.setTrend(tresStatsBean.getTrend());
-			
 			
 				beanGoalsStats.add(ent);
 			}
@@ -190,7 +190,41 @@ public class GoalsStatsDao {
 	}
 
 
+	
 
+
+
+
+
+
+	
+	//###################################################################################################################################
+	
+	@Deprecated
+	private GoalsStatsBean createEmptyOne(GoalsStatsBean goalsStatsBean) {
+		GoalsStatsBean newOne = new GoalsStatsBean();
+		
+		newOne.setTimeTypeBean(goalsStatsBean.getTimeTypeBean());
+		newOne.setTeamName(goalsStatsBean.getTeamName());
+		return newOne;
+	}
+
+	@Deprecated
+	public int getLastSeasonDayOddsAndPlayingField(String teamName, ChampEnum champEnum, String playingField) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		
+		Team teamEnt = teamDao.findByNameAndChamp(teamName, champ);
+
+		GoalsStats goalsStats = goalsStatsRepo.findFirstByTeamAndPlayingField(teamEnt, playingField);
+		Integer totalMatches = 0;
+		if (goalsStats!= null)
+			totalMatches = goalsStats.getTotalMatches();
+		
+		return totalMatches;
+	}
+	
+	
+	@Deprecated
 	public void calculateGoalsStatsNoPlayingField(String teamName, ChampEnum champEnum, List<GoalsStatsBean> homeStatses, List<GoalsStatsBean> awayStatses) {
 		
 		ArrayList<GoalsStatsBean> totalStatses = new ArrayList<GoalsStatsBean>();
@@ -246,32 +280,6 @@ public class GoalsStatsDao {
 //		saveGoalsStats(totalStatses, teamName, champEnum, "T");
 
 	}
-
-
-	private GoalsStatsBean createEmptyOne(GoalsStatsBean goalsStatsBean) {
-		GoalsStatsBean newOne = new GoalsStatsBean();
-		
-		newOne.setTimeTypeBean(goalsStatsBean.getTimeTypeBean());
-		newOne.setTeamName(goalsStatsBean.getTeamName());
-		return newOne;
-	}
-
-
-
-	public int getLastSeasonDayOddsAndPlayingField(String teamName, ChampEnum champEnum, String playingField) {
-		Champ champ = champDao.findByChampEnum(champEnum);
-		
-		Team teamEnt = teamDao.findByNameAndChamp(teamName, champ);
-
-		GoalsStats goalsStats = goalsStatsRepo.findFirstByTeamAndPlayingField(teamEnt, playingField);
-		Integer totalMatches = 0;
-		if (goalsStats!= null)
-			totalMatches = goalsStats.getTotalMatches();
-		
-		return totalMatches;
-	}
-	
-	
 	
 	
 

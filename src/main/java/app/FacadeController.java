@@ -29,7 +29,9 @@ import app.logic._4_trendCalculator.TrendCalculator;
 import app.logic._5_goodnessCalculator.GoodnessCalculator;
 import app.logic._6_betCreator.BetCreator;
 import app.logic._7_betAnalyzer.BetAnalyzer;
+import app.logic._9_alghoritmTester.AlghoritmTester;
 import app.utils.ChampEnum;
+import app.utils.Utils;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path = "/api2") // This means URL's start with /demo (after Application path)
@@ -61,6 +63,9 @@ public class FacadeController {
 
 	@Autowired
 	private BetAnalyzer betAnalyzer;
+
+	@Autowired
+	private AlghoritmTester alghoritmTester;
 
 	
 	// ###################################################
@@ -95,7 +100,9 @@ public class FacadeController {
 		long startTime = System.nanoTime();
 
 		resetStats();
-		resultAnalyzer.execute();
+		
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		resultAnalyzer.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
@@ -111,7 +118,9 @@ public class FacadeController {
 	// ###################################################
 	@RequestMapping(value = "/calculateRankings", method = RequestMethod.GET)
 	public ResponseEntity<String>  calculateRankings4() {
-		rankingCalculator.execute();
+		
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		rankingCalculator.execute(actualSeasonDay);
 		
 		String body = "Calculating rankings COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -137,8 +146,9 @@ public class FacadeController {
 	public ResponseEntity<String>  calculateOddsGoodness6() {
 		long startTime = System.nanoTime();
 		
-		removeAllEventOdds();
-		goodnessCalculator.execute();
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		removeAllEventOdds(actualSeasonDay);
+		goodnessCalculator.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
@@ -155,8 +165,9 @@ public class FacadeController {
 	@RequestMapping(value = "/createBet", method = RequestMethod.GET)
 	public ResponseEntity<String>  createBet6() {
 		long startTime = System.nanoTime();
-
-		betCreator.execute();
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		
+		betCreator.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
@@ -174,7 +185,8 @@ public class FacadeController {
 	public ResponseEntity<String>  analyzeBet8() {
 		long startTime = System.nanoTime();
 
-		betAnalyzer.execute();
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		betAnalyzer.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
@@ -184,6 +196,26 @@ public class FacadeController {
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
 		return response;
 	}
+	
+	
+	// ###################################################
+	// ##########            9                ############
+	// ###################################################
+	@RequestMapping(value = "/testAlghoritm", method = RequestMethod.GET)
+	public ResponseEntity<String>  testAlghoritm9() {
+		long startTime = System.nanoTime();
+
+		alghoritmTester.execute();
+
+		long currentTime = System.nanoTime();
+		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
+		System.out.println("betAnalyzer " + duration / 1000000);
+		
+		String body = "Analyzing Bet COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
+	
 	
 
 	@Autowired
@@ -259,14 +291,15 @@ public class FacadeController {
 
 	
 	@RequestMapping(value = "/removeAllEventOdds", method = RequestMethod.GET)
-	public void removeAllEventOdds() {
+	public void removeAllEventOdds(Integer seasonDay) {
 		eventOddsRepo.deleteAll();
 	}
 	
 
 	@RequestMapping(value = "/removeAllNextMatch", method = RequestMethod.GET)
 	public void removeNextMatch() {
-		matchDao.removeAllNextMatchesByChamp(ChampEnum.ENG_PREMIER);
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		matchDao.removeAllNextMatchesByChamp(ChampEnum.ENG_PREMIER, actualSeasonDay);
 	}
 
 	

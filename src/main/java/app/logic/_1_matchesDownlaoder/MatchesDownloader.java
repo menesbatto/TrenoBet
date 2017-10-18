@@ -154,10 +154,8 @@ public class MatchesDownloader {
 				matchDate = Utils.convertDateString(dateString); 
 				
 				//Scarico solo i matches che stanno a meno di 7 giorni di distanza da oggi
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, +7);
 				if (AppConstants.ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES) {
-					Date expiringDate = cal.getTime();
+					Date expiringDate = Utils.getDateAfter7Days(new Date());
 					if (matchDate.after(expiringDate)) {
 						return savedMatches;
 					}

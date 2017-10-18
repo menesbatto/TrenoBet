@@ -23,7 +23,7 @@ public class GoalsStatsBean implements Serializable {
 	private String playingField;
 	private HashMap<UoThresholdEnum, UoThresholdStats> thresholdMap;
 	
-	
+	private Integer seasonDay;
 	
 	
 	public GoalsStatsBean() {
@@ -120,6 +120,16 @@ public class GoalsStatsBean implements Serializable {
 
 	public void setPlayingField(String playingField) {
 		this.playingField = playingField;
+	}
+
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 

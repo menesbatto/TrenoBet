@@ -61,6 +61,7 @@ public class WinRangeStats {
 	
 	private String trend;
 
+	private Integer seasonDay;
 	
 	
 	
@@ -197,7 +198,7 @@ public class WinRangeStats {
 				+ ",\t playingField=" + playingField + ",\t homeHits=" + homeHits + ",\t homeMisses=" + homeMisses
 				+ ",\t winPerc=" + winPerc + ",\t drawHits=" + drawHits + ",\t drawMisses=" + drawMisses + ",\t drawPerc="
 				+ drawPerc + ",\t awayHits=" + awayHits + ",\t awayMisses=" + awayMisses + ",\t losePerc=" + losePerc
-				+ ",\t total=" + total + "]\n";
+				+ ",\t total=" + total + ", seasonDay=" + seasonDay + "]\n";
 	}
 	public HomeVariationType getHomeVariation() {
 		return homeVariation;
@@ -210,6 +211,12 @@ public class WinRangeStats {
 	}
 	public void setTrend(String trend) {
 		this.trend = trend;
+	}
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 

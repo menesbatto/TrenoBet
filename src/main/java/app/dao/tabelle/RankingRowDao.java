@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.dao.tabelle.entities.Champ;
 import app.dao.tabelle.entities.RankingRowEnt;
@@ -22,6 +23,10 @@ public class RankingRowDao {
 
 	@Autowired
 	private ChampDao champDao;
+	
+	@Autowired
+	private TeamDao teamDao;
+	
 	
 	private HashMap<Champ, HashMap<String, Team>> cacheMap;
 
@@ -61,20 +66,38 @@ public class RankingRowDao {
 //		return first;
 //	}
 	
+	@Transactional
 	public List<RankingRow> saveRanking(ChampEnum champEnum, List<RankingRow> rankingBean) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<RankingRowEnt> rankingEnt = rankingRowRepo.findByChamp(champ);
-		for (RankingRowEnt ent : rankingEnt) {
-			for (RankingRow bean : rankingBean) {
-				if (ent.getTeam().getName().equals(bean.getTeamName())) {
-					mapper.map(bean, ent);
-				}
-			}
+		List<RankingRowEnt> rankingEnts = rankingRowRepo.findByChamp(champ);
+		
+		Integer seasonDay = rankingBean.get(0).getSeasonDay();
+		rankingRowRepo.deleteByChampAndSeasonDay(champ, seasonDay);
+		
+		List<Team> champTeams = teamDao.findByChamp(champEnum);
+		
+		
+		Team team;
+		for (RankingRow bean : rankingBean) {
+			RankingRowEnt ent = new RankingRowEnt();
+			mapper.map(bean, ent);
+			ent.setChamp(champ);
+			team = getTeamEnt(bean.getTeamName(), champTeams);
+			ent.setTeam(team);
+			rankingEnts.add(ent);
 		}
-		rankingRowRepo.save(rankingEnt);
+		rankingRowRepo.save(rankingEnts);
 		
 		return rankingBean;
 		
+	}
+
+
+	private Team getTeamEnt(String teamName, List<Team> champTeams) {
+		for (Team team : champTeams)
+			if (team.getName().equals(teamName))
+				return team;
+		return null;
 	}
 
 	

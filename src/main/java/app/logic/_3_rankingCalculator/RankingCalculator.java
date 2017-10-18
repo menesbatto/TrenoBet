@@ -3,6 +3,7 @@ package app.logic._3_rankingCalculator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,21 @@ public class RankingCalculator {
 	private ResultAnalyzer resultAnalyzer;
 	
 	
-	public void execute(){
+	public void execute(Integer seasonDay){
 		
 		for (ChampEnum champ : ChampEnum.values()){
-			calculateChampRanking(champ);
+			calculateChampRanking(champ, seasonDay);
 		}
 
 	}
 	
-	private void calculateChampRanking(ChampEnum champ) {
+	private void calculateChampRanking(ChampEnum champ, Integer seasonDay) {
+		
+		Date dateOfBet = Utils.getDateOfBet(seasonDay);
+		
 		ArrayList<RankingRow> ranking = new ArrayList<RankingRow>();
 		RankingRow rr;
-		ArrayList<MatchResult> teamsMatches = matchDao.getDownloadedPastMatchByChampFull(champ);
+		ArrayList<MatchResult> teamsMatches = matchDao.getDownloadedPastMatchByChampBeforeDateFull(champ, dateOfBet);
 		Map<String, ArrayList<MatchResult>> matchesMap = new HashMap<String, ArrayList<MatchResult>>();
 		resultAnalyzer.createMatchMap(matchesMap, teamsMatches, "H");
 		resultAnalyzer.createMatchMap(matchesMap, teamsMatches, "A");
@@ -62,6 +66,7 @@ public class RankingCalculator {
 					updateRankingRow(rr, teamName, m);
 			}
 			calculateAvgs(rr);
+			rr.setSeasonDay(seasonDay);
 			ranking.add(rr);
 		}
 		

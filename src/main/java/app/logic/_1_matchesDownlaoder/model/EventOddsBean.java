@@ -57,7 +57,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	//Campi per simulare la scommessa su questo evento
 //	private List<SingleBetBean> betResults;
 	
-
+	private Integer seasonDay;
 	
 	
 	public EventOddsBean() {
@@ -622,6 +622,14 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	public void setMatchId(int matchId) {
 		this.matchId = matchId;
+	}
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 //	public List<SingleBetBean> getBetResults() {

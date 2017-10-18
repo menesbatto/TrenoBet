@@ -107,6 +107,7 @@ public class EventOddsDao {
 				ent.setMatch(match);
 				
 //				match.getEventsOdds().add(ent); HHH
+				ent.setSeasonDay(bean.getSeasonDay());
 				ents.add(ent);
 			
 			}
@@ -470,10 +471,10 @@ public class EventOddsDao {
 		return beanMap;
 	}
 
-	public List<EventOddsBean> getNextEventsOdds(ChampEnum champEnum) {
+	public List<EventOddsBean> getNextEventsOdds(ChampEnum champEnum, Integer seasonDay) { 
 		List<EventOddsBean> beans = new ArrayList<EventOddsBean>();
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<EventOdds> eventsOddsEnts = eventOddsRepo.findByMatchChamp(champ);
+		List<EventOdds> eventsOddsEnts = eventOddsRepo.findByMatchChampAndSeasonDay(champ, seasonDay);
 		EventOddsBean bean;
 		for (EventOdds ent : eventsOddsEnts) { // ce ne sono 3 una per ogni tempo _1, _2, final qui mi arrivano gli eh tutti a null
 			bean = createEventOddsBean(ent);
@@ -485,13 +486,12 @@ public class EventOddsDao {
 
 	
 
-	public void removeByChamp(Champ champ) {
-		eventOddsRepo.deleteByMatchChamp(champ);
+	public void deleteByChamp(Champ champ, Integer seasonDay) {
+		eventOddsRepo.deleteByMatchChampAndSeasonDay(champ, seasonDay);
 		
 	}
 
     @Transactional
-
 	public void removeByMatchId(Integer idMatch) {
 		eventOddsRepo.deleteByMatchId(idMatch);
 		
@@ -504,30 +504,5 @@ public class EventOddsDao {
 	}
 
 
-//	public void saveBetResult(List<EventOddsBean> eventsOdds, ChampEnum champ) {
-//		List<EventOdds> eoEntList = new ArrayList<EventOdds>();
-//		EventOdds eoEnt;
-//		SingleBet brEnt;
-//		for ( EventOddsBean eoBean : eventsOdds) {
-//			if (!eoBean.getBetResults().isEmpty()) {
-//				List<SingleBet> brEnts = new ArrayList<SingleBet>();
-//				eoEnt = eventOddsRepo.findById(eoBean.getId());
-//				for (SingleBetBean brBean : eoBean.getBetResults()) {
-//					brEnt = new SingleBet();
-//					brEnt.setBetType(brBean.getBetType().name());
-//					brEnt.setMatchResult(brBean.getMatchResult().name());
-//					brEnt.setWinOdds(brBean.getWinOdds());
-//					TimeType timeType = timeTypeDao.findByValue(brBean.getTimeTypeEnum().name());
-//					brEnt.setTimeType(timeType);
-//					brEnts.add(brEnt);
-//					
-//					eoEnt.setBetResults(brEnts);
-//				}
-//				eoEntList.add(eoEnt);
-//			}
-//		}
-//		
-//		eventOddsRepo.save(eoEntList);
-//	}
 
 }

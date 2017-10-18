@@ -15,6 +15,8 @@ public interface RankingRowRepo extends JpaRepository<RankingRowEnt, Long> {
 //
 //	List<BetHouse> findByValue(@Param("value") String string);
 
+	void deleteByChampAndSeasonDay(Champ champ, Integer seasonDay);
+
 //	List<Team> findByNameAndChamp(String name, Champ champ);
 //
 //	List<Team> findByChamp(Champ champ);

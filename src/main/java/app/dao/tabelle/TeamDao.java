@@ -24,7 +24,7 @@ public class TeamDao {
 
 	
 	
-	public ArrayList<String> findByChamp(ChampEnum champEnum) {
+	public ArrayList<String> findTeamsNamesByChamp(ChampEnum champEnum) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		List<Team> teams = teamRepo.findByChamp(champ);
 		ArrayList<String> teamsNames = new ArrayList<String>();
@@ -32,6 +32,12 @@ public class TeamDao {
 			teamsNames.add(team.getName());
 		}
 		return teamsNames;
+	}
+	
+	public List<Team> findByChamp(ChampEnum champEnum) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		List<Team> teams = teamRepo.findByChamp(champ);
+		return teams;
 	}
 	
 	public Team findByNameAndChamp(String name, Champ champ) {

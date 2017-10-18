@@ -1,6 +1,7 @@
 package app.dao.tabelle;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class WinRangeStatsDao {
 	@Autowired
 	private HomeVariationTypeDao homeVariationTypeDao;
 	
-	public List<WinRangeStatsBean> findByChamp(ChampEnum champEnum) {
+	public List<WinRangeStatsBean> findByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<WinRangeStats> ents = winRangeStatsRepo.findByTeamChampOrderByTeam(champ);
+		List<WinRangeStats> ents = winRangeStatsRepo.findByTeamChampAndSeasonDayOrderByTeam(champ, seasonDay);
 		List<WinRangeStatsBean> beans = new ArrayList<WinRangeStatsBean>();
 		WinRangeStatsBean bean;
 		HomeVariationType homeVariation;
@@ -78,34 +79,7 @@ public class WinRangeStatsDao {
 	}
 
 	
-	public ArrayList<WinRangeStatsBean> findByTeamNameAndChampAndTimeTypeAndPlayingField(String teamName, ChampEnum champEnum, TimeTypeEnum timeTypeEnum, String playingField) {
-		Champ champ = champDao.findByChampEnum(champEnum);
-		Team team = teamDao.findByNameAndChamp(teamName, champ);
-		TimeType timeType = timeTypeDao.findByValue(timeTypeEnum.name());
-		List<WinRangeStats> listEnt = winRangeStatsRepo.findByTeamAndTimeTypeAndPlayingField(team, timeType, playingField);
-		if (listEnt.isEmpty()){
-			listEnt = initWinRangeStatsForTeam(team, timeType, playingField);
-		}
-		
-		
-		ArrayList<WinRangeStatsBean> listBean = new ArrayList<WinRangeStatsBean>();
-		for (WinRangeStats ent : listEnt) {
-			WinRangeStatsBean bean = new WinRangeStatsBean();
-			if (ent.getTotal() != null)	// Per non sovrascrivere gli 0 con i null provenienti da DB, in caso metti diretto gli 0 a DB
-				mapper.map(ent, bean);
-			
-			if (ent.getRange()!= null) {
-				bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
-				bean.setEdgeDown(ent.getRange().getValueDown());
-				bean.setEdgeUp(ent.getRange().getValueUp());
-			}
-			bean.setTeamName(ent.getTeam().getName());
-			
-			listBean.add(bean);
-		}
-
-		return listBean;
-	}
+	
 	
 
 	public List<WinRangeStats> initWinRangeStatsForTeam(Team team, TimeType timeType, String playingField) {
@@ -193,7 +167,35 @@ public class WinRangeStatsDao {
 	
 	
 	//#######################################################################################################################
-	
+	@Deprecated
+	public ArrayList<WinRangeStatsBean> findByTeamNameAndChampAndTimeTypeAndPlayingField(String teamName, ChampEnum champEnum, TimeTypeEnum timeTypeEnum, String playingField) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		Team team = teamDao.findByNameAndChamp(teamName, champ);
+		TimeType timeType = timeTypeDao.findByValue(timeTypeEnum.name());
+		List<WinRangeStats> listEnt = winRangeStatsRepo.findByTeamAndTimeTypeAndPlayingField(team, timeType, playingField);
+		if (listEnt.isEmpty()){
+			listEnt = initWinRangeStatsForTeam(team, timeType, playingField);
+		}
+		
+		
+		ArrayList<WinRangeStatsBean> listBean = new ArrayList<WinRangeStatsBean>();
+		for (WinRangeStats ent : listEnt) {
+			WinRangeStatsBean bean = new WinRangeStatsBean();
+			if (ent.getTotal() != null)	// Per non sovrascrivere gli 0 con i null provenienti da DB, in caso metti diretto gli 0 a DB
+				mapper.map(ent, bean);
+			
+			if (ent.getRange()!= null) {
+				bean.setRange(ent.getRange().getValueDown() + "-" + ent.getRange().getValueUp());
+				bean.setEdgeDown(ent.getRange().getValueDown());
+				bean.setEdgeUp(ent.getRange().getValueUp());
+			}
+			bean.setTeamName(ent.getTeam().getName());
+			
+			listBean.add(bean);
+		}
+
+		return listBean;
+	}
 	
 	
 	@Deprecated

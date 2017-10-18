@@ -47,6 +47,8 @@ public class GoalsStats {
 	private String teamName;
 	
 	private String trend;
+
+	private Integer seasonDay;
 	
 	
 	public GoalsStats() {
@@ -183,7 +185,7 @@ public class GoalsStats {
 				+ ", playingField=" + playingField + ", threshold=" + threshold + ", strikedGoalsTotal="
 				+ strikedGoalsTotal + ", takenGoalsTotal=" + takenGoalsTotal + ", totalGoals=" + totalGoals
 				+ ", underHit=" + underHit + ", underPerc=" + underPerc + ", overHit=" + overHit + ", overPerc="
-				+ overPerc + ", totalMatches=" + totalMatches + ", teamName=" + teamName + "]";
+				+ overPerc + ", totalMatches=" + totalMatches + ", teamName=" + teamName + ", seasonDay=" + getSeasonDay() + "]";
 	}
 
 	public String getTrend() {
@@ -192,6 +194,14 @@ public class GoalsStats {
 
 	public void setTrend(String trend) {
 		this.trend = trend;
+	}
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 	

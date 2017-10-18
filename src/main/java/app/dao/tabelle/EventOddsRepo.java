@@ -11,15 +11,16 @@ import app.dao.tabelle.entities.EventOdds;
 @RepositoryRestResource
 public interface EventOddsRepo extends JpaRepository<EventOdds, Long> {
 
-	List<EventOdds> findByMatchChamp(Champ champ);
-//
 //	List<BetHouse> findByValue(@Param("value") String string);
 
-	void deleteByMatchChamp(Champ champ);
 
 	void deleteByMatchId(Integer idMatch);
 	
 	EventOdds findById(Integer id);
+
+	List<EventOdds> findByMatchChampAndSeasonDay(Champ champ, Integer seasonDay);
+
+	void deleteByMatchChampAndSeasonDay(Champ champ, Integer seasonDay);
 
 //	List<GoalsStats> findByTeamAndPlayingField(Team team, String playingField);
 //

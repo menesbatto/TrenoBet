@@ -1,5 +1,6 @@
 package app.dao.tabelle;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +19,14 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 //	Long countByChampAndHomeTeamAndFullTimeResultIsNull(Champ champ);
 //	Long countByChampAndHomeTeamAndFullTimeResultIsNotNull(Champ champ);
 
-	List<Matcho> findByChampAndFullTimeResultIsNull(Champ champ);
+	
+	List<Matcho> findByChampAndAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
+	
+	List<Matcho> findByChampAndFullTimeResultIsNullAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
 	List<Matcho> findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(Champ champ);
 	
 	// Recupera tutti match di un dato champ
-	List<Matcho> findByChampOrderByMatchDateDesc(Champ champ);
+	List<Matcho> findByChampAndMatchDateBeforeOrderByMatchDateDesc(Champ champ, Date limitDate);
 
 	
 	

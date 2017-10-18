@@ -3,9 +3,12 @@ package app.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 
 public class Utils {
@@ -21,15 +24,14 @@ public class Utils {
 		
 	}
 	
-	public static boolean isMatchInTemporalRange(Date matchDate, int daysFarBetFrom, int daysFarBetTo) {
+	public static boolean isMatchInTemporalRange(Date matchDate, Date betDate, int daysFarBetFrom, int daysFarBetTo) {
+	Calendar c = Calendar.getInstance();
 		
-		Calendar c = Calendar.getInstance();
-		
-		c.setTime(new Date());
+		c.setTime(betDate);
 		c.add(Calendar.DAY_OF_YEAR, daysFarBetFrom);
 		Date startingDate = c.getTime();
 		
-		c.setTime(new Date());
+		c.setTime(betDate);
 		c.add(Calendar.DAY_OF_YEAR, daysFarBetTo);
 		Date expirationDate = c.getTime();
 		
@@ -39,6 +41,26 @@ public class Utils {
 			return true;
 		return false;
 	}
+	
+	
+//	public static boolean isMatchInTemporalRange(Date matchDate, int daysFarBetFrom, int daysFarBetTo) {
+//		
+//		Calendar c = Calendar.getInstance();
+//		
+//		c.setTime(new Date());
+//		c.add(Calendar.DAY_OF_YEAR, daysFarBetFrom);
+//		Date startingDate = c.getTime();
+//		
+//		c.setTime(new Date());
+//		c.add(Calendar.DAY_OF_YEAR, daysFarBetTo);
+//		Date expirationDate = c.getTime();
+//		
+//		
+//		
+//		if (matchDate.after(startingDate) && matchDate.before(expirationDate))
+//			return true;
+//		return false;
+//	}
 	
 	
 	public static String redimString(Double val) {
@@ -117,4 +139,50 @@ public class Utils {
 		String output = input.replaceAll("[^A-Za-z0-9]", "");
 		return output;
 	}
+	
+	public static Date getDateOfBet(int weekToAdd) {
+		Calendar c = getCalendarStartDate();
+//		Date initialDate = c.getTime();
+		c.add(Calendar.WEEK_OF_YEAR, weekToAdd);
+		Date dateOfWeek = c.getTime();
+		return dateOfWeek;
+	}
+	
+	public static int getActualTrenoSeasonDay() {
+		Date now = new Date();
+		Calendar calendarStartDate = getCalendarStartDate();
+		Date startDate = calendarStartDate.getTime();
+		
+		long weeks = (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7);
+		//long between = ChronoUnit.WEEKS.between(startDate.toInstant(), now.toInstant());
+		
+		return (int)weeks;
+	}
+	
+	
+	public static Calendar getCalendarStartDate() {
+		Calendar c = Calendar.getInstance();
+		
+		c.set(Calendar.DATE, 10);			//10 giovedi
+		c.set(Calendar.MONTH, 7);			//agosto
+		c.set(Calendar.YEAR, 2017);			//2017
+		return c;
+	}
+	
+	public static Date getDateAfter7Days(Date date) {
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, +7);
+		Date dateAfter7Days = cal.getTime();
+		
+		return dateAfter7Days;
+		
+	}
+
+
+
+	
+	
+	
 }

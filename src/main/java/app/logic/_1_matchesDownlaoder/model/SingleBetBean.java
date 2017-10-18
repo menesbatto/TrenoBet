@@ -2,6 +2,8 @@ package app.logic._1_matchesDownlaoder.model;
 
 import java.io.Serializable;
 
+import app.utils.Utils;
+
 public class SingleBetBean implements Serializable {
 
 	private static final long serialVersionUID = 3683605236607953033L;
@@ -14,10 +16,13 @@ public class SingleBetBean implements Serializable {
 	
 	private TimeTypeEnum timeTypeEnum;
 	
+	private Boolean win;
+	
 	private int matchId;
 	
 	private MatchResult match;
 	
+	private Integer seasonDay;
 	
 
 	public SingleBetBean() {
@@ -58,13 +63,6 @@ public class SingleBetBean implements Serializable {
 		this.winOdds = winOdds;
 	}
 
-	@Override
-	public String toString() {
-		return "betType=" + betType + "\tmatchResult=" + matchResultEnum + "\twinOdds=" + winOdds + "\ttimeTypeEnum=" + timeTypeEnum + "\n";
-	}
-
-
-
 	public TimeTypeEnum getTimeTypeEnum() {
 		return timeTypeEnum;
 	}
@@ -99,5 +97,41 @@ public class SingleBetBean implements Serializable {
 		this.match = match;
 	}
 
+
+
+	public Boolean getWin() {
+		return win;
+	}
+
+
+
+	public void setWin(Boolean win) {
+		this.win = win;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "betType=" + betType + "\tmatchResultEnum=" + matchResultEnum + "\twinOdds=" + winOdds
+				+ "\ttimeTypeEnum=" + Utils.redimString(timeTypeEnum.name(),8) + "\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n";
+						//+ "match=" + match.getHomeTeam() + " - " + match.getAwayTeam() + " " + match.getFTHG() + "-" + match.getFTAG() + " (" + match.getHTHG() + "-" + match.getHTAG() + ") " + "\n";
+	}
+
+
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
+	}
+
+	
+	
+	
 	
 }

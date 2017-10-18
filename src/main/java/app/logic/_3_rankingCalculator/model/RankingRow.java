@@ -61,6 +61,8 @@ public class RankingRow implements Serializable{
 	private Double awayAvgScoredGoals;
 	private Double awayAvgTakenGoals;
 	
+	private Integer seasonDay;
+	
 	@Override
 	public String toString() {
 //		return position  + "\t" + Utils.redimString(teamName, 17) + "\t" + allPoints  +  "\t" + Utils.redimString(allExpectedPoints) + "\t" + allPlayedMatches + 
@@ -71,13 +73,13 @@ public class RankingRow implements Serializable{
 					
 					// ------------------   MOTIVATION   -----------------------				
 					Utils.redimString(motivationalIndex) + "\t| " + 
-					Utils.redimString(motivationalIndexUpDisObbPoi + motivationalIndexDownDisObbPoi) + "\t" + 
+//					Utils.redimString(motivationalIndexUpDisObbPoi + motivationalIndexDownDisObbPoi) + "\t" + 
 					Utils.redimString(motivationalIndexUpDisObbPoi) + "\t" + 
 					Utils.redimString(motivationalIndexDownDisObbPoi) + "\t| " + 
-					Utils.redimString(motivationalIndexUpDisObb + motivationalIndexDownDisObb) + "\t" + 
+//					Utils.redimString(motivationalIndexUpDisObb + motivationalIndexDownDisObb) + "\t" + 
 					Utils.redimString(motivationalIndexUpDisObb) + "\t" + 
 					Utils.redimString(motivationalIndexDownDisObb) + "\t| " + 
-					Utils.redimString(motivationalIndexUpDis + motivationalIndexDownDis) + "\t" + 
+//					Utils.redimString(motivationalIndexUpDis + motivationalIndexDownDis) + "\t" + 
 					Utils.redimString(motivationalIndexUpDis) + "\t" + 
 					Utils.redimString(motivationalIndexDownDis) + "\t| " + 
 					
@@ -437,5 +439,17 @@ public class RankingRow implements Serializable{
 //	public void setAllExpectedPoints(Double allExpectedPoints) {
 //		this.allExpectedPoints = allExpectedPoints;
 //	}
+
+
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
+	}
 	
 }

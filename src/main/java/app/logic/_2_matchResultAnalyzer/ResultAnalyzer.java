@@ -3,6 +3,7 @@ package app.logic._2_matchResultAnalyzer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +56,16 @@ public class ResultAnalyzer {
 	@Autowired
 	private OddsRangeDao oddsRangeDao;
 
-	public ArrayList<MatchResult> execute(){
+	
+	
+	public ArrayList<MatchResult> execute(Integer seasonDay) {
+		
+		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
 		for (ChampEnum champ : ChampEnum.values()){
 			System.out.println(champ);
 			
-			ArrayList<MatchResult> teamMatchesAway = matchDao.getDownloadedPastMatchByChampFull(champ);
+			ArrayList<MatchResult> teamMatchesAway = matchDao.getDownloadedPastMatchByChampBeforeDateFull(champ, dateOfBet);
 			Map<String, ArrayList<MatchResult>> homeMatchesMap = new HashMap<String, ArrayList<MatchResult>>();
 			createMatchMap(homeMatchesMap, teamMatchesAway, "H");
 			
@@ -71,7 +76,7 @@ public class ResultAnalyzer {
 			createMatchMap(matchesMapAll, teamMatchesAway, "T");
 			
 			
-			ArrayList<String> teams = teamDao.findByChamp(champ);
+			ArrayList<String> teams = teamDao.findTeamsNamesByChamp(champ);
 			ArrayList<String> teamsCorrect = new ArrayList<String>();
 			for (String team : teams) {
 				team = Utils.cleanString(team);
@@ -79,18 +84,18 @@ public class ResultAnalyzer {
 			}
 			long start = System.nanoTime();
 			long duration;
-			analyzeWinOdds				(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect, null);
+			analyzeWinOdds				(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect, null, seasonDay);
 			long end1 = System.nanoTime();
 			duration = (end1 - start)/1000000;  //divide by 1000000 to get milliseconds
 			System.out.println(duration);
 			
-			analyzeUnderOverOdds		(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect);
+			analyzeUnderOverOdds		(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect, seasonDay);
 			long end2 = System.nanoTime();
 			duration = (end2 - end1)/1000000;  //divide by 1000000 to get milliseconds.
 			System.out.println(duration);
 			
 			
-			analyzeEuropeanHandicapOdds	(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect);
+			analyzeEuropeanHandicapOdds	(champ, homeMatchesMap, awayMatchesMap, matchesMapAll, teamsCorrect, seasonDay);
 			long end3 = System.nanoTime();
 			duration = (end3 - end2)/1000000;  //divide by 1000000 to get milliseconds.
 			System.out.println(duration);
@@ -134,30 +139,30 @@ public class ResultAnalyzer {
 	// ogni volta che l'atalanta giocando in casa aveva quotato il -2 handicap a 1,6 si è comportata cosi
 	
 	// Probabilita che l'atalanta giocando in casa ed avendo quotato l'handicap a 2 (m2) ad una cifra tra 1,5 e 1,5 vinca
-	private void analyzeEuropeanHandicapOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams) {
+	private void analyzeEuropeanHandicapOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams, Integer seasonDay) {
 		
 		for (HomeVariationEnum homeVariation : HomeVariationEnum.getSubSet())
-			analyzeWinOdds(champ, matchesMapHome, matchesMapAway, matchesMapAll, teams, homeVariation);
+			analyzeWinOdds(champ, matchesMapHome, matchesMapAway, matchesMapAll, teams, homeVariation, seasonDay);
 	
 	}
 
 	
 
-	private void analyzeWinOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams, HomeVariationEnum homeVariation) {
+	private void analyzeWinOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams, HomeVariationEnum homeVariation, Integer seasonDay) {
 		List<WinRangeStats> createdWinRangeToSave = new ArrayList<WinRangeStats>();
 		
 		for (String teamName : teams) {
 			
 			// HOME
-			List<WinRangeStats> homeWinStats = analyzeTeamResultWin(teamName, matchesMapHome.get(teamName), champ, "H", homeVariation);
+			List<WinRangeStats> homeWinStats = analyzeTeamResultWin(teamName, matchesMapHome.get(teamName), champ, "H", homeVariation, seasonDay);
 			createdWinRangeToSave.addAll(homeWinStats);
 			
 			// AWAY
-			List<WinRangeStats> awayWinStats = analyzeTeamResultWin(teamName,  matchesMapAway.get(teamName), champ, "A", homeVariation);
+			List<WinRangeStats> awayWinStats = analyzeTeamResultWin(teamName,  matchesMapAway.get(teamName), champ, "A", homeVariation, seasonDay);
 			createdWinRangeToSave.addAll(awayWinStats);
 			
 			// TOTAL
-			List<WinRangeStats> totalWinStats = analyzeTeamResultWin(teamName, matchesMapAll.get(teamName), champ, "T", homeVariation);
+			List<WinRangeStats> totalWinStats = analyzeTeamResultWin(teamName, matchesMapAll.get(teamName), champ, "T", homeVariation, seasonDay);
 			createdWinRangeToSave.addAll(totalWinStats);
 			
 		}
@@ -168,7 +173,7 @@ public class ResultAnalyzer {
 
 	// Ogni volta che l'atalanta che gioca in casa � quotata a una quota che va da 1,5 a 1,7 allora finora si � comportata cosi. 
 	// Ogni volta che l'atalanta che gioca fuori casa � quotata a una quota che va da 1,5 a 1,7 allora finora si � comportata cosi. 
-	private List<WinRangeStats> analyzeTeamResultWin(String teamName, ArrayList<MatchResult> matches, ChampEnum champ, String playingField, HomeVariationEnum homeVariation) {
+	private List<WinRangeStats> analyzeTeamResultWin(String teamName, ArrayList<MatchResult> matches, ChampEnum champ, String playingField, HomeVariationEnum homeVariation, Integer seasonDay) {
 		List<WinRangeStats> createdWinRangeToSave = new ArrayList<WinRangeStats>();
 		
 		List<TimeTypeEnum> timeTypes = timeTypeDao.findAllTimeTypeEnum();
@@ -177,7 +182,7 @@ public class ResultAnalyzer {
 		ArrayList<WinRangeStatsBean> allRanges = new ArrayList<WinRangeStatsBean>();
 		String trend;
 		for (TimeTypeEnum timeType : timeTypes) {
-			ArrayList<WinRangeStatsBean> ranges = createRanges(oddsRangeList, timeType, teamName);
+			ArrayList<WinRangeStatsBean> ranges = createRanges(oddsRangeList, timeType, teamName, seasonDay);
 			
 			WinRangeStatsBean winRangeStatsBean = new WinRangeStatsBean();
 			winRangeStatsBean.setTimeTypeBean(timeType);
@@ -315,6 +320,7 @@ public class ResultAnalyzer {
 			
 			if (!matches.isEmpty())
 				enrichTeamResult(ranges, playingField);
+			
 			ranges.get(ranges.size()-1).setTrend(trend);
 			
 			allRanges.addAll(ranges);
@@ -327,7 +333,7 @@ public class ResultAnalyzer {
 		return createdWinRangeToSave;
 	}
 
-	private ArrayList<WinRangeStatsBean> createRanges(List<OddsRange> oddsRangeList, TimeTypeEnum timeType, String teamName) {
+	private ArrayList<WinRangeStatsBean> createRanges(List<OddsRange> oddsRangeList, TimeTypeEnum timeType, String teamName, Integer seasonDay) {
 		ArrayList<WinRangeStatsBean> ranges = new ArrayList<WinRangeStatsBean>();
 		WinRangeStatsBean elem;
 		for (OddsRange elemRange : oddsRangeList) {
@@ -337,11 +343,13 @@ public class ResultAnalyzer {
 			elem.setEdgeUp(elemRange.getValueUp());
 			elem.setEdgeDown(elemRange.getValueDown());
 			elem.setRange(elemRange.getValueDown() + "-" + elemRange.getValueUp());
+			elem.setSeasonDay(seasonDay);
 			ranges.add(elem);
 		}
 		elem = new WinRangeStatsBean();
 		elem.setTeamName(teamName);
 		elem.setTimeTypeBean(timeType);
+		elem.setSeasonDay(seasonDay);
 		ranges.add(elem);
 		
 		return ranges;
@@ -451,7 +459,7 @@ public class ResultAnalyzer {
 
 	
 	
-	private void analyzeUnderOverOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams ) {
+	private void analyzeUnderOverOdds(ChampEnum champ, Map<String, ArrayList<MatchResult>> matchesMapHome, Map<String, ArrayList<MatchResult>> matchesMapAway, Map<String, ArrayList<MatchResult>> matchesMapAll, ArrayList<String> teams, Integer seasonDay ) {
 		List<GoalsStatsBean> analyzeTeamResultUoAll = new ArrayList<GoalsStatsBean>();
 		List<GoalsStatsBean> analyzeTeamResultUoH;
 		List<GoalsStatsBean> analyzeTeamResultUoA;
@@ -460,13 +468,13 @@ public class ResultAnalyzer {
 		for (String teamName : teams) {
 
 			// HOME
-			analyzeTeamResultUoH = analyzeTeamResultUo(teamName, matchesMapHome.get(teamName), champ, "H");
+			analyzeTeamResultUoH = analyzeTeamResultUo(teamName, matchesMapHome.get(teamName), champ, "H", seasonDay);
 			analyzeTeamResultUoAll.addAll(analyzeTeamResultUoH);
 			// AWAY
-			analyzeTeamResultUoA = analyzeTeamResultUo(teamName, matchesMapAway.get(teamName), champ, "A");
+			analyzeTeamResultUoA = analyzeTeamResultUo(teamName, matchesMapAway.get(teamName), champ, "A", seasonDay);
 			analyzeTeamResultUoAll.addAll(analyzeTeamResultUoA);
 			// TOTAL
-			analyzeTeamResultUoT = analyzeTeamResultUo(teamName, matchesMapAll.get(teamName), champ, "T");
+			analyzeTeamResultUoT = analyzeTeamResultUo(teamName, matchesMapAll.get(teamName), champ, "T", seasonDay);
 			analyzeTeamResultUoAll.addAll(analyzeTeamResultUoT);
 			
 		}
@@ -475,7 +483,7 @@ public class ResultAnalyzer {
 		
 	}
 	
-	private List<GoalsStatsBean> analyzeTeamResultUo(String teamName, ArrayList<MatchResult> matches, ChampEnum champ, String playingField) {
+	private List<GoalsStatsBean> analyzeTeamResultUo(String teamName, ArrayList<MatchResult> matches, ChampEnum champ, String playingField, Integer seasonDay) {
 		List<TimeTypeEnum> timeTypes = timeTypeDao.findAllTimeTypeEnum();
 		
 		ArrayList<GoalsStatsBean> goalsStatsBeans = new ArrayList<GoalsStatsBean>();
@@ -535,6 +543,8 @@ public class ResultAnalyzer {
 
 				updateGoalsStats(goalsStatsBean, takenGoals, strikedGoals, teamName);
 				goalsStatsBean.setPlayingField(playingField);
+				goalsStatsBean.setSeasonDay(seasonDay);
+				
 			}
 			
 			//CALCOLA LE PERCENTUALI
@@ -582,5 +592,4 @@ public class ResultAnalyzer {
 		}
 		
 	}
-	
 }

@@ -58,12 +58,7 @@ public class EventOdds {
 	@ElementCollection
 	private Map<HomeVariationType, String> awayTrendEh;
 	
-
-	//Campi per simulare la scommessa
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<SingleBet> betResults;		
-	
-	
+	private Integer seasonDay;
 	
 	
 	public EventOdds() {
@@ -168,14 +163,6 @@ public class EventOdds {
 		this.awayTrendUo = awayTrendUo;
 	}
 
-	public List<SingleBet> getBetResults() {
-		return betResults;
-	}
-
-	public void setBetResults(List<SingleBet> betResults) {
-		this.betResults = betResults;
-	}
-
 	public String getHomeTrend() {
 		return homeTrend;
 	}
@@ -199,7 +186,15 @@ public class EventOdds {
 				+ totalResultGoodness + ", homeMotivation=" + homeMotivation + ", awayMotivation=" + awayMotivation
 				+ ", homeTrend=" + homeTrend + ", awayTrend=" + awayTrend + ", homeTrendUo=" + homeTrendUo
 				+ ", awayTrendUo=" + awayTrendUo + ", homeTrendEh=" + homeTrendEh + ", awayTrendEh=" + awayTrendEh
-				+ ", betResults=" + betResults + "\n\n";
+				+  "\n\n";
+	}
+
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 	
 	

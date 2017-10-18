@@ -10,14 +10,18 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.dao.tabelle.EventOddsDao;
 import app.dao.tabelle.SingleBetDao;
 import app.logic._1_matchesDownlaoder.model.BetType;
 import app.logic._1_matchesDownlaoder.model.EventOddsBean;
+import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 import app.logic._1_matchesDownlaoder.model.MatchResult;
 import app.logic._1_matchesDownlaoder.model.MatchResultEnum;
 import app.logic._1_matchesDownlaoder.model.SingleBetBean;
+import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
+import app.logic._1_matchesDownlaoder.model.UoThresholdEnum;
 import app.logic._2_matchResultAnalyzer.ResultAnalyzer;
 import app.logic._3_rankingCalculator.RankingCalculator;
 import app.logic._4_trendCalculator.TrendCalculator;
@@ -26,6 +30,7 @@ import app.logic._6_betCreator.BetCreator;
 import app.logic._7_betAnalyzer.model.BetAnalysis;
 import app.utils.AppConstants;
 import app.utils.ChampEnum;
+import app.utils.Utils;
 
 @Service
 public class BetAnalyzer {
@@ -88,20 +93,128 @@ public class BetAnalyzer {
 		return baTot;
 	}
 	
-//	public void execute(int week){
-	public void execute(){
+	@Transactional
+	public void execute(Integer seasonDay){
 //		i++;
 //		HashMap<ChampEnum, ArrayList<MatchResult>> partialHistory = getPartialHistoryForSpecificWeek(week);
 //		HashMap<ChampEnum, ArrayList<MatchResult>> bettableMatches = getBettableMatchesForSpecificWeek(week);
 //		HashMap<ChampEnum, ArrayList<EventOddsBean>> allMatchesOdds = convertMatchResultInEventsOdds(bettableMatches);//trasformazione dei MatchResult negli EventOddsBean 
 		
+//		Date dateOfBet = Utils.getDateOfBet(seasonDay);
+		
+		
 		for (ChampEnum champ : ChampEnum.values()){
 		
-			List<SingleBetBean> retrieveSingleBets = singleBetDao.retrieveSingleBetsToCheck(champ);
+//			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheck(champ);
 
-			System.out.println(retrieveSingleBets);
+//			Date startDate = new Date();
+//			Calendar cal = Calendar.getInstance();
+//			cal.add(Calendar.DATE, -7);
+//			Date endDate = cal.getTime();
+			
+			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheckInDateRange(champ, seasonDay);
+			
+			
+			for (SingleBetBean singleBet : singleBets) {
+				BetType betType = singleBet.getBetType();
+				TimeTypeEnum timeType = singleBet.getTimeTypeEnum();
+				Double winOdds = singleBet.getWinOdds();
+				
+				MatchResultEnum predicedMatchResult = singleBet.getMatchResultEnum();
+				
+				MatchResult m = singleBet.getMatch();
+				if (m != null)  {
+					int homeGoals = 0;
+					int awayGoals = 0;
+					switch (timeType) {
+						case _final:
+							homeGoals = m.getFTHG();
+							awayGoals = m.getFTAG();		
+							break;
+						case _1:
+							homeGoals = m.getHTHG();
+							awayGoals = m.getHTAG();
+							break;
+						case _2:
+							homeGoals = m.getFTHG() - m.getHTHG();
+							awayGoals = m.getFTAG() - m.getHTAG();
+							
+							break;
+
+						default:
+							break;
+					}
+					
+					Boolean isBetWin = null;
+					
+					boolean is1x2Bet = betType.equals(BetType._1x2);
+					
+					MatchResultEnum realMatchResult = null;
+				
+					// 1x2
+					if (is1x2Bet) {
+						realMatchResult = get1x2MatchResult(homeGoals, awayGoals);
+						isBetWin = realMatchResult.equals(predicedMatchResult);
+					}
+					
+					// UO
+					boolean isUoBet = false;
+					
+					for (UoThresholdEnum thrCurr : UoThresholdEnum.values())
+						if (thrCurr.name().equals(betType.name()))
+							isUoBet = true;
+						
+					
+					if (isUoBet) {
+						int totalGoal = homeGoals + awayGoals;
+						UoThresholdEnum thr = UoThresholdEnum.valueOf(betType.name());
+						Double thrNum = thr.getValueNum();
+						
+						if (predicedMatchResult.equals(MatchResultEnum.O)) {
+							isBetWin = totalGoal > thrNum;
+						}
+						else if (predicedMatchResult.equals(MatchResultEnum.U)) {
+							isBetWin = totalGoal < thrNum;
+						}
+					}
+					
+					// EH
+					boolean isEhBet = false;
+					for (HomeVariationEnum var : HomeVariationEnum.values())
+						if (var.name().equals(betType.name()))
+							isEhBet = true;
+					
+					if (isEhBet) {
+						HomeVariationEnum thr = HomeVariationEnum.valueOf(betType.name());
+						Integer thrNum = thr.getValueNum();
+						homeGoals += thrNum;
+						
+						realMatchResult = get1x2MatchResult(homeGoals, awayGoals);
+						isBetWin = realMatchResult.equals(predicedMatchResult);
+					}
+					
+					singleBet.setWin(isBetWin);
+				}
+				
+			}
+			
+			System.out.println(singleBets);
+			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
+			singleBetDao.saveBetResult(singleBets, champ);
 		
 		}
+
+	}
+
+	private MatchResultEnum get1x2MatchResult(int homeGoals, int awayGoals) {
+		MatchResultEnum realMatchResult;
+		if (homeGoals > awayGoals)
+			realMatchResult = MatchResultEnum.H;
+		else if (homeGoals < awayGoals) 
+			realMatchResult = MatchResultEnum.A;
+		else 
+			realMatchResult = MatchResultEnum.D;
+		return realMatchResult;
 	}
 		
 		

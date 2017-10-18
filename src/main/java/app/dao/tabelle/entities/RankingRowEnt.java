@@ -72,6 +72,7 @@ public class RankingRowEnt {
 	private Double awayAvgScoredGoals;
 	private Double awayAvgTakenGoals;
 	
+	private Integer seasonDay;
 	
 	
 	public RankingRowEnt() {
@@ -280,6 +281,12 @@ public class RankingRowEnt {
 	}
 	public void setAwayAvgTakenGoals(Double awayAvgTakenGoals) {
 		this.awayAvgTakenGoals = awayAvgTakenGoals;
+	}
+	public Integer getSeasonDay() {
+		return seasonDay;
+	}
+	public void setSeasonDay(Integer seasonDay) {
+		this.seasonDay = seasonDay;
 	}
 
 }
