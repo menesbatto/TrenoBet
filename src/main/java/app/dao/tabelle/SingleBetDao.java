@@ -36,26 +36,9 @@ public class SingleBetDao {
 	private ChampDao champDao;
 	
 	
-	public List<SingleBetBean> retrieveSingleBetsToCheckInDateRange(ChampEnum champEnum){
-		
-		List<SingleBetBean> betBeanList = new ArrayList<SingleBetBean>();
-		
-		
-		return betBeanList; 
-	}
 	
 	
-	public List<SingleBetBean> retrieveSingleBetsToCheck(ChampEnum champEnum){
-		
-		Champ champ = champDao.findByChampEnum(champEnum);
-		List<SingleBet> betEntList = singleBetRepo.findByMatchoChampAndWinIsNull(champ);
-//		
-		List<SingleBetBean> betBeanList = mapEntToBean(betEntList);
-		
-		return betBeanList; 				
-	}
-
-
+	
 	private List<SingleBetBean> mapEntToBean(List<SingleBet> betEntList) {
 		List<SingleBetBean> betBeanList = new ArrayList<SingleBetBean>();
 		SingleBetBean betBean;
@@ -95,7 +78,7 @@ public class SingleBetDao {
 		for (SingleBetBean sbBean : singleBetBeanList) {
 			sbEnt = new SingleBet();
 			sbEnt.setBetType(sbBean.getBetType().name());
-			sbEnt.setMatchResultForecast(sbBean.getMatchResultEnum().name());
+			sbEnt.setMatchResultForecast(sbBean.getMatchResultForecast().name());
 			sbEnt.setWinOdds(sbBean.getWinOdds());
 			sbEnt.setSeasonDay(sbBean.getSeasonDay());
 			Matcho matcho = matchoDao.findById(sbBean.getMatchId());
@@ -129,6 +112,26 @@ public class SingleBetDao {
 		return singleBetBeanList;
 	}
 
+	
+	//###############################################################################################################################################
 
+	public List<SingleBetBean> retrieveSingleBetsToCheckInDateRange(ChampEnum champEnum){
+		
+		List<SingleBetBean> betBeanList = new ArrayList<SingleBetBean>();
+		
+		
+		return betBeanList; 
+	}
+	
+	public List<SingleBetBean> retrieveSingleBetsToCheck(ChampEnum champEnum){
+		
+		Champ champ = champDao.findByChampEnum(champEnum);
+		List<SingleBet> betEntList = singleBetRepo.findByMatchoChampAndWinIsNull(champ);
+		List<SingleBetBean> betBeanList = mapEntToBean(betEntList);
+		
+		return betBeanList; 				
+	}
+
+	
 	
 }

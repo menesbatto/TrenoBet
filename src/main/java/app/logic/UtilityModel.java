@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import app.dao.tabelle.ChampDao;
 import app.dao.tabelle.GoalsStatsRepo;
 import app.dao.tabelle.MatchoRepo;
+import app.dao.tabelle.RankingRowRepo;
 import app.dao.tabelle.TeamDao;
 import app.dao.tabelle.WinRangeStatsRepo;
 import app.dao.tipologiche.BetHouseDao;
@@ -57,8 +58,13 @@ public class UtilityModel {
 	@Autowired
 	private MatchoRepo matchoRepo;
 	
+	@Autowired
+	private RankingRowRepo rankingRowRepo;
 	
 	
+	public void deleteAllRankings() {
+		rankingRowRepo.deleteAll();
+	}
 	
 	public void deleteAllMatches() {
 		matchoRepo.deleteAll();

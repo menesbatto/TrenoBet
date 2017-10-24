@@ -69,13 +69,13 @@ public class RankingRowDao {
 	@Transactional
 	public List<RankingRow> saveRanking(ChampEnum champEnum, List<RankingRow> rankingBean) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<RankingRowEnt> rankingEnts = rankingRowRepo.findByChamp(champ);
+//		List<RankingRowEnt> rankingEnts = rankingRowRepo.findByChamp(champ);
+//		
+//		Integer seasonDay = rankingBean.get(0).getSeasonDay();
+//		rankingRowRepo.deleteByChampAndSeasonDay(champ, seasonDay);
 		
-		Integer seasonDay = rankingBean.get(0).getSeasonDay();
-		rankingRowRepo.deleteByChampAndSeasonDay(champ, seasonDay);
-		
+		List<RankingRowEnt> rankingEnts  = new ArrayList<RankingRowEnt>();
 		List<Team> champTeams = teamDao.findByChamp(champEnum);
-		
 		
 		Team team;
 		for (RankingRow bean : rankingBean) {

@@ -277,6 +277,17 @@ public class FacadeController {
 	}
 
 
+	@RequestMapping(value = "/resetRankings", method = RequestMethod.GET)
+	public @ResponseBody void resetRankings() {
+		long startTime = System.nanoTime();
+
+		utilityModel.deleteAllRankings();
+
+		long currentTime = System.nanoTime();
+		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
+		System.out.println("resetRankings " + duration / 1000000);
+	}
+	
 	@RequestMapping(value = "/resetStats", method = RequestMethod.GET)
 	public @ResponseBody void resetStats() {
 		long startTime = System.nanoTime();

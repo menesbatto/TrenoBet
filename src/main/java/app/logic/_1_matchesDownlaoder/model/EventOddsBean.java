@@ -208,13 +208,15 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 
 	private String get1x2StringH() {
 		String result =
-				"\n\tH GOOD\t | " + Utils.redimString(homeResultGoodness.getWinClean().getGoodnessW()) + 
+				"\n\tH GOOD\t | " + Utils.redimString(homeResultGoodness.getWinClean().getGoodnessW()) + "(" + homeResultGoodness.getWinClean().getTotalEventsW() + ")" +
 				"\t" + "null" + //Utils.redimString(homeMotivation) + 
 				"\t" + "null" + //Utils.redimString(homeResultGoodness.getWinMotivation().getGoodnessW()) + 
 				"\t" + "null" + //Utils.redimString(homeResultGoodness.getWinTrend().getGoodnessW()) + 
 				"\t" + "null" + //Utils.redimString(homeResultGoodness.getWinFinal().getGoodnessW()) + 
-				"\t | " + homeResultGoodness.getWinClean().getGoodnessD() + "\t\t | " +  
-				Utils.redimString(homeResultGoodness.getWinClean().getGoodnessL()) + 
+				
+				"\t | " + homeResultGoodness.getWinClean().getGoodnessD() +  "(" + homeResultGoodness.getWinClean().getTotalEventsD() + ")" + "\t\t | "  +
+				
+				Utils.redimString(homeResultGoodness.getWinClean().getGoodnessL()) +  "(" + homeResultGoodness.getWinClean().getTotalEventsL() + ")" +
 				"\t" + "null" +//Utils.redimString(homeMotivation) + 
 				"\t" +"null" +  // Utils.redimString(homeResultGoodness.getWinMotivation().getGoodnessL()) + 
 				"\t" + "null" +  //Utils.redimString(homeResultGoodness.getWinTrend().getGoodnessL()) + 
@@ -224,13 +226,16 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	}
 
 	private String get1x2StringA() {
-		String result = "\n\tA GOOD\t | " + Utils.redimString(awayResultGoodness.getWinClean().getGoodnessL()) + 
+		String result = "\n\tA GOOD\t | " + Utils.redimString(awayResultGoodness.getWinClean().getGoodnessL()) +  "(" + awayResultGoodness.getWinClean().getTotalEventsL() + ")" +
 						"\t" + "null" + //Utils.redimString(awayMotivation) + 
 						"\t" + "null" +  //Utils.redimString(awayResultGoodness.getWinMotivation().getGoodnessL()) + 
 						"\t" + "null" +//Utils.redimString(awayResultGoodness.getWinTrend().getGoodnessL()) + 
 						"\t" + "null" + //Utils.redimString(awayResultGoodness.getWinFinal().getGoodnessL()) + 
-						"\t | " + awayResultGoodness.getWinClean().getGoodnessD() + "\t\t | " +  
-						Utils.redimString(awayResultGoodness.getWinClean().getGoodnessW()) + 
+						
+						"\t | " + awayResultGoodness.getWinClean().getGoodnessD() + "(" + awayResultGoodness.getWinClean().getTotalEventsD() + ")" + "\t\t | " +  
+						
+						Utils.redimString(awayResultGoodness.getWinClean().getGoodnessW()) + "(" + awayResultGoodness.getWinClean().getTotalEventsW() + ")"+ 
+						
 						"\t" +  "null" +//Utils.redimString(awayMotivation) + 
 						"\t" + "null" +  //Utils.redimString(awayResultGoodness.getWinMotivation().getGoodnessW()) +
 						"\t" +  "null" + //Utils.redimString(awayResultGoodness.getWinTrend().getGoodnessW()) + 
@@ -240,12 +245,14 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 	}
 
 	private String get1x2Header() {
-		String header = "\n\t\t | " + "clea" + "\t" + "mot" + "\t" + "withMot" + "\t" + "withTre" + "\t" + "withAll" + "\t | " + "clea" + "\t\t | "  + "clea" + "\t" + "mot" + "\t" + "withMot" + "\t" + "withTre" + "\t" + "withAll" + "\t | ";
+		String header = "\n\t\t | " + "clea" + "\t" + "mot" + "\t" + "withMot" + "\t" + "withTre" + "\t" + "withAll" + "\t\t | "
+									+ "clea" + "\t\t\t | "  
+									+ "clea" + "\t" + "mot" + "\t" + "withMot" + "\t" + "withTre" + "\t" + "withAll" + "\t\t | ";
 		return header;
 	}
 
 	private String get1x2odds() {
-		String odds = "\n\tQUOTE\t | " + "1 - " + "\t" + odds1 + "\t\t\t\t | " + "X - " + "\t" + oddsX + "\t | " + "2 - " + "\t" + odds2 + "\t\t\t\t | ";
+		String odds = "\n\tQUOTE\t | " + "1 - " + "\t" + odds1 + "\t\t\t\t\t | " + "X - " + "\t" + oddsX + "\t\t | " + "2 - " + "\t" + odds2 + "\t\t\t\t\t | ";
 				
 		return odds;
 	}
@@ -282,7 +289,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 				x = "n/a ";
 				_2 = "n/a ";
 			}
-				result += key + ": " + _1 + " " + x  + " " + _2 + "\t|";
+				result += key + ": " + _1 + " " + x  + " " + _2 + "\t\t|";
 		}
 		
 		
@@ -301,7 +308,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			list.add(homeVar);
 		
 		for (HomeVariationEnum homeVarCurr : list) {
-			result += homeVarCurr + ": " + "1    x    2" + "\t|";
+			result += homeVarCurr + ": " + "1    x    2" + "\t\t|";
 		}
 		return result;
 	}
@@ -318,15 +325,16 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 			list.add(homeVar);
 		
 		for (HomeVariationEnum homeVarcurr : list) {
-			if (ehMap.get(homeVarcurr) == null) {
+			ResultGoodnessWDLBean resultGoodnessWDLBean = ehMap.get(homeVarcurr);
+			if (resultGoodnessWDLBean == null) {
 				result += homeVarcurr + ": " + "n/a " + " " +  "n/a " + " " +  "n/a " + "\t|";
 			}
 			else {
 				if (playingField == "H") {
-					result += homeVarcurr + ": " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessW(), 4) + " " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessD(), 4)+ " " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessL(), 4) + "\t|";
+					result += homeVarcurr + ": " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessW(), 4) + "(" + resultGoodnessWDLBean.getTotalEventsW() + ")" + " " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessD(), 4)+ "(" + resultGoodnessWDLBean.getTotalEventsD() + ")" +" " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessL(), 4) + "(" + resultGoodnessWDLBean.getTotalEventsL() + ")" +"\t|";
 				}
 				else {//if (playingField == "A") {
-					result += homeVarcurr + ": " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessL(), 4) + " " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessD(), 4)+ " " + Utils.forceLength(ehMap.get(homeVarcurr).getGoodnessW(), 4) + "\t|";
+					result += homeVarcurr + ": " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessL(), 4) + "(" + resultGoodnessWDLBean.getTotalEventsL() + ")" + " " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessD(), 4)+ "(" + resultGoodnessWDLBean.getTotalEventsD() + ")" +" " + Utils.forceLength(resultGoodnessWDLBean.getGoodnessW(), 4) + "(" + resultGoodnessWDLBean.getTotalEventsW() + ")" +"\t|";
 				}
 			}
 		}
@@ -366,7 +374,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 				u = "n/a ";
 				o = "n/a ";
 			}
-				result += uoThrCurr + ": " + u + " " + o + "\t|";
+			result += uoThrCurr + ": " + u + " " + o + "\t|";
 		}
 		return result;
 	}
@@ -402,7 +410,7 @@ public class EventOddsBean implements Serializable, Comparable<EventOddsBean>{
 		
 		
 		for (UoThresholdEnum thr : list) {
-			result += thr + ": " + Utils.forceLength(uoMap.get(thr).getGoodnessU(), 4) + " " + Utils.forceLength(uoMap.get(thr).getGoodnessO(), 4) + "\t|";
+			result += thr + ": " + Utils.forceLength(uoMap.get(thr).getGoodnessU(), 4) + " " + Utils.forceLength(uoMap.get(thr).getGoodnessO(), 4) + "(" + uoMap.get(thr).getTotalEvents() + ")" + "\t|";
 		}
 		return result;
 	}

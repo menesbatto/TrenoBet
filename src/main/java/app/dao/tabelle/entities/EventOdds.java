@@ -36,8 +36,8 @@ public class EventOdds {
 	@OneToOne(cascade = CascadeType.ALL)
 	private ResultGoodness awayResultGoodness;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	private ResultGoodness totalResultGoodness;
+//	@OneToOne(cascade = CascadeType.ALL)
+//	private ResultGoodness totalResultGoodness;
 
 	private Double homeMotivation;
 	private Double awayMotivation;
@@ -123,13 +123,13 @@ public class EventOdds {
 		this.awayResultGoodness = awayResultGoodness;
 	}
 
-	public ResultGoodness getTotalResultGoodness() {
-		return totalResultGoodness;
-	}
-
-	public void setTotalResultGoodness(ResultGoodness totalResultGoodness) {
-		this.totalResultGoodness = totalResultGoodness;
-	}
+//	public ResultGoodness getTotalResultGoodness() {
+//		return totalResultGoodness;
+//	}
+//
+//	public void setTotalResultGoodness(ResultGoodness totalResultGoodness) {
+//		this.totalResultGoodness = totalResultGoodness;
+//	}
 
 	public Double getHomeMotivation() {
 		return homeMotivation;
@@ -182,8 +182,7 @@ public class EventOdds {
 	@Override
 	public String toString() {
 		return "id=" + id + ", match=" + match + ", timeType=" + timeType + "\n homeResultGoodness="
-				+ homeResultGoodness + "\n awayResultGoodness=" + awayResultGoodness + "\n totalResultGoodness="
-				+ totalResultGoodness + ", homeMotivation=" + homeMotivation + ", awayMotivation=" + awayMotivation
+				+ homeResultGoodness + "\n awayResultGoodness=" + awayResultGoodness + "\nhomeMotivation=" + homeMotivation + ", awayMotivation=" + awayMotivation
 				+ ", homeTrend=" + homeTrend + ", awayTrend=" + awayTrend + ", homeTrendUo=" + homeTrendUo
 				+ ", awayTrendUo=" + awayTrendUo + ", homeTrendEh=" + homeTrendEh + ", awayTrendEh=" + awayTrendEh
 				+  "\n\n";

@@ -94,7 +94,7 @@ public class BetAnalyzer {
 	}
 	
 	@Transactional
-	public void execute(Integer seasonDay){
+	public List<SingleBetBean> execute(Integer seasonDay){
 //		i++;
 //		HashMap<ChampEnum, ArrayList<MatchResult>> partialHistory = getPartialHistoryForSpecificWeek(week);
 //		HashMap<ChampEnum, ArrayList<MatchResult>> bettableMatches = getBettableMatchesForSpecificWeek(week);
@@ -102,7 +102,7 @@ public class BetAnalyzer {
 		
 //		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
-		
+		List<SingleBetBean> allSingleBets = new ArrayList<SingleBetBean>();
 		for (ChampEnum champ : ChampEnum.values()){
 		
 //			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheck(champ);
@@ -120,7 +120,7 @@ public class BetAnalyzer {
 				TimeTypeEnum timeType = singleBet.getTimeTypeEnum();
 				Double winOdds = singleBet.getWinOdds();
 				
-				MatchResultEnum predicedMatchResult = singleBet.getMatchResultEnum();
+				MatchResultEnum predicedMatchResult = singleBet.getMatchResultForecast();
 				
 				MatchResult m = singleBet.getMatch();
 				if (m != null)  {
@@ -198,12 +198,15 @@ public class BetAnalyzer {
 				
 			}
 			
-			System.out.println(singleBets);
+//			System.out.println(singleBets);
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
 			singleBetDao.saveBetResult(singleBets, champ);
+			
+			allSingleBets.addAll(singleBets);
 		
 		}
 
+		return allSingleBets;
 	}
 
 	private MatchResultEnum get1x2MatchResult(int homeGoals, int awayGoals) {

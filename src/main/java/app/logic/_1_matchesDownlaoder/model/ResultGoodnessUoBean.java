@@ -8,6 +8,7 @@ public class ResultGoodnessUoBean implements Serializable{
 
 	private Double goodnessU;
 	private Double goodnessO;
+	private Integer totalEvents;
 	
 	public Double getGoodnessU() {
 		return goodnessU;
@@ -27,7 +28,15 @@ public class ResultGoodnessUoBean implements Serializable{
 
 	@Override
 	public String toString() {
-		return  "\t" + goodnessU + "\t" + goodnessO;
+		return  "\t" + goodnessU + "\t" + goodnessO + "\t" + totalEvents;
+	}
+
+	public Integer getTotalEvents() {
+		return totalEvents;
+	}
+
+	public void setTotalEvents(Integer totalEvents) {
+		this.totalEvents = totalEvents;
 	}
 	
 	

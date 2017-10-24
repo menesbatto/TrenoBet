@@ -162,7 +162,7 @@ public class BetCreator {
 //				bet.setSeasonDay(seasonDay);
 			
 			singleBetDao.saveBetResult(singleBetList, champ);
-			System.out.println(singleBetList);
+//			System.out.println(singleBetList);
 		}
 		
 		
@@ -171,15 +171,23 @@ public class BetCreator {
 
 	private void add12matches(ChampEnum champ, EventOddsBean eo, Double goodnessHW, Double goodnessHL, Double goodnessAW, Double goodnessAL, List<SingleBetBean> singleBetList, Integer seasonDay) {
 		
-		Double limit = 0.5;
+		Double limit = 0.65;
 //		Double limit = 0.1;
-//		Double limitSum = 1.5;
+		Double limitSum = 1.5;
+		Double limitMix = 0.5;
 		
-		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
-//		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4){
-		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
-//		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
-
+//		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
+		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4){
+//		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
+		
+		
+		
+//		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
+		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
+//		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
+		
+		
+		
 		Date betDate = Utils.getDateOfBet(seasonDay);
 		if (Utils.isMatchInTemporalRange(eo.getDate(), betDate, AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
 			// Esito finale vittoria/sconfitta di entrambe alto
@@ -203,8 +211,10 @@ public class BetCreator {
 				
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 			}
-//			if (br != null)
-//				System.out.println(eo);
+			if (br != null) {
+				System.out.println(br);
+				System.out.println(eo);
+			}
 
 		}
 	}
@@ -212,7 +222,7 @@ public class BetCreator {
 	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
 		
 		Double limit = 0.1;
-		Double limitMix = 1.0;
+		Double limitMix = 0.5;
 		
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();
@@ -293,6 +303,10 @@ public class BetCreator {
 //					System.out.println(eo.toStringInner(null, null, homeVar, false));
 //					mainBet.get(champ).add(SerializationUtils.clone(eo));
 				}
+				if (br != null) {
+					System.out.println(br);
+					System.out.println(eo);
+				}
 //				if (br != null)
 //					System.out.println(eo);
 			}
@@ -302,7 +316,7 @@ public class BetCreator {
 
 	private void addUOmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
 //		Double limitGoodness = 0.75;
-		Double limitGoodness = 1.0;
+//		Double limitGoodness = 1.0;
 //		Double limitOdds = 1.7;
 		Double limitOdds = 1.1;
 		Double limitMix = 1.0;
@@ -369,6 +383,10 @@ public class BetCreator {
 					}
 				}
 
+				if (br != null) {
+					System.out.println(br);
+					System.out.println(eo);
+				}
 //				if (br != null)
 //					System.out.println(eo);
 			}
@@ -379,7 +397,7 @@ public class BetCreator {
 
 	private void addXmatches(ChampEnum champ, EventOddsBean eo, Double goodnessHD, Double goodnessAD, List<SingleBetBean> singleBetList, Integer seasonDay) {
 //		Double limit = 0.4;
-		Double limit = 0.4;
+		Double limit = 0.65;
 		
 		Boolean conditionX = goodnessHD >= limit && goodnessAD >= limit;
 		
@@ -399,6 +417,10 @@ public class BetCreator {
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 //				System.out.println(eo.toStringInner(true, null, null, false));
 			}
+		}
+		if (br != null) {
+			System.out.println(br);
+			System.out.println(eo);
 		}
 //		if (br != null)
 //			System.out.println(eo);

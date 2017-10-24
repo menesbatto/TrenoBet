@@ -16,22 +16,13 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 
 	List<Matcho> findAll();
 
-//	Long countByChampAndHomeTeamAndFullTimeResultIsNull(Champ champ);
-//	Long countByChampAndHomeTeamAndFullTimeResultIsNotNull(Champ champ);
-
-	
 	List<Matcho> findByChampAndAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
 	
-	List<Matcho> findByChampAndFullTimeResultIsNullAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
-	List<Matcho> findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(Champ champ);
-	
-	// Recupera tutti match di un dato champ
 	List<Matcho> findByChampAndMatchDateBeforeOrderByMatchDateDesc(Champ champ, Date limitDate);
 
 	
 	
-	List<Matcho> findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
-	List<Matcho> findByChampAndAwayTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
+	
 
 	List<Matcho> findByHomeTeamNameAndAwayTeamNameAndChamp(String homeTeam, String awayTeam, Champ champ);
 	
@@ -43,6 +34,18 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 
 	Matcho findByHomeTeamNameAndAwayTeamName(String homeTeam, String awayTeam);
 	
+//	###########################################################################################
+	@Deprecated
+	List<Matcho> findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
+	
+	@Deprecated
+	List<Matcho> findByChampAndAwayTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);
+	
+	@Deprecated
+	List<Matcho> findByChampAndFullTimeResultIsNotNullOrderByMatchDateDesc(Champ champ);
+	
+	@Deprecated
+	List<Matcho> findByChampAndFullTimeResultIsNullAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
 	
 //	@Query(value = "SELECT TOP ?1, * FROM MATCH WHERE CHAMP_ID = ?1", nativeQuery = true)
 //	List<Matcho> findByChampAndAwayTeamAndFullTimeResultIsNotNullTopN(Champ champ, Team team);

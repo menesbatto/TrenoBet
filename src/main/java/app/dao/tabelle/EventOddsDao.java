@@ -62,7 +62,7 @@ public class EventOddsDao {
 	@Autowired
 	private HomeVariationTypeDao homeVariationTypeDao;
 
-
+	@Transactional
 	public void save(Map<TimeTypeEnum, ArrayList<EventOddsBean>> eventsOddsBeanMap, ChampEnum champEnum) {
 		EventOdds ent;
 		List<EventOdds> ents = new ArrayList<EventOdds>();
@@ -100,8 +100,8 @@ public class EventOddsDao {
 				ResultGoodness awayResultGoodness = createResultGoodnessEnt(bean.getAwayResultGoodness());
 				ent.setAwayResultGoodness(awayResultGoodness);
 				
-				ResultGoodness totalResultGoodness = createResultGoodnessEnt(bean.getTotalResultGoodness());
-				ent.setTotalResultGoodness(totalResultGoodness);
+//				ResultGoodness totalResultGoodness = createResultGoodnessEnt(bean.getTotalResultGoodness());
+//				ent.setTotalResultGoodness(totalResultGoodness);
 				
 				Matcho match =  findMatch(bean.getHomeTeam(), bean.getAwayTeam(), champEnum, matches);
 				ent.setMatch(match);
@@ -114,6 +114,11 @@ public class EventOddsDao {
 		}
 		
 //		matchDao.saveAll(matches);
+		Champ champ = champDao.findByChampEnum(champEnum);
+		if (!ents.isEmpty()) {
+			Integer seasonDay = ents.get(0).getSeasonDay();
+			deleteByMatchChampAndSeasonDay(champ, seasonDay);
+		}
 		eventOddsRepo.save(ents);
 		
 	}
@@ -262,8 +267,8 @@ public class EventOddsDao {
 		bean.setHomeResultGoodness(homeResultGoodness);
 		ResultGoodnessBean awayResultGoodness = createResultGoodnessBean(ent.getAwayResultGoodness());
 		bean.setAwayResultGoodness(awayResultGoodness);
-		ResultGoodnessBean totalResultGoodness =  createResultGoodnessBean(ent.getTotalResultGoodness());
-		bean.setTotalResultGoodness(totalResultGoodness);
+//		ResultGoodnessBean totalResultGoodness =  createResultGoodnessBean(ent.getTotalResultGoodness());
+//		bean.setTotalResultGoodness(totalResultGoodness);
 		
 		
 		//Quote
@@ -486,7 +491,7 @@ public class EventOddsDao {
 
 	
 
-	public void deleteByChamp(Champ champ, Integer seasonDay) {
+	public void deleteByMatchChampAndSeasonDay(Champ champ, Integer seasonDay) {
 		eventOddsRepo.deleteByMatchChampAndSeasonDay(champ, seasonDay);
 		
 	}

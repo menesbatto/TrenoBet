@@ -501,7 +501,7 @@ public class MatchoDao {
 	@Transactional
 	public void removeAllNextMatchesByChamp(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		eventOddsDao.deleteByChamp(champ, seasonDay);
+		eventOddsDao.deleteByMatchChampAndSeasonDay(champ, seasonDay);
 		matchRepo.deleteByChampAndFullTimeResultIsNull(champ);
 		
 	}

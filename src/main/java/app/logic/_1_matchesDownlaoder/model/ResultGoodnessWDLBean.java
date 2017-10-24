@@ -7,12 +7,17 @@ public class ResultGoodnessWDLBean implements Serializable{
 	private static final long serialVersionUID = -8220776671620251113L;
 
 	private Double goodnessW;
+	private Integer totalEventsW;
 	
 	private Double goodnessD;
+	private Integer totalEventsD;
 
 	private Double goodnessL;
+	private Integer totalEventsL;
 	
 	private HomeVariationEnum homeVariationType;
+	
+	private Integer totalEvents;
 	
 	
 	public ResultGoodnessWDLBean() {
@@ -57,5 +62,37 @@ public class ResultGoodnessWDLBean implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Integer getTotalEvents() {
+		return totalEvents;
+	}
+
+	public void setTotalEvents(Integer totalEvents) {
+		this.totalEvents = totalEvents;
+	}
+
+	public Integer getTotalEventsW() {
+		return totalEventsW;
+	}
+
+	public void setTotalEventsW(Integer totalEventsW) {
+		this.totalEventsW = totalEventsW;
+	}
+
+	public Integer getTotalEventsD() {
+		return totalEventsD;
+	}
+
+	public void setTotalEventsD(Integer totalEventsD) {
+		this.totalEventsD = totalEventsD;
+	}
+
+	public Integer getTotalEventsL() {
+		return totalEventsL;
+	}
+
+	public void setTotalEventsL(Integer totalEventsL) {
+		this.totalEventsL = totalEventsL;
 	}
 }

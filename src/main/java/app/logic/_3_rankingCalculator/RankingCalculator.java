@@ -86,7 +86,7 @@ public class RankingCalculator {
 		calculateMotivationalIndexes(ranking, champ, thereAreMatchesToRecover);
 		
 		
-		printRanking(ranking, champ);
+//		printRanking(ranking, champ);
 		System.out.println("########################\n\n\n");
 		rankingRowDao.saveRanking(champ, ranking);
 		

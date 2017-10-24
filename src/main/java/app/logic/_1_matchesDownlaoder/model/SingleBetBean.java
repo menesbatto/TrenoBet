@@ -10,7 +10,7 @@ public class SingleBetBean implements Serializable {
 
 	private BetType betType;
 	
-	private MatchResultEnum matchResultEnum;
+	private MatchResultEnum matchResultForecast;
 	
 	private Double winOdds;
 	
@@ -30,9 +30,9 @@ public class SingleBetBean implements Serializable {
 
 	
 	
-	public SingleBetBean(BetType betType, MatchResultEnum matchResultEnum, Double winOdds, TimeTypeEnum timeTypeEnum) {
+	public SingleBetBean(BetType betType, MatchResultEnum matchResultForecast, Double winOdds, TimeTypeEnum timeTypeEnum) {
 		this.betType = betType;
-		this.matchResultEnum = matchResultEnum;
+		this.matchResultForecast = matchResultForecast;
 		this.winOdds = winOdds;
 		this.timeTypeEnum = timeTypeEnum;
 	}
@@ -47,12 +47,12 @@ public class SingleBetBean implements Serializable {
 		this.betType = betType;
 	}
 
-	public MatchResultEnum getMatchResultEnum() {
-		return matchResultEnum;
+	public MatchResultEnum getMatchResultForecast() {
+		return matchResultForecast;
 	}
 
-	public void setMatchResultEnum(MatchResultEnum matchResult) {
-		this.matchResultEnum = matchResult;
+	public void setMatchResultForecast(MatchResultEnum matchResult) {
+		this.matchResultForecast = matchResult;
 	}
 
 	public Double getWinOdds() {
@@ -113,9 +113,14 @@ public class SingleBetBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "betType=" + betType + "\tmatchResultEnum=" + matchResultEnum + "\twinOdds=" + winOdds
-				+ "\ttimeTypeEnum=" + Utils.redimString(timeTypeEnum.name(),8) + "\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n";
-						//+ "match=" + match.getHomeTeam() + " - " + match.getAwayTeam() + " " + match.getFTHG() + "-" + match.getFTAG() + " (" + match.getHTHG() + "-" + match.getHTAG() + ") " + "\n";
+		String matchString = "";
+		if (match != null) {
+			matchString =  match.getHomeTeam() + " - " + match.getAwayTeam() + " " + match.getFTHG() + "-" + match.getFTAG() + " (" + match.getHTHG() + "-" + match.getHTAG() + ") " + "\n";
+		};
+		
+		return "betType=" + betType + "\tmatchResultForecast=" + matchResultForecast + "\twinOdds=" + winOdds
+				+ "\ttimeTypeEnum=" + Utils.redimString(timeTypeEnum.name(),8) + "\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n"
+				+ matchString  + "\n";
 	}
 
 

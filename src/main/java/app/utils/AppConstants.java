@@ -17,11 +17,12 @@ public class AppConstants {
 	public static final int BET_AMOUNT = 5;
 	public static final int TREND_SIZE_UO = 10;
 	public static final int TREND_SIZE_WIN = 5;
-	
-	
-	public static final boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = false;	//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti
-	public static final boolean PERCENTIFY_ODDS_ON = false;
 	public static final boolean ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES = true;
+	
+	
+	public static boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = false;	//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti. DISABILITA PER TEST
+	public static boolean PERCENTIFY_ODDS_ON = false;					//elimina la percentuale che guadagna la casa su ogni scommessa, cosi' la somma delle odds di ogni scommessa fa 100% e non 103 o 104 o 110&.  DISABILITA PER TEST
+	public static boolean USE_OTHER_PLAYING_FIELD = true;					
 	
 	
 //	public static boolean PROXY_ACTIVE = true;
