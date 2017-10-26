@@ -33,9 +33,15 @@ public class ChampDao {
 //			ChampEnum
 //			
 //		}
+		for (ChampEnum champEnum : ChampEnum.values()) {
+			if ( champEnum.getNation().equals(champ.getNation()) &&
+				 champEnum.getStartYear() == champ.getStartYear() &&
+				 champEnum.getName().equals(champ.getName())
+				)
+				return champEnum;
+		}
 		
-		
-		return ChampEnum.ENG_PREMIER;
+		return null;
 	}
 	
 	public Champ findByChampEnum(ChampEnum champEnum) {
@@ -45,6 +51,8 @@ public class ChampDao {
 			int startYear = champEnum.getStartYear();
 			String nation = champEnum.getNation();
 			List<Champ> list = champRepo.findByNameAndStartYearAndNation(name, startYear, nation);
+			if (list.isEmpty())
+				return null;
 			first = list.get(0);
 			
 			cacheMap.put(champEnum, first);
@@ -62,19 +70,17 @@ public class ChampDao {
 	}
 	
 	
-
-	
 	public void initTable() {
-		ChampEnum champEnum = ChampEnum.ENG_PREMIER;
-		Champ champEnt = saveChamp(champEnum);
-//		ChampImpPos champImpPosEnt =  saveChampImpPos(champEnum, champEnt);
-		List<RankingCriteria> rankingCriteriaEnts =  getRankingCriteria(champEnum, champEnt);
-		
-//		champEnt.setImpPos(champImpPosEnt);
-		champEnt.setRankingCriteria(rankingCriteriaEnts);
-		champRepo.save(champEnt);
-		//...
-		System.out.println("");
+//		ChampEnum champEnum = ChampEnum.ENG_PREMIER;
+//		Champ champEnt = saveChamp(champEnum);
+////		ChampImpPos champImpPosEnt =  saveChampImpPos(champEnum, champEnt);
+//		List<RankingCriteria> rankingCriteriaEnts =  getRankingCriteria(champEnum, champEnt);
+//		
+////		champEnt.setImpPos(champImpPosEnt);
+//		champEnt.setRankingCriteria(rankingCriteriaEnts);
+//		champRepo.save(champEnt);
+//		//...
+//		System.out.println("");
 		
 	}
 	
@@ -91,10 +97,15 @@ public class ChampDao {
 
 
 
-	private Champ saveChamp(ChampEnum champEnum) {
+	public Champ saveChamp(ChampEnum champEnum) {
+		Champ alreadySavedChamp = findByChampEnum(champEnum);
+		if (alreadySavedChamp != null)
+			return null;
+		
 		Champ champEnt = new Champ(	champEnum.getName(),		champEnum.getStartYear(), 	champEnum.getNation(), 
 									champEnum.getResultsUrl(), 	champEnum.getNextMatchesUrl());
 		champRepo.save(champEnt);
+
 		return champEnt;
 	}
 	

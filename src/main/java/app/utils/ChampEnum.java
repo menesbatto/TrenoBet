@@ -17,6 +17,7 @@ public enum ChampEnum {
 							"England",
 							"Premier League",
 							2017),
+	
 //							
 //	SPA_LIGA 			(	AppConstants.SPA_LIGA_RESULTS,
 //							AppConstants.SPA_LIGA_WIN_ODDS, 	
@@ -45,17 +46,17 @@ public enum ChampEnum {
 //												RankCritEnum.GOALS_SCORED_AWAY
 //												}),
 //							
-//	ITA_SERIE_A 		(	AppConstants.ITA_SERIE_A_RESULTS,
-//							AppConstants.ITA_SERIE_A_WIN_ODDS, 	
-//							AppConstants.ITA_SERIE_A_UO_ODDS, 
-//							AppConstants.ITA_SERIE_A_HALF_TIME_ODDS,
-//							AppConstants.ITA_SERIE_A_HISTORY_RESULTS,
-//							new Integer[]{ 1,2,3,6,17 },   
-//							new RankCritEnum[]{	RankCritEnum.POINTS, 
-//												RankCritEnum.HEAD_TO_HEAD_POINTS, 
-//												RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
-//												RankCritEnum.GOALS_DIFFERENCE, 
-//												RankCritEnum.GOALS_SCORED,}),
+	ITA_SERIE_A_2017 		(	AppConstants.ITA_SERIE_A_RESULTS,
+							AppConstants.ITA_SERIE_A_NEXT_MATCHES,
+							new Integer[]{ 1,2,3,6,17 },   
+							new RankCritEnum[]{	RankCritEnum.POINTS, 
+												RankCritEnum.HEAD_TO_HEAD_POINTS, 
+												RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+												RankCritEnum.GOALS_DIFFERENCE, 
+												RankCritEnum.GOALS_SCORED,},
+							"Italy",
+							"Serie A",
+							2017),
 //							
 //	FRA_LIGUE_1 		(	AppConstants.FRA_LIGUE_1_RESULTS,
 //							AppConstants.FRA_LIGUE_1_WIN_ODDS, 	

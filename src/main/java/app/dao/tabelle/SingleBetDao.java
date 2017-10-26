@@ -46,11 +46,9 @@ public class SingleBetDao {
 			BetType betTypeEnum = BetType.valueOf(betEnt.getBetType());
 			MatchResultEnum matchResultEnum = MatchResultEnum.valueOf(betEnt.getMatchResultForecast());
 			TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(betEnt.getTimeType());
+			ChampEnum champ = champDao.findChampEnumByChamp(betEnt.getChamp());
 
-			
-			
-			
-			betBean= new SingleBetBean(betTypeEnum,  matchResultEnum , betEnt.getWinOdds(), timeTypeEnum);
+			betBean= new SingleBetBean(betTypeEnum,  matchResultEnum , betEnt.getWinOdds(), timeTypeEnum, champ);
 			
 			MatchResult matchResultBean = matchoDao.mapMatchoToMatchResult(betEnt.getMatcho(), true);
 			betBean.setMatch(matchResultBean);
@@ -67,7 +65,7 @@ public class SingleBetDao {
 	}
 	
 	@Transactional
-	public void saveBetResult(List<SingleBetBean> singleBetBeanList, ChampEnum champ) {
+	public void saveBetResult(List<SingleBetBean> singleBetBeanList, ChampEnum champEnum) {
 		
 		if (singleBetBeanList.isEmpty()) {
 			return;
@@ -81,6 +79,9 @@ public class SingleBetDao {
 			sbEnt.setMatchResultForecast(sbBean.getMatchResultForecast().name());
 			sbEnt.setWinOdds(sbBean.getWinOdds());
 			sbEnt.setSeasonDay(sbBean.getSeasonDay());
+			Champ champ = champDao.findByChampEnum(champEnum);
+			sbEnt.setChamp(champ);
+			
 			Matcho matcho = matchoDao.findById(sbBean.getMatchId());
 			sbEnt.setMatcho(matcho);
 			

@@ -25,6 +25,9 @@ public interface WinRangeStatsRepo extends JpaRepository<WinRangeStats, Long> {
 
 	List<WinRangeStats> findByTeamChampAndSeasonDayOrderByTeam(Champ champ, Integer seasonDay);
 	
+	void deleteBySeasonDay(Integer seasonDay);
+	
+	WinRangeStats findFirstByTeamChampAndSeasonDay(Champ champ, Integer seasonDay);
 	
 //	List<Person> findByLastName(@Param("name") String name);
 //	

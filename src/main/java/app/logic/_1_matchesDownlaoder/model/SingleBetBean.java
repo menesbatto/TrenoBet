@@ -2,6 +2,7 @@ package app.logic._1_matchesDownlaoder.model;
 
 import java.io.Serializable;
 
+import app.utils.ChampEnum;
 import app.utils.Utils;
 
 public class SingleBetBean implements Serializable {
@@ -24,17 +25,20 @@ public class SingleBetBean implements Serializable {
 	
 	private Integer seasonDay;
 	
+	private ChampEnum champ;
+	
 
 	public SingleBetBean() {
 	}
 
 	
 	
-	public SingleBetBean(BetType betType, MatchResultEnum matchResultForecast, Double winOdds, TimeTypeEnum timeTypeEnum) {
+	public SingleBetBean(BetType betType, MatchResultEnum matchResultForecast, Double winOdds, TimeTypeEnum timeTypeEnum, ChampEnum champ) {
 		this.betType = betType;
 		this.matchResultForecast = matchResultForecast;
 		this.winOdds = winOdds;
 		this.timeTypeEnum = timeTypeEnum;
+		this.champ = champ;
 	}
 
 
@@ -133,6 +137,18 @@ public class SingleBetBean implements Serializable {
 
 	public void setSeasonDay(Integer seasonDay) {
 		this.seasonDay = seasonDay;
+	}
+
+
+
+	public ChampEnum getChamp() {
+		return champ;
+	}
+
+
+
+	public void setChamp(ChampEnum champ) {
+		this.champ = champ;
 	}
 
 	

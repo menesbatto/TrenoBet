@@ -79,7 +79,12 @@ public class WinRangeStatsDao {
 	}
 
 	
-	
+	public Boolean existStatsByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		WinRangeStats firstStats = winRangeStatsRepo.findFirstByTeamChampAndSeasonDay(champ , seasonDay);
+		boolean seasonDayStatsAlreadyCalculated = firstStats != null;
+		return seasonDayStatsAlreadyCalculated;
+	}
 	
 
 	public List<WinRangeStats> initWinRangeStatsForTeam(Team team, TimeType timeType, String playingField) {

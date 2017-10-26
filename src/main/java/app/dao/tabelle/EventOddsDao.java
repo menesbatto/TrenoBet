@@ -20,6 +20,7 @@ import app.dao.tabelle.entities.ResultGoodness;
 import app.dao.tabelle.entities.ResultGoodnessUo;
 import app.dao.tabelle.entities.ResultGoodnessWdl;
 import app.dao.tabelle.entities.UoOdds;
+import app.dao.tabelle.entities.WinRangeStats;
 import app.dao.tabelle.entities._1X2Odds;
 import app.dao.tipologiche.HomeVariationTypeDao;
 import app.dao.tipologiche.TimeTypeDao;
@@ -506,6 +507,14 @@ public class EventOddsDao {
 	public EventOdds findById(int id) {
 		EventOdds ent = eventOddsRepo.findById(id);
 		return ent;
+	}
+
+
+	public Boolean existEventOddsByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		EventOdds firstEo = eventOddsRepo.findFirstByMatchChampAndSeasonDay(champ , seasonDay);
+		boolean seasonDayEoAlreadyCalculated = firstEo != null;
+		return seasonDayEoAlreadyCalculated;
 	}
 
 

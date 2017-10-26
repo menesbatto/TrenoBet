@@ -72,6 +72,13 @@ public class GoodnessCalculator {
 		
 		List<RankingRow> ranking;
 		for (ChampEnum champ : ChampEnum.values()){
+			
+			Boolean existEventOddsByChampInSeasonDay = eventOddsDao.existEventOddsByChampInSeasonDay(champ, seasonDay);
+			if (existEventOddsByChampInSeasonDay) {
+				continue;
+			}
+			System.out.println(champ);
+			
 			calculateMatchGoodnessOfChamp(champ, seasonDay);
 //			ranking = rankingRowDao.findByChamp(champ);
 //			rankingCalculator.printRanking(ranking, champ);
@@ -143,10 +150,10 @@ public class GoodnessCalculator {
 				eo.setSeasonDay(seasonDay);
 			}
 //			if (timeType == TimeTypeEnum._final) {
-				System.out.println("###############################");
-				System.out.println(timeType);
-				System.out.println("###############################");
-				System.out.println(mapNextMatchOdds.get(timeType));
+//				System.out.println("###############################");
+//				System.out.println(timeType);
+//				System.out.println("###############################");
+//				System.out.println(mapNextMatchOdds.get(timeType));
 //			}
 		}
 		

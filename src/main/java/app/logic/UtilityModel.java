@@ -6,16 +6,19 @@ import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.ChampDao;
 import app.dao.tabelle.GoalsStatsRepo;
+import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.MatchoRepo;
 import app.dao.tabelle.RankingRowRepo;
 import app.dao.tabelle.TeamDao;
 import app.dao.tabelle.WinRangeStatsRepo;
+import app.dao.tabelle.entities.Champ;
 import app.dao.tipologiche.BetHouseDao;
 import app.dao.tipologiche.HomeVariationTypeDao;
 import app.dao.tipologiche.OddsRangeDao;
 import app.dao.tipologiche.RankingCriteriaDao;
 import app.dao.tipologiche.TimeTypeDao;
 import app.dao.tipologiche.UoThresholdTypeDao;
+import app.utils.ChampEnum;
 
 @Service
 public class UtilityModel {
@@ -62,6 +65,7 @@ public class UtilityModel {
 	private RankingRowRepo rankingRowRepo;
 	
 	
+	
 	public void deleteAllRankings() {
 		rankingRowRepo.deleteAll();
 	}
@@ -76,6 +80,15 @@ public class UtilityModel {
 	public void deleteAllGoalsStats() {
 		goalsStatsRepo.deleteAll();
 	}		
+
+	public void deleteWinRangeStatsBySeasonDay(Integer seasonDay) {
+		winRangeStatsRepo.deleteBySeasonDay(seasonDay);
+	}
+
+	public void deleteGoalsStatsBySeasonDay(Integer seasonDay) {
+		goalsStatsRepo.deleteBySeasonDay(seasonDay);
+	}
+	
 	
 
 	public void execute() {
@@ -92,6 +105,13 @@ public class UtilityModel {
 	public void initChampsTable() {
 		champDao.initTable();
 	}
+
+	
+	public Champ saveChamp(ChampEnum champEnum) {
+		Champ saveChamp = champDao.saveChamp(champEnum);
+		return saveChamp;
+	}
+
 
 
 	

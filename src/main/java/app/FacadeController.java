@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.jboss.logging.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +86,6 @@ public class FacadeController {
 	// ###################################################
 	@RequestMapping(value = "/downloadPastMatches", method = RequestMethod.GET)
 	public ResponseEntity<String>  downloadPastMatches2() {
-//		matchDao.removeAllNextMatches();
 		pastMatchesDownloader.execute();
 		String body = "Downloading past matches COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -99,9 +99,10 @@ public class FacadeController {
 	public ResponseEntity<String>  calculateTeamsStats3() {
 		long startTime = System.nanoTime();
 
-		resetStats();
+		
 		
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		resetStats(actualSeasonDay);
 		resultAnalyzer.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
@@ -241,7 +242,12 @@ public class FacadeController {
 	
 
 	
-	
+	@RequestMapping(value = "/saveChamp/{champName}", method = RequestMethod.GET)
+	public @ResponseBody void saveChamp(@PathVariable String champName) {
+		ChampEnum champEnum = ChampEnum.valueOf(champName);
+		utilityModel.saveChamp(champEnum);
+		
+	}
 	
 	
 	@RequestMapping(value = "/initTipologiche", method = RequestMethod.GET)
@@ -288,12 +294,25 @@ public class FacadeController {
 		System.out.println("resetRankings " + duration / 1000000);
 	}
 	
-	@RequestMapping(value = "/resetStats", method = RequestMethod.GET)
-	public @ResponseBody void resetStats() {
+	@RequestMapping(value = "/resetAllStats", method = RequestMethod.GET)
+	public @ResponseBody void resetAllStats() {
 		long startTime = System.nanoTime();
 
 		utilityModel.deleteAllWinRangeStats();
-		utilityModel.deleteAllGoalsStats();
+		utilityModel.deleteAllGoalsStats();;
+
+		long currentTime = System.nanoTime();
+		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
+		System.out.println("resetStats " + duration / 1000000);
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/resetStats/{seasonDay}", method = RequestMethod.GET)
+	public @ResponseBody void resetStats(@PathVariable Integer seasonDay) {
+		long startTime = System.nanoTime();
+
+		utilityModel.deleteWinRangeStatsBySeasonDay(seasonDay);
+		utilityModel.deleteGoalsStatsBySeasonDay(seasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
@@ -309,8 +328,8 @@ public class FacadeController {
 
 	@RequestMapping(value = "/removeAllNextMatch", method = RequestMethod.GET)
 	public void removeNextMatch() {
-		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
-		matchDao.removeAllNextMatchesByChamp(ChampEnum.ENG_PREMIER, actualSeasonDay);
+//		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+//		matchDao.removeAllNextMatchesByChamp(ChampEnum.ENG_PREMIER, actualSeasonDay);
 	}
 
 	

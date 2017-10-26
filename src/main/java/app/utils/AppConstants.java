@@ -17,10 +17,10 @@ public class AppConstants {
 	public static final int BET_AMOUNT = 5;
 	public static final int TREND_SIZE_UO = 10;
 	public static final int TREND_SIZE_WIN = 5;
-	public static final boolean ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES = true;
+	public static final boolean ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES = true;	//Scarica o calcola la bet solo i match entro i giorni definiti sopra ???
 	
 	
-	public static boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = false;	//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti. DISABILITA PER TEST
+	public static boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = true;		//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti. DISABILITA PER TEST
 	public static boolean PERCENTIFY_ODDS_ON = false;					//elimina la percentuale che guadagna la casa su ogni scommessa, cosi' la somma delle odds di ogni scommessa fa 100% e non 103 o 104 o 110&.  DISABILITA PER TEST
 	public static boolean USE_OTHER_PLAYING_FIELD = true;					
 	
@@ -44,29 +44,11 @@ public class AppConstants {
 	
 	
 	public static String ITA_SERIE_A_RESULTS = 					SITE_URL + "/soccer/italy/serie-a/results";
-	public static String ITA_SERIE_A_WIN_ODDS = 				"http://www.statto.com/football/odds/italy/serie-a/";
-	public static String ITA_SERIE_A_UO_ODDS = 					ITA_SERIE_A_WIN_ODDS + "over-under/";
-	public static String ITA_SERIE_A_DOUBLE_CHANCE_ODDS = 		ITA_SERIE_A_WIN_ODDS + "double-chance/";
-	public static String ITA_SERIE_A_HALF_TIME_ODDS = 			ITA_SERIE_A_WIN_ODDS + "half-time/";
-	
-	
-	
-	
+	public static String ITA_SERIE_A_NEXT_MATCHES = 			SITE_URL + "/soccer/italy/serie-a";
 	
 	//http://www.oddsportal.com/soccer/england/premier-league/
-	
-	
 	public static String ENG_PREMIER_RESULTS = 					SITE_URL + "/soccer/england/premier-league/results";
-	public static String ENG_PREMIER_NEXT_MATCHES = 				SITE_URL + "/soccer/england/premier-league";
-	public static String ENG_PREMIER_UO_ODDS = 					ENG_PREMIER_NEXT_MATCHES + "over-under/";
-	public static String ENG_PREMIER_DOUBLE_CHANCE_ODDS = 		ENG_PREMIER_NEXT_MATCHES + "double-chance/";
-	public static String ENG_PREMIER_HALF_TIME_ODDS = 			ENG_PREMIER_NEXT_MATCHES + "half-time/";	
-	
-//	public static String ENG_PREMIER_RESULTS = 					SITE_URL + "/soccer/italy/serie-a/results";
-//	public static String ENG_PREMIER_WIN_ODDS = 				"http://www.statto.com/football/odds/england/premier-league/";
-//	public static String ENG_PREMIER_UO_ODDS = 					ENG_PREMIER_WIN_ODDS + "over-under/";
-//	public static String ENG_PREMIER_DOUBLE_CHANCE_ODDS = 		ENG_PREMIER_WIN_ODDS + "double-chance/";
-//	public static String ENG_PREMIER_HALF_TIME_ODDS = 			ENG_PREMIER_WIN_ODDS + "half-time/";
+	public static String ENG_PREMIER_NEXT_MATCHES = 			SITE_URL + "/soccer/england/premier-league";
 	
 	public static String ENG_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/england/championship/results/";
 	public static String ENG_CHAMPIONSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/england/league-championship/";

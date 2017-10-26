@@ -63,6 +63,10 @@ public class ResultAnalyzer {
 		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
 		for (ChampEnum champ : ChampEnum.values()){
+			Boolean existStatsByChampInSeasonDay = winRangeStatsDao.existStatsByChampInSeasonDay(champ, seasonDay);
+			if (existStatsByChampInSeasonDay) {
+				continue;
+			}
 			System.out.println(champ);
 			
 			ArrayList<MatchResult> teamMatchesAway = matchDao.getDownloadedPastMatchByChampBeforeDateFull(champ, dateOfBet);

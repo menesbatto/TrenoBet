@@ -36,7 +36,8 @@ public class SingleBet {
 
 	private Integer seasonDay;
 	
-	
+	@ManyToOne
+	private Champ champ;
 	
 	
 	public SingleBet() {
@@ -118,6 +119,14 @@ public class SingleBet {
 
 	public void setSeasonDay(Integer seasonDay) {
 		this.seasonDay = seasonDay;
+	}
+
+	public Champ getChamp() {
+		return champ;
+	}
+
+	public void setChamp(Champ champ) {
+		this.champ = champ;
 	}
 
 
