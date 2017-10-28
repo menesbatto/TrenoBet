@@ -18,6 +18,8 @@ public class AppConstants {
 	public static final int TREND_SIZE_UO = 10;
 	public static final int TREND_SIZE_WIN = 5;
 	public static final boolean ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES = true;	//Scarica o calcola la bet solo i match entro i giorni definiti sopra ???
+
+	public static final boolean DO_NOT_UPDATE_NEXT_MATCH = true;
 	
 	
 	public static boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = true;		//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti. DISABILITA PER TEST
@@ -41,20 +43,41 @@ public class AppConstants {
 	
 	public static String SITE_URL 								= "http://www.oddsportal.com";
 
-	
-	
-	public static String ITA_SERIE_A_RESULTS = 					SITE_URL + "/soccer/italy/serie-a/results";
-	public static String ITA_SERIE_A_NEXT_MATCHES = 			SITE_URL + "/soccer/italy/serie-a";
-	
 	//http://www.oddsportal.com/soccer/england/premier-league/
+	
+	
+	
+	
+	
+	// England
 	public static String ENG_PREMIER_RESULTS = 					SITE_URL + "/soccer/england/premier-league/results";
 	public static String ENG_PREMIER_NEXT_MATCHES = 			SITE_URL + "/soccer/england/premier-league";
 	
 	public static String ENG_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/england/championship/results/";
-	public static String ENG_CHAMPIONSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/england/league-championship/";
-	public static String ENG_CHAMPIONSHIP_UO_ODDS = 			ENG_CHAMPIONSHIP_WIN_ODDS + "over-under/";
-	public static String ENG_CHAMPIONSHIP_DOUBLE_CHANCE_ODDS = 	ENG_CHAMPIONSHIP_WIN_ODDS + "double-chance/";
-	public static String ENG_CHAMPIONSHIP_HALF_TIME_ODDS = 		ENG_CHAMPIONSHIP_WIN_ODDS + "half-time/";
+	public static String ENG_CHAMPIONSHIP_NEXT_MATCHES = 		SITE_URL + "/soccer/england/championship";
+	
+	
+	
+	// Germany
+	public static String GER_BUNDESLIGA_RESULTS = 				SITE_URL + "/soccer/germany/bundesliga/results/";
+	public static String GER_BUNDESLIGA_NEXT_MATCHES = 			SITE_URL + "/soccer/germany/bundesliga";
+	
+	public static String GER_2_BUNDESLIGA_RESULTS = 			SITE_URL + "/soccer/germany/2-bundesliga/results/";
+	public static String GER_2_BUNDESLIGA_NEXT_MATCHES = 		SITE_URL + "/soccer/germany/2-bundesliga";
+	
+	
+	
+	//Italy
+	public static String ITA_SERIE_A_RESULTS = 					SITE_URL + "/soccer/italy/serie-a/results";
+	public static String ITA_SERIE_A_NEXT_MATCHES = 			SITE_URL + "/soccer/italy/serie-a";
+	
+	public static String ITA_SERIE_B_RESULTS = 					SITE_URL + "/soccer/italy/serie-b/results";
+	public static String ITA_SERIE_B_NEXT_MATCHES = 			SITE_URL + "/soccer/italy/serie-b";
+	
+	
+	//########################################################################################################################
+	//########################################################################################################################
+	//########################################################################################################################
 	
 	public static String FRA_LIGUE_1_RESULTS = 					SITE_URL + "/soccer/france/ligue-1/results/";
 	public static String FRA_LIGUE_1_WIN_ODDS = 				"http://www.statto.com/football/odds/france/ligue-1/";
@@ -62,11 +85,7 @@ public class AppConstants {
 	public static String FRA_LIGUE_1_DOUBLE_CHANCE_ODDS = 		FRA_LIGUE_1_WIN_ODDS + "double-chance/";
 	public static String FRA_LIGUE_1_HALF_TIME_ODDS = 			FRA_LIGUE_1_WIN_ODDS + "half-time/";
 	
-	public static String GER_BUNDESLIGA_RESULTS = 				SITE_URL + "/soccer/germany/bundesliga/results/";
-	public static String GER_BUNDESLIGA_WIN_ODDS = 				"http://www.statto.com/football/odds/germany/bundesliga/";
-	public static String GER_BUNDESLIGA_UO_ODDS = 				GER_BUNDESLIGA_WIN_ODDS + "over-under/";
-	public static String GER_BUNDESLIGA_DOUBLE_CHANCE_ODDS = 	GER_BUNDESLIGA_WIN_ODDS + "double-chance/";
-	public static String GER_BUNDESLIGA_HALF_TIME_ODDS = 		GER_BUNDESLIGA_WIN_ODDS + "half-time/";
+	
 	
 	public static String SPA_LIGA_RESULTS = 					SITE_URL + "/soccer/spain/laliga/results/";
 	public static String SPA_LIGA_WIN_ODDS = 					"http://www.statto.com/football/odds/spain/primera-division/";

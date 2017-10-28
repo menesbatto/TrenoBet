@@ -5,11 +5,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.entities.Champ;
@@ -39,10 +42,10 @@ import app.logic._1_matchesDownlaoder.model._1x2Full;
 import app.logic._1_matchesDownlaoder.model._1x2Leaf;
 import app.utils.AppConstants;
 import app.utils.ChampEnum;
-import app.utils.Utils;
 import ma.glasnost.orika.MapperFacade;
 
 @Service
+@EnableCaching
 public class MatchoDao {
 
 	@Autowired
@@ -72,22 +75,20 @@ public class MatchoDao {
 	@Autowired
 	private EventOddsDao eventOddsDao;
 	
-	
-//	private HashMap<String, TimeType> timeTypeMap;
-	
-//	public Champ findByNameAndStartYearAndNation(String name, int startYear, String nation) {
-//		List<Champ> findAll = champRepo.findByNameAndStartYearAndNation(name, startYear, nation);
-//		Champ first = findAll.get(0);
-//			
-//		return first;
-//	}
 
 	public void initTable() {
 		
 	}
 
+	Map<Integer, Matcho> cache = new HashMap<Integer, Matcho>();
 	
+	@Cacheable("match")
 	public Matcho findById(Integer id) {
+//		Matcho m = cache.get(id);
+//		if (m == null) {
+//			m = matchRepo.findById(id);
+//			cache.put(id, m);
+//		}
 		Matcho m = matchRepo.findById(id);
 		return m;
 	}
@@ -97,10 +98,10 @@ public class MatchoDao {
 		Matcho m = matchRepo.findByHomeTeamNameAndAwayTeamName(homeTeam, awayTeam);
 		List<Matcho> matches = new ArrayList<Matcho>();
 		matches.add(m);
-//		ArrayList<MatchResult> mapMatchosToMatchesResults = mapMatchosToMatchesResults(ChampEnum.ENG_PREMIER, matches, false);
-		//mapMatchosToMatchesResults.get(0).getEh().get(TimeTypeEnum._final).getMap().get(HomeVariationEnum.m1);
 		return m;
 	}
+	
+	
 	public MatchResult save(MatchResult bean) {
 		Matcho ent = null;
 
@@ -109,7 +110,6 @@ public class MatchoDao {
 		else 
 			ent =  new Matcho();								// Nuovo
 		
-//		ent = matchRepo.save(ent);
 		Champ champEnt = champDao.findByChampEnum(bean.getChamp());
 		ent.setChamp(champEnt);
 		
@@ -128,16 +128,6 @@ public class MatchoDao {
 		ent.setHalfTimeHomeGoals(bean.getHTHG());
 		ent.setHalfTimeAwayGoals(bean.getHTAG());
 		ent.setMatchDate(bean.getMatchDate());
-		
-//		List<EventOdds> eventsOdds = new ArrayList<EventOdds>(); HHH
-//		EventOdds eo;
-//		for (TimeType timeType : timeTypeDao.findAll()) {
-//			eo = new EventOdds();
-//			eo.setTimeType(timeType);
-//			//eo.setMatch(ent);
-//			eventsOdds.add(eo);
-//		}
-//		ent.setEventsOdds(eventsOdds);
 		
 		
 		boolean needToSaveOdds = bean.get_1x2().get(TimeTypeEnum._final).getAvg1x2Odds() != null;
@@ -296,17 +286,7 @@ public class MatchoDao {
 		return ent;
 	}
 	
-//	public int countDownloadedNextMatchByChamp(ChampEnum champEnum) {
-//		Champ champ = champDao.findByChampEnum(champEnum);
-//		Long count = matchRepo.countByChampAndHomeTeamAndFullTimeResultIsNull(champ);
-//		return count.intValue();
-//	}
-//
-//	public int countDownloadedPastMatchByChamp(ChampEnum champEnum) {
-//		Champ champ = champDao.findByChampEnum(champEnum);
-//		Long count = matchRepo.countByChampAndHomeTeamAndFullTimeResultIsNotNull(champ);
-//		return count.intValue();
-//	}
+
 	
 	// NEXT
 	public ArrayList<MatchResult> getDownloadedNextMatchByChampBetweenFull(ChampEnum champEnum, Date dateOfBet, Date limitDate) {
@@ -353,24 +333,7 @@ public class MatchoDao {
 		return listBean;
 	}
 
-//	public ArrayList<MatchResult> getDownloadedPastMatchByChampAndAwayTeamAfterSeasonDay(ChampEnum champEnum, String homeTeam, int lastSeasonDayOdds) {
-//		Champ champ = champDao.findByChampEnum(champEnum);
-//		Team team = teamDao.findByNameAndChamp(homeTeam, champ);
-//		List<Matcho> listEnt = matchRepo.findByChampAndAwayTeamAndFullTimeResultIsNotNullOrderByMatchDate(champ, team);
-//		List<Matcho> missingMatchesEnt = listEnt.subList(lastSeasonDayOdds, listEnt.size());
-//		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, missingMatchesEnt, true);
-//		return listBean;
-//	}
-	
-//	public ArrayList<MatchResult> getDownloadedPastMatchByChampAndHomeTeamAfterSeasonDay(ChampEnum champEnum, String homeTeam, int lastSeasonDayOdds) {
-//		Champ champ = champDao.findByChampEnum(champEnum);
-//		Team team = teamDao.findByNameAndChamp(homeTeam, champ);
-//		List<Matcho> listEnt = matchRepo.findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(champ, team);
-//		List<Matcho> missingMatchesEnt = listEnt.subList(lastSeasonDayOdds, listEnt.size());
-//		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, missingMatchesEnt, true);
-//		
-//		return listBean;
-//	}
+
 
 
 	private ArrayList<MatchResult> mapMatchosToMatchesResults(ChampEnum champEnum, List<Matcho> listEnt, boolean light) {
@@ -491,20 +454,6 @@ public class MatchoDao {
 		return m;
 	}
 
-	
-	
-	public void saveAll(List<Matcho> matches) {
-		matchRepo.save(matches);
-		
-	}
-
-	@Transactional
-	public void removeAllNextMatchesByChamp(ChampEnum champEnum, Integer seasonDay) {
-		Champ champ = champDao.findByChampEnum(champEnum);
-		eventOddsDao.deleteByMatchChampAndSeasonDay(champ, seasonDay);
-		matchRepo.deleteByChampAndFullTimeResultIsNull(champ);
-		
-	}
 
     @Transactional
 	public void deleteMatch(Integer idMatch) {
@@ -512,7 +461,12 @@ public class MatchoDao {
 		
 	}
 
-   	public void updateEhOdds() {
+    
+    
+    // ##################################################################################################################
+   	
+    @Deprecated
+    public void updateEhOdds() {
    		List<Matcho> all = matchRepo.findAll();
    		
    		for (Matcho m : all) {
@@ -527,7 +481,46 @@ public class MatchoDao {
 			}
    		}
    		matchRepo.save(all);
-   		
    	}
 
+    @Transactional
+	public void removeAllNextMatchesByNoChamp() {
+		eventOddsDao.deleteByMatchChampIsNull();
+		matchRepo.deleteByChampIsNull();
+	}
+   	
+	@Transactional
+	public void removeAllNextMatchesByChamp(ChampEnum champEnum, Integer seasonDay) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		eventOddsDao.deleteByMatchChampAndSeasonDay(champ, seasonDay);
+		matchRepo.deleteByChampAndFullTimeResultIsNull(champ);
+	}
+
+	public void saveAll(List<Matcho> matches) {
+		matchRepo.save(matches);
+		
+	}
+	
+	@Deprecated
+	public ArrayList<MatchResult> getDownloadedPastMatchByChampAndAwayTeamAfterSeasonDay(ChampEnum champEnum, String homeTeam, int lastSeasonDayOdds) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		Team team = teamDao.findByNameAndChamp(homeTeam, champ);
+		List<Matcho> listEnt = matchRepo.findByChampAndAwayTeamAndFullTimeResultIsNotNullOrderByMatchDate(champ, team);
+		List<Matcho> missingMatchesEnt = listEnt.subList(lastSeasonDayOdds, listEnt.size());
+		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, missingMatchesEnt, true);
+		return listBean;
+	}
+
+	@Deprecated
+	public ArrayList<MatchResult> getDownloadedPastMatchByChampAndHomeTeamAfterSeasonDay(ChampEnum champEnum, String homeTeam, int lastSeasonDayOdds) {
+		Champ champ = champDao.findByChampEnum(champEnum);
+		Team team = teamDao.findByNameAndChamp(homeTeam, champ);
+		List<Matcho> listEnt = matchRepo.findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(champ, team);
+		List<Matcho> missingMatchesEnt = listEnt.subList(lastSeasonDayOdds, listEnt.size());
+		ArrayList<MatchResult> listBean = mapMatchosToMatchesResults(champEnum, missingMatchesEnt, true);
+		
+		return listBean;
+	}
+	
+	
 }

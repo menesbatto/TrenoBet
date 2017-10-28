@@ -56,13 +56,17 @@ public class ResultAnalyzer {
 	@Autowired
 	private OddsRangeDao oddsRangeDao;
 
-	
-	
 	public ArrayList<MatchResult> execute(Integer seasonDay) {
+		ChampEnum[] allChamps = ChampEnum.values();
+		return execute(seasonDay, allChamps);
+	}
+	
+	public ArrayList<MatchResult> execute(Integer seasonDay, ChampEnum[] champs) {
 		
 		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
-		for (ChampEnum champ : ChampEnum.values()){
+	
+		for (ChampEnum champ : champs){
 			Boolean existStatsByChampInSeasonDay = winRangeStatsDao.existStatsByChampInSeasonDay(champ, seasonDay);
 			if (existStatsByChampInSeasonDay) {
 				continue;

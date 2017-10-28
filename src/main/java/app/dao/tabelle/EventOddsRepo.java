@@ -24,6 +24,8 @@ public interface EventOddsRepo extends JpaRepository<EventOdds, Long> {
 
 	EventOdds findFirstByMatchChampAndSeasonDay(Champ champ, Integer seasonDay);
 
+	void deleteByMatchChampIsNull();
+
 //	List<GoalsStats> findByTeamAndPlayingField(Team team, String playingField);
 //
 //	int countByTeam(Team team);

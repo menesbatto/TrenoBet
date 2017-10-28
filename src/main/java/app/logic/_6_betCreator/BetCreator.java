@@ -63,17 +63,25 @@ public class BetCreator {
 	private SingleBetDao singleBetDao;
 	
 	
+
+	public void execute(int seasonDay) {
+		ChampEnum[] allChamps = ChampEnum.values();
+		execute(seasonDay, allChamps);
+	}
+	
+	
 	@Transactional
-	public  void execute(Integer seasonDay){
+	public  void execute(Integer seasonDay, ChampEnum[] champs){
 //		initStaticFields();
 //		System.out.println(matchesOddWithGoodness);
 		List<RankingRow> ranking;
 
-		for (ChampEnum champ : ChampEnum.values()){
-			
+		for (ChampEnum champ : champs){
+			System.out.println("\t1");
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
-			
+			System.out.println("\t2");
 			createBetsOfChamp(champ, seasonDay);
+			System.out.println("\t3");
 //			Collections.sort(mainBet.get(champ));
 //			ranking = rankingRowDao.findByChamp(champ);
 //			rankingCalculator.printRanking(ranking, champ);
@@ -99,8 +107,9 @@ public class BetCreator {
 	}
 	
 	private void createBetsOfChamp(ChampEnum champ, Integer seasonDay) {
+		System.out.println("\t\t1");
 		List<EventOddsBean> eventsOdds = eventOddsDao.getNextEventsOdds(champ, seasonDay);
-		
+		System.out.println("\t\t2");
 //		for (MatchResult m : matches){
 		List<SingleBetBean> singleBetList;
 		for (EventOddsBean eo : eventsOdds){
@@ -166,7 +175,7 @@ public class BetCreator {
 //			System.out.println(singleBetList);
 		}
 		
-		
+		System.out.println("\t\t3");
 		//eventOddsDao.saveBetResult(eventsOdds, champ);
 	}
 
@@ -485,6 +494,6 @@ public class BetCreator {
 		HashMap<ChampEnum, ArrayList<EventOddsBean>> mainBet = IOUtils.read(AppConstants.MAIN_BET_PATH,  HashMap.class);
 		return mainBet;
 	}
-	
+
 	
 }

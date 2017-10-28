@@ -66,12 +66,15 @@ public class GoodnessCalculator {
 	@Autowired
 	private EventOddsDao eventOddsDao;
 	
+	public void execute(int seasonDay) {
+		ChampEnum[] allChamps = ChampEnum.values();
+		execute(seasonDay, allChamps);
+	}
 	
-	
-	public void execute(Integer seasonDay){
+	public void execute(Integer seasonDay, ChampEnum[] champs){
 		
 		List<RankingRow> ranking;
-		for (ChampEnum champ : ChampEnum.values()){
+		for (ChampEnum champ : champs){
 			
 			Boolean existEventOddsByChampInSeasonDay = eventOddsDao.existEventOddsByChampInSeasonDay(champ, seasonDay);
 			if (existEventOddsByChampInSeasonDay) {
@@ -1001,6 +1004,10 @@ public class GoodnessCalculator {
 		HashMap<ChampEnum, ArrayList<EventOddsBean>> matchesOddWithGoodness = IOUtils.read(AppConstants.MATCHES_ODDS_WITH_GOODNESS_PATH,  HashMap.class);
 		return matchesOddWithGoodness;
 	}
+
+
+
+	
 
 	
 

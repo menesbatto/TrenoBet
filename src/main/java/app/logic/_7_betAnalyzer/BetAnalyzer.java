@@ -93,8 +93,13 @@ public class BetAnalyzer {
 		return baTot;
 	}
 	
+	public List<SingleBetBean> execute(int seasonDay) {
+		ChampEnum[] allChamps = ChampEnum.values();
+		return execute(seasonDay, allChamps);
+	}
+	
 	@Transactional
-	public List<SingleBetBean> execute(Integer seasonDay){
+	public List<SingleBetBean> execute(Integer seasonDay, ChampEnum[] champs){
 //		i++;
 //		HashMap<ChampEnum, ArrayList<MatchResult>> partialHistory = getPartialHistoryForSpecificWeek(week);
 //		HashMap<ChampEnum, ArrayList<MatchResult>> bettableMatches = getBettableMatchesForSpecificWeek(week);
@@ -103,7 +108,7 @@ public class BetAnalyzer {
 //		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
 		List<SingleBetBean> allSingleBets = new ArrayList<SingleBetBean>();
-		for (ChampEnum champ : ChampEnum.values()){
+		for (ChampEnum champ : champs){
 		
 //			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheck(champ);
 
@@ -219,6 +224,8 @@ public class BetAnalyzer {
 			realMatchResult = MatchResultEnum.D;
 		return realMatchResult;
 	}
+
+	
 		
 		
 		

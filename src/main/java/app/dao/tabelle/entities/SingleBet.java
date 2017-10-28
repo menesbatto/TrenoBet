@@ -32,7 +32,7 @@ public class SingleBet {
 	
 	
 	@ManyToOne
-	private Matcho matcho;
+	private Matcho match;
 
 	private Integer seasonDay;
 	
@@ -97,12 +97,12 @@ public class SingleBet {
 				+ ", timeType=" + timeType + "\n";
 	}
 
-	public Matcho getMatcho() {
-		return matcho;
+	public Matcho getMatch() {
+		return match;
 	}
 
-	public void setMatcho(Matcho matcho) {
-		this.matcho = matcho;
+	public void setMatch(Matcho match) {
+		this.match = match;
 	}
 
 	public Boolean getWin() {

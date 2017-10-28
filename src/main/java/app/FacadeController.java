@@ -240,6 +240,9 @@ public class FacadeController {
 	@Autowired
 	private EventOddsRepo eventOddsRepo;
 	
+	@Autowired
+	private SingleBetDao singleBetDao;
+	
 
 	
 	@RequestMapping(value = "/saveChamp/{champName}", method = RequestMethod.GET)
@@ -326,10 +329,9 @@ public class FacadeController {
 	}
 	
 
-	@RequestMapping(value = "/removeAllNextMatch", method = RequestMethod.GET)
-	public void removeNextMatch() {
-//		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
-//		matchDao.removeAllNextMatchesByChamp(ChampEnum.ENG_PREMIER, actualSeasonDay);
+	@RequestMapping(value = "/removeAllNextMatchNoChamp", method = RequestMethod.GET)
+	public void removeAllNextMatchNoChamp() {
+		matchDao.removeAllNextMatchesByNoChamp();
 	}
 
 	
@@ -349,9 +351,30 @@ public class FacadeController {
 	@Transactional
 	public void deleteMatch(@PathVariable Integer idMatch) {
 		eventOddsDao.removeByMatchId(idMatch);
+		singleBetDao.removeByMatchId(idMatch);
 		matchDao.deleteMatch(idMatch);
 	}
 
+	@RequestMapping(value = "/downloadNextMatches/{champName}", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadNextMatchesByChamp(@PathVariable String champName) {
+		ChampEnum champ = ChampEnum.valueOf(champName);
+		ChampEnum[] champs = new ChampEnum[] {champ};
+		nextMatchesDownloader.execute(champs);
+		String body = "Downloading next matches for champ " + champName + " COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
+	
+	@RequestMapping(value = "/downloadPastMatches/{champName}", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadPastMatchesByChamp(@PathVariable String champName) {
+		ChampEnum champ = ChampEnum.valueOf(champName);
+		ChampEnum[] champs = new ChampEnum[] {champ};
+		pastMatchesDownloader.execute(champs);
+		String body = "Downloading past matches for champ " + champName + " COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
+	
 	// @GetMapping(path="/all")
 	// public @ResponseBody Iterable<User> getAllUsers() {
 	// // This returns a JSON or XML with the users

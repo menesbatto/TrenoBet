@@ -166,8 +166,13 @@ public class Utils {
 		c.set(Calendar.DATE, 10);			//10 giovedi
 		c.set(Calendar.MONTH, 7);			//agosto
 		c.set(Calendar.YEAR, 2017);			//2017
+		c.set(Calendar.HOUR_OF_DAY, 0);		//0
+		c.set(Calendar.MINUTE, 0);			//0
+		c.set(Calendar.SECOND, 0);			//0
 		return c;
 	}
+	
+	
 	
 	public static Date getDateAfter7Days(Date date) {
 		
@@ -177,6 +182,17 @@ public class Utils {
 		Date dateAfter7Days = cal.getTime();
 		
 		return dateAfter7Days;
+		
+	}
+	
+	public static Date getLimitDayOfCurrentSeasonDay() {
+		
+		int actualTrenoSeasonDay = getActualTrenoSeasonDay();
+		Calendar cal = getCalendarStartDate();
+		cal.add(Calendar.DATE, (actualTrenoSeasonDay + 1 ) * 7);
+		Date limitDayOfSeasonDayByDate = cal.getTime();
+		
+		return limitDayOfSeasonDayByDate;
 		
 	}
 

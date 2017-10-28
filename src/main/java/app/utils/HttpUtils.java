@@ -3,8 +3,9 @@ package app.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -28,7 +29,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HttpUtils {
 
-	private static WebDriver driver;
+//	private static WebDriver driver;
+	
+	private static Map<String, WebDriver> driversMap = new HashMap<String, WebDriver>();
+	
 	private static int downloadedPages=0;
 
 
@@ -56,16 +60,16 @@ public class HttpUtils {
 		while (true){
 			try {
 				
-				
-				if (driver == null){
-					driver = initDriver();
-				}
+				WebDriver champDriver = getChampDriver(url);
+//				if (driver == null){
+//					driver = initDriver();
+//				}
 											
 //					long startTime = System.nanoTime();
 //					System.out.println("2 DOWNLOAD PAGE...");
 				
-				driver.get(url);
-				driver.navigate().refresh();
+				champDriver.get(url);
+				champDriver.navigate().refresh();
 
 //					long currentTime = System.nanoTime();
 //					long duration = (currentTime - startTime);  //divide by 1000000 to get milliseconds.
@@ -74,15 +78,15 @@ public class HttpUtils {
 				
 				
 			
-				List<WebElement> elementsX = driver.findElements(By.className(("table-container")));
+				List<WebElement> elementsX = champDriver.findElements(By.className(("table-container")));
 				for (WebElement elem :  elementsX){
 					List<WebElement> topRows = elem.findElements(By.partialLinkText("Over/Under +"));
 					if (topRows.size() == 1){
-						JavascriptExecutor executor = (JavascriptExecutor)driver;
+						JavascriptExecutor executor = (JavascriptExecutor)champDriver;
 						executor.executeScript("arguments[0].click();", topRows.get(0));	
 						// A volte si apre la pagina col la sezione gia espansa, cosi' la richiudo
 						try {
-							WebDriverWait wait = new WebDriverWait(driver,2);
+							WebDriverWait wait = new WebDriverWait(champDriver,2);
 							wait.until(ExpectedConditions.textToBePresentInElement(elem, "Log in to show!"));
 						}
 						catch (Exception e){
@@ -94,7 +98,7 @@ public class HttpUtils {
 				
 				
 				
-				String pageSource = driver.getPageSource();
+				String pageSource = champDriver.getPageSource();
 				doc = Jsoup.parse(pageSource);
 				
 				return doc;
@@ -124,16 +128,18 @@ public class HttpUtils {
 			try {
 				
 				
-				if (driver == null){
-					driver = initDriver();
-				}
+//				if (driver == null){
+//					driver = initDriver();
+//				}
+				WebDriver champDriver = getChampDriver(url);
+				
 											
 //					long startTime = System.nanoTime();
 //					System.out.println("2 DOWNLOAD PAGE...");
 				
-				driver.get(url);
+				champDriver.get(url);
 //				System.out.println(driver.getPageSource());
-				driver.navigate().refresh();
+				champDriver.navigate().refresh();
 
 //					long currentTime = System.nanoTime();
 //					long duration = (currentTime - startTime);  //divide by 1000000 to get milliseconds.
@@ -141,17 +147,17 @@ public class HttpUtils {
 //					System.out.println();
 				
 			
-				List<WebElement> elementsX = driver.findElements(By.className(("table-container")));
+				List<WebElement> elementsX = champDriver.findElements(By.className(("table-container")));
 				//System.out.println(driver.getPageSource());
 				if ( fails < 3 ) {
 					for (WebElement elem :  elementsX){
 						List<WebElement> topRows = elem.findElements(By.partialLinkText("European handicap "));
 						if (topRows.size() == 1){
-							JavascriptExecutor executor = (JavascriptExecutor)driver;
+							JavascriptExecutor executor = (JavascriptExecutor)champDriver;
 							executor.executeScript("arguments[0].click();", topRows.get(0));
 							// A volte si apre la pagina col la sezione gia espansa, cosi' la richiudo
 							try {
-								WebDriverWait wait = new WebDriverWait(driver,2);
+								WebDriverWait wait = new WebDriverWait(champDriver,2);
 								wait.until(ExpectedConditions.textToBePresentInElement(elem, "Log in to show!"));
 							}
 							catch (Exception e){
@@ -162,7 +168,7 @@ public class HttpUtils {
 				}
 				
 				
-				String pageSource = driver.getPageSource();
+				String pageSource = champDriver.getPageSource();
 				doc = Jsoup.parse(pageSource);
 				
 				return doc;
@@ -215,27 +221,42 @@ public class HttpUtils {
 	
 	private static Document chromeWork(String url) {
 		Document doc;
-		if (driver == null){
-			driver = initDriver();
-		}
+		WebDriver champDriver = getChampDriver(url);
+//		if (driver == null){
+//			driver = initDriver();
+//		}
 									
 		
 //			long startTime = System.nanoTime();
 //			System.out.println("2 DOWNLOAD PAGE...");
 		
-		driver.get(url);
-		driver.navigate().refresh();
+		champDriver.get(url);
+		champDriver.navigate().refresh();
 
 //			long currentTime = System.nanoTime();
 //			long duration = (currentTime - startTime);  //divide by 1000000 to get milliseconds.
 //			System.out.println("DONE\t" + duration / 1000000);
 //			System.out.println();
 		
-		String pageSource = driver.getPageSource();
+		String pageSource = champDriver.getPageSource();
 //		System.out.println(pageSource);
 		doc = Jsoup.parse(pageSource);
 		
 		return doc;
+	}
+
+
+
+
+	private static WebDriver getChampDriver(String url) {
+		String[] split = url.split("/");
+		String driverName = split[4] + "/" + split[5];
+		WebDriver champDriver = driversMap.get(driverName);
+		if (champDriver == null) {
+			champDriver = initDriver();
+			driversMap.put(driverName, champDriver);
+		}
+		return champDriver;
 	}
 
 

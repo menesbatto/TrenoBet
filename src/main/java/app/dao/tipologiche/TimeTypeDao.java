@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tipologiche.entities.BetHouse;
@@ -13,6 +15,8 @@ import app.dao.tipologiche.entities.TimeType;
 import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
 
 @Service
+@EnableCaching
+
 public class TimeTypeDao {
 
 	@Autowired
@@ -22,7 +26,7 @@ public class TimeTypeDao {
 
 	private HashMap<String, TimeTypeEnum> cacheMapBean;
 
-	
+	@Cacheable("timeTypes")
 	public List<TimeType> findAll(){
 		return timeTypeRepo.findAll();
 	}

@@ -36,11 +36,15 @@ public class RankingCalculator {
 
 	@Autowired
 	private ResultAnalyzer resultAnalyzer;
+
+	public void execute(int seasonDay) {
+		ChampEnum[] allChamps = ChampEnum.values();
+		execute(seasonDay, allChamps);
+	}
 	
-	
-	public void execute(Integer seasonDay){
+	public void execute(Integer seasonDay, ChampEnum[] champs){
 		
-		for (ChampEnum champ : ChampEnum.values()){
+		for (ChampEnum champ : champs){
 			calculateChampRanking(champ, seasonDay);
 		}
 
@@ -829,22 +833,22 @@ public class RankingCalculator {
 						case GOALS_SCORED:
 							compare = o2.getAllScoredGoals() - o1.getAllScoredGoals();
 							break;
-							
-						case HEAD_TO_HEAD_POINTS:
-							ArrayList<MatchResult> matchesResults;
-							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
-							compare = getHeadToHeadPointsCompare(o1, o2, matchesResults);
-							break;
-							
-						case HEAD_TO_HEAD_GOALS_DIFFERENCE:
-							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
-							compare = getHeadToHeadGoalsDifferenceCompare(o1, o2, matchesResults);
-							break;
-							
-						case HEAD_TO_HEAD_GOALS_SCORED_AWAY:
-							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
-							compare = getHeadToHeadGoalsScoredAwayCompare(o1, o2, matchesResults);
-							break;
+//							RIMOSSI MA DA RIMETTERE
+//						case HEAD_TO_HEAD_POINTS:
+//							ArrayList<MatchResult> matchesResults;
+//							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
+//							compare = getHeadToHeadPointsCompare(o1, o2, matchesResults);
+//							break;
+//							
+//						case HEAD_TO_HEAD_GOALS_DIFFERENCE:
+//							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
+//							compare = getHeadToHeadGoalsDifferenceCompare(o1, o2, matchesResults);
+//							break;
+//							
+//						case HEAD_TO_HEAD_GOALS_SCORED_AWAY:
+//							matchesResults = getMatchesResult(o1.getTeamName(), o2.getTeamName());
+//							compare = getHeadToHeadGoalsScoredAwayCompare(o1, o2, matchesResults);
+//							break;
 							
 						case GOALS_SCORED_AWAY:
 							compare = o2.getAwayScoredGoals() - o1.getAwayScoredGoals();
@@ -1026,5 +1030,6 @@ public class RankingCalculator {
 		}
 		
 	}
+
 	
 }

@@ -42,11 +42,17 @@ public class MatchesDownloader {
 	private MatchoDao matchDao;
 	
 	
-	
 	public void execute(String type){
+		ChampEnum[] allChamps = ChampEnum.values();
+		execute(type, allChamps);
+		
+	}
+	
+	
+	public void execute(String type, ChampEnum[] champs){
 		
 		//Ciclo su tutti i campionati per i risultati dei match giocati e le quote
-		for (ChampEnum champ : ChampEnum.values()){
+		for (ChampEnum champ : champs){
 			int savedMatchesNum = downloadChampionshipResults(champ, type);
 		}
 		
@@ -155,7 +161,7 @@ public class MatchesDownloader {
 				
 				//Scarico solo i matches che stanno a meno di 7 giorni di distanza da oggi
 				if (AppConstants.ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES) {
-					Date expiringDate = Utils.getDateAfter7Days(new Date());
+					Date expiringDate = Utils.getLimitDayOfCurrentSeasonDay();
 					if (matchDate.after(expiringDate)) {
 						return savedMatches;
 					}
@@ -165,7 +171,7 @@ public class MatchesDownloader {
 //			else if (row.hasClass("odd") || row.hasAttr("heid")){ //next xxx
 			else if (row.hasClass("deactivate") || row.hasClass("odd") || row.hasAttr("xeid")){ //results
 					long startTime = System.nanoTime();
-					System.out.println("Match " + matchNum++);
+					System.out.println(champ + " Match " + matchNum++);
 					
 //				if (matchSkipped >= alreadySavedMatcheOnThisPage) {
 					matchResult = createMatchResult(row, matchDate, champSubsetUrl, downloadedMatches); 
@@ -244,8 +250,13 @@ public class MatchesDownloader {
 			if (pastToPast)
 				return null;
 			
-			if (firstPast || nextToPast) {
 			
+			
+			if (firstPast || nextToPast) {
+				
+				if (AppConstants.DO_NOT_UPDATE_NEXT_MATCH && nextToNext) {
+					return m;
+				}
 			
 			//	RISULTATO
 				
@@ -284,6 +295,10 @@ public class MatchesDownloader {
 			//	QUOTE
 			if (firstNext || firstPast || nextToNext) {	
 
+				if (AppConstants.DO_NOT_UPDATE_NEXT_MATCH && nextToNext) {
+					return m;
+				}
+				
 				Double H = Double.valueOf(row.getElementsByClass("odds-nowrp").get(0).text());
 				Double D = Double.valueOf(row.getElementsByClass("odds-nowrp").get(1).text());
 				Double A = Double.valueOf(row.getElementsByClass("odds-nowrp").get(2).text());

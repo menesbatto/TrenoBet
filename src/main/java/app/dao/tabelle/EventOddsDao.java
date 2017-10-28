@@ -518,5 +518,11 @@ public class EventOddsDao {
 	}
 
 
+	public void deleteByMatchChampIsNull() {
+		eventOddsRepo.deleteByMatchChampIsNull();
+		
+	}
+
+
 
 }

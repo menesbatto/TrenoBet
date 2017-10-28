@@ -50,13 +50,13 @@ public class SingleBetDao {
 
 			betBean= new SingleBetBean(betTypeEnum,  matchResultEnum , betEnt.getWinOdds(), timeTypeEnum, champ);
 			
-			MatchResult matchResultBean = matchoDao.mapMatchoToMatchResult(betEnt.getMatcho(), true);
+			MatchResult matchResultBean = matchoDao.mapMatchoToMatchResult(betEnt.getMatch(), true);
 			betBean.setMatch(matchResultBean);
 			
 			betBean.setSeasonDay(betEnt.getSeasonDay());
 			
 			
-			betBean.setMatchId(betEnt.getMatcho().getId());
+			betBean.setMatchId(betEnt.getMatch().getId());
 	
 			betBeanList.add(betBean);
 			
@@ -83,7 +83,7 @@ public class SingleBetDao {
 			sbEnt.setChamp(champ);
 			
 			Matcho matcho = matchoDao.findById(sbBean.getMatchId());
-			sbEnt.setMatcho(matcho);
+			sbEnt.setMatch(matcho);
 			
 			TimeType timeType = timeTypeDao.findByValue(sbBean.getTimeTypeEnum().name());
 			sbEnt.setTimeType(timeType);
@@ -98,7 +98,7 @@ public class SingleBetDao {
 	@Transactional
 	public void deleteBetResultByChampAndSeasonDay(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
-		singleBetRepo.deleteByMatchoChampAndSeasonDay(champ, seasonDay);
+		singleBetRepo.deleteByMatchChampAndSeasonDay(champ, seasonDay);
 		
 	}
 
@@ -106,7 +106,7 @@ public class SingleBetDao {
 	public List<SingleBetBean> retrieveSingleBetsToCheckInDateRange(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		
-		List<SingleBet> singleBetEntList = singleBetRepo.findByMatchoChampAndSeasonDay(champ, seasonDay);
+		List<SingleBet> singleBetEntList = singleBetRepo.findByMatchChampAndSeasonDay(champ, seasonDay);
 		
 		
 		List<SingleBetBean> singleBetBeanList = mapEntToBean(singleBetEntList);
@@ -127,10 +127,15 @@ public class SingleBetDao {
 	public List<SingleBetBean> retrieveSingleBetsToCheck(ChampEnum champEnum){
 		
 		Champ champ = champDao.findByChampEnum(champEnum);
-		List<SingleBet> betEntList = singleBetRepo.findByMatchoChampAndWinIsNull(champ);
+		List<SingleBet> betEntList = singleBetRepo.findByMatchChampAndWinIsNull(champ);
 		List<SingleBetBean> betBeanList = mapEntToBean(betEntList);
 		
 		return betBeanList; 				
+	}
+
+	public void removeByMatchId(Integer idMatch) {
+		singleBetRepo.deleteByMatchId(idMatch);
+		
 	}
 
 	

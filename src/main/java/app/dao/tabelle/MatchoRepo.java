@@ -46,6 +46,8 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 	
 	@Deprecated
 	List<Matcho> findByChampAndFullTimeResultIsNullAndMatchDateBetween(Champ champ, Date startDate, Date endDate);
+
+	void deleteByChampIsNull();
 	
 //	@Query(value = "SELECT TOP ?1, * FROM MATCH WHERE CHAMP_ID = ?1", nativeQuery = true)
 //	List<Matcho> findByChampAndAwayTeamAndFullTimeResultIsNotNullTopN(Champ champ, Team team);

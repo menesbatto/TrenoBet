@@ -1,25 +1,25 @@
 package app.dao.tabelle;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import app.dao.tabelle.entities.Champ;
-import app.dao.tabelle.entities.Matcho;
 import app.dao.tabelle.entities.SingleBet;
-import app.utils.ChampEnum;
 
 @RepositoryRestResource
 public interface SingleBetRepo extends JpaRepository<SingleBet, Long> {
 
-	List<SingleBet> findByMatchoChampAndWinIsNull(Champ champ);
+	List<SingleBet> findByMatchChampAndWinIsNull(Champ champ);
 
 
-	List<SingleBet> findByMatchoChampAndSeasonDay(Champ champ, Integer seasonDay);
+	List<SingleBet> findByMatchChampAndSeasonDay(Champ champ, Integer seasonDay);
 	
-	void deleteByMatchoChampAndSeasonDay(Champ champ, Integer seasonDay);
+	void deleteByMatchChampAndSeasonDay(Champ champ, Integer seasonDay);
+
+
+	void deleteByMatchId(Integer idMatch);
 
 
 	

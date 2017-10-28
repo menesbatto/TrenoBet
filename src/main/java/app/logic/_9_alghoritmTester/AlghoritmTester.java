@@ -65,50 +65,60 @@ public class AlghoritmTester {
 		List<SingleBetBean> allChampsSingleBets = new ArrayList<SingleBetBean>();
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		
+		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ITA_SERIE_A_2017};
+		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_B_2017};
+		ChampEnum[] champs = ChampEnum.values();//new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017};
+		
+		
 		for (int seasonDay = 7; seasonDay < actualSeasonDay; seasonDay++) {
 //			Date dateOfBet = getDateOfBet(seasonDay);
-			
+			System.out.println(seasonDay + " 1");
 			if (calculateStats) {
-				resultAnalyzer.execute(seasonDay);
-//				rankingCalculator.execute(seasonDay);
-				goodnessCalculator.execute(seasonDay);
+				resultAnalyzer.execute(seasonDay, champs);
+//				rankingCalculator.execute(seasonDay, champs);
+				System.out.println(seasonDay + " 2");
+				goodnessCalculator.execute(seasonDay, champs);
 			}
-		
-//			
-			betCreator.execute(seasonDay);
+			System.out.println(seasonDay + " 3");
 			
-			List<SingleBetBean> bets = betAnalyzer.execute(seasonDay);
+			betCreator.execute(seasonDay, champs);
+			
+			System.out.println(seasonDay + " 4");
+			
+			List<SingleBetBean> bets = betAnalyzer.execute(seasonDay, champs);
+			
+			System.out.println(seasonDay + " 5");
 			
 			allChampsSingleBets.addAll(bets);
-			System.out.println("#################################");
-			System.out.print("############  " + seasonDay);
-			if (seasonDay < 10) System.out.println("  ################");
-			else				System.out.println("  ###############");
-			System.out.println("#################################");
+			printSeasonDayTitle(seasonDay+"");
 			printAllBetStats(bets);
+			
+			System.out.println(seasonDay + " 6");
 		
 		}
 		
-		
-//		0 amount = 50.0;
-//		System.out.println("Total");
-//		System.out.println();
-//		printAllBetStats(allChampsSingleBets);
-		
-		// Calcola la goodness fino a quel momento
-		
-		// Crea la bet
-		
-		// Verifica se è vinta
+		printSeasonDayTitle("Total");
+		printAllBetStats(allChampsSingleBets);
 		
 		
+	}
+
+
+	private void printSeasonDayTitle(String seasonDay) {
 		
+		System.out.println("#################################");
+		Integer seasonDayInt = 0;
+		if (seasonDay!= "Total") {
+			seasonDayInt = Integer.valueOf(seasonDay);
+		}
 		
+		System.out.print("############  " + seasonDay + " - da " + Utils.getDateOfBet(seasonDayInt) + " a " + Utils.getDateOfBet(seasonDayInt + 1));
 		
-		
-		
-		
-		
+		if (seasonDay.length() == 1) 		System.out.println("  ################");
+		else if (seasonDay.length() == 5)	System.out.println("  ############");
+		else								System.out.println("  ###############");
+		System.out.println("#################################");
+		System.out.println();
 	}
 
 
@@ -192,8 +202,9 @@ public class AlghoritmTester {
  		// Stampa le statistiche
  		for (Entry<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> entry : mapBetResultInfoGeneral.entrySet()) {
  			TimeTypeEnum timeType = entry.getKey();
+ 			String timeTypeName = timeType == null ? Utils.redimString("ALL TIME TYPES",16) : Utils.redimString(timeType.name(),16);
  			System.out.println();
- 			System.out.println(timeType);
+ 			System.out.println(timeTypeName);
  			HashMap<ChampEnum, SeasonDayBetResultInfo> value = entry.getValue();
  			String lineChamp = "";
  			String lineHeader = "";
@@ -209,10 +220,10 @@ public class AlghoritmTester {
  				lineChamp += keyName + "\t\t\t\t\t\t";
  				lineHeader += "\tTOT\tWIN\tLOST\t€" + "\t\t\t\t";
  				line12 += "12"+ 			"\t" + info.get_12BetNum() + 			"\t" + info.get_12WinBetNum() + 	"\t" + ( info.get_12BetNum()-info.get_12WinBetNum())+ 		"\t" + Utils.redimString(info.get_12WinAmount()) + "\t\t\t\t";
- 				lineX += "12"+ 				"\t" + info.getxBetNum() + 				"\t" + info.getxWinBetNum() + 		"\t" + ( info.getxBetNum()-info.getxWinBetNum())+ 			"\t" + Utils.redimString(info.getxWinAmount()) + "\t\t\t\t";
- 				lineUo += "12"+ 			"\t" + info.getUoBetNum() + 			"\t" + info.getUoWinBetNum() + 		"\t" + ( info.getUoBetNum()-info.getUoWinBetNum())+ 		"\t" + Utils.redimString(info.getUoWinAmount()) + "\t\t\t\t";
- 				lineEh += "12"+ 			"\t" + info.getEhBetNum() + 			"\t" + info.getEhWinBetNum() + 		"\t" + ( info.getEhBetNum()-info.getEhWinBetNum())+ 		"\t" + Utils.redimString(info.getEhWinAmount()) + "\t\t\t\t";
- 				lineTotal += "12"+ 			"\t" + info.getTotalBetNum() + 			"\t" + info.getTotalWinBetNum() + 	"\t" + ( info.getTotalBetNum()-info.getTotalWinBetNum())+ 	"\t" + Utils.redimString(info.getTotalWinAmount()) + "\t\t\t\t";
+ 				lineX += "X"+ 				"\t" + info.getxBetNum() + 				"\t" + info.getxWinBetNum() + 		"\t" + ( info.getxBetNum()-info.getxWinBetNum())+ 			"\t" + Utils.redimString(info.getxWinAmount()) + "\t\t\t\t";
+ 				lineUo += "Uo"+ 			"\t" + info.getUoBetNum() + 			"\t" + info.getUoWinBetNum() + 		"\t" + ( info.getUoBetNum()-info.getUoWinBetNum())+ 		"\t" + Utils.redimString(info.getUoWinAmount()) + "\t\t\t\t";
+ 				lineEh += "Eh"+ 			"\t" + info.getEhBetNum() + 			"\t" + info.getEhWinBetNum() + 		"\t" + ( info.getEhBetNum()-info.getEhWinBetNum())+ 		"\t" + Utils.redimString(info.getEhWinAmount()) + "\t\t\t\t";
+ 				lineTotal += "Total"+ 		"\t" + info.getTotalBetNum() + 			"\t" + info.getTotalWinBetNum() + 	"\t" + ( info.getTotalBetNum()-info.getTotalWinBetNum())+ 	"\t" + Utils.redimString(info.getTotalWinAmount()) + "\t\t\t\t";
  			}
  			
  			System.out.println(lineChamp);
