@@ -211,6 +211,9 @@ public class EventOddsDao {
 			ent.setGoodnessW(bean.getGoodnessW());
 			ent.setGoodnessD(bean.getGoodnessD());
 			ent.setGoodnessL(bean.getGoodnessL());
+			ent.setTotalEventsW(bean.getTotalEventsW());
+			ent.setTotalEventsD(bean.getTotalEventsD());
+			ent.setTotalEventsL(bean.getTotalEventsL());
 			
 			if (bean.getHomeVariationType() != null) {
 				HomeVariationEnum homeVariationEnum = bean.getHomeVariationType();
@@ -401,6 +404,9 @@ public class EventOddsDao {
 			bean.setGoodnessW(ent.getGoodnessW());
 			bean.setGoodnessD(ent.getGoodnessD());
 			bean.setGoodnessL(ent.getGoodnessL());
+			bean.setTotalEventsW(ent.getTotalEventsW());
+			bean.setTotalEventsD(ent.getTotalEventsD());
+			bean.setTotalEventsL(ent.getTotalEventsL());
 			
 			if (ent.getHomeVariationType() != null) {
 				HomeVariationType homeVariationType = ent.getHomeVariationType();

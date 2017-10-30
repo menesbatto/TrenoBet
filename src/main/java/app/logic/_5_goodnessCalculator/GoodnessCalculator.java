@@ -75,14 +75,17 @@ public class GoodnessCalculator {
 		
 		List<RankingRow> ranking;
 		for (ChampEnum champ : champs){
-			
+			System.out.println("\t - 1 existEventsOdds");
 			Boolean existEventOddsByChampInSeasonDay = eventOddsDao.existEventOddsByChampInSeasonDay(champ, seasonDay);
 			if (existEventOddsByChampInSeasonDay) {
 				continue;
 			}
 			System.out.println(champ);
 			
+			System.out.println("\t - 2 calculateEventsOdds");
 			calculateMatchGoodnessOfChamp(champ, seasonDay);
+			System.out.println("\t - 3 calculateEventsOddsComplete");
+
 //			ranking = rankingRowDao.findByChamp(champ);
 //			rankingCalculator.printRanking(ranking, champ);
 		}

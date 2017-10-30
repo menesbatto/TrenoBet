@@ -19,7 +19,7 @@ public interface TeamRepo extends PagingAndSortingRepository<Team, Long> {
 //
 //	List<BetHouse> findByValue(@Param("value") String string);
 
-	List<Team> findByNameAndChamp(String name, Champ champ);
+	Team findByNameAndChamp(String name, Champ champ);
 
 	List<Team> findByChamp(Champ champ);
 	

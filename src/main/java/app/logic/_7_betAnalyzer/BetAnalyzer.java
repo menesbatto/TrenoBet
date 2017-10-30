@@ -28,6 +28,7 @@ import app.logic._4_trendCalculator.TrendCalculator;
 import app.logic._5_goodnessCalculator.GoodnessCalculator;
 import app.logic._6_betCreator.BetCreator;
 import app.logic._7_betAnalyzer.model.BetAnalysis;
+import app.logic._9_alghoritmTester.AlghoritmTester;
 import app.utils.AppConstants;
 import app.utils.ChampEnum;
 import app.utils.Utils;
@@ -37,6 +38,9 @@ public class BetAnalyzer {
 	
 	@Autowired
 	private SingleBetDao singleBetDao;
+	
+	@Autowired
+	private AlghoritmTester algoritmTester;
 	
 	private static HashMap<ChampEnum, ArrayList<MatchResult>> allMatchesResults;
 	private static HashMap<Integer, BetAnalysis> allBetsAnalysis;
@@ -118,7 +122,7 @@ public class BetAnalyzer {
 //			Date endDate = cal.getTime();
 			
 			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheckInDateRange(champ, seasonDay);
-			
+			List<SingleBetBean> singleBetsToPrint = new ArrayList<SingleBetBean>();
 			
 			for (SingleBetBean singleBet : singleBets) {
 				BetType betType = singleBet.getBetType();
@@ -128,7 +132,7 @@ public class BetAnalyzer {
 				MatchResultEnum predicedMatchResult = singleBet.getMatchResultForecast();
 				
 				MatchResult m = singleBet.getMatch();
-				if (m != null)  {
+				if (m != null && m.getFTHG() != null)  {
 					int homeGoals = 0;
 					int awayGoals = 0;
 					switch (timeType) {
@@ -199,11 +203,19 @@ public class BetAnalyzer {
 					}
 					
 					singleBet.setWin(isBetWin);
+					
+					if ( singleBet.getWin() != null ) {
+						singleBetsToPrint.add(singleBet);
+					}
+					
 				}
 				
 			}
+
+			algoritmTester.printAllBetStats( singleBetsToPrint );
 			
-//			System.out.println(singleBets);
+			System.out.println(singleBets);
+			
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
 			singleBetDao.saveBetResult(singleBets, champ);
 			

@@ -2,6 +2,8 @@ package app.logic._1_matchesDownlaoder.model;
 
 import java.io.Serializable;
 
+import app.utils.Utils;
+
 public class ResultGoodnessUoBean implements Serializable{
 	
 	private static final long serialVersionUID = -8220776671620254113L;
@@ -28,7 +30,7 @@ public class ResultGoodnessUoBean implements Serializable{
 
 	@Override
 	public String toString() {
-		return  "\t" + goodnessU + "\t" + goodnessO + "\t" + totalEvents;
+		return  "\t" + Utils.redimString(goodnessU) + "\t" + Utils.redimString(goodnessO);// + "\t" + totalEvents;
 	}
 
 	public Integer getTotalEvents() {

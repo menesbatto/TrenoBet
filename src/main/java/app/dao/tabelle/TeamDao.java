@@ -14,6 +14,7 @@ import app.dao.tabelle.entities.Team;
 import app.utils.ChampEnum;
 
 @Service
+@EnableCaching
 public class TeamDao {
 
 	@Autowired
@@ -42,17 +43,12 @@ public class TeamDao {
 		return teams;
 	}
 	
+	@Cacheable("team")
 	public Team findByNameAndChamp(String name, Champ champ) {
-		Team first = findInCache(name, champ);
-		if (first == null) {
-			//List<Team> list = teamRepo.findByNameAndChamp(name, champ);
-			List<Team> list = teamRepo.findByName(name);
-			if (list.isEmpty())
-				first = saveTeam(name, champ);
-			else 
-				first = list.get(0);
-		}
-		return first;
+		Team team = teamRepo.findByNameAndChamp(name, champ);;
+		if (team == null)
+			team = saveTeam(name, champ);
+		return team;
 	}
 	
 	private Team saveTeam(String name, Champ champ) {

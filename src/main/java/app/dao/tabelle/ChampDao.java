@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.entities.Champ;
+import app.dao.tabelle.entities.Team;
 import app.dao.tipologiche.RankingCriteriaDao;
 import app.dao.tipologiche.entities.RankingCriteria;
 import app.utils.ChampEnum;
@@ -22,17 +24,12 @@ public class ChampDao {
 	@Autowired
 	private RankingCriteriaDao rankingCriteriaDao;
 	
-	private HashMap<ChampEnum, Champ> cacheMap;
+//	private HashMap<ChampEnum, Champ> cacheMap;
 	
 //	private HashMap<Champ, ChampEnum> cacheEnumMap
 
-	
+	@Cacheable("champEnt")
 	public ChampEnum findChampEnumByChamp(Champ champ) {
-//		ChampEnum first = findInCacheEnum(champ);
-//		if (first == null) {
-//			ChampEnum
-//			
-//		}
 		for (ChampEnum champEnum : ChampEnum.values()) {
 			if ( champEnum.getNation().equals(champ.getNation()) &&
 				 champEnum.getStartYear() == champ.getStartYear() &&
@@ -44,31 +41,41 @@ public class ChampDao {
 		return null;
 	}
 	
+	
+	@Cacheable("champEnum")
 	public Champ findByChampEnum(ChampEnum champEnum) {
-		Champ first = findInCache(champEnum);
-		if (first == null) {
-			String name = champEnum.getName();
-			int startYear = champEnum.getStartYear();
-			String nation = champEnum.getNation();
-			List<Champ> list = champRepo.findByNameAndStartYearAndNation(name, startYear, nation);
-			if (list.isEmpty())
-				return null;
-			first = list.get(0);
-			
-			cacheMap.put(champEnum, first);
-		}
-		return first;
+		String name = champEnum.getName();
+		int startYear = champEnum.getStartYear();
+		String nation = champEnum.getNation();
+		Champ champ = champRepo.findByNameAndStartYearAndNation(name, startYear, nation);
+		return champ;
 	}
+	
+//	public Champ findByChampEnum(ChampEnum champEnum) {
+//		Champ first = findInCache(champEnum);
+//		if (first == null) {
+//			String name = champEnum.getName();
+//			int startYear = champEnum.getStartYear();
+//			String nation = champEnum.getNation();
+//			List<Champ> list = champRepo.findByNameAndStartYearAndNation(name, startYear, nation);
+//			if (list.isEmpty())
+//				return null;
+//			first = list.get(0);
+//			
+//			cacheMap.put(champEnum, first);
+//		}
+//		return first;
+//	}
 
 	
 
-	private Champ findInCache(ChampEnum champEnum) {
-		if (cacheMap == null) {
-			cacheMap = new HashMap<ChampEnum, Champ>();
-		}
-		return cacheMap.get(champEnum);
-	}
-	
+//	private Champ findInCache(ChampEnum champEnum) {
+//		if (cacheMap == null) {
+//			cacheMap = new HashMap<ChampEnum, Champ>();
+//		}
+//		return cacheMap.get(champEnum);
+//	}
+//	
 	
 	public void initTable() {
 //		ChampEnum champEnum = ChampEnum.ENG_PREMIER;

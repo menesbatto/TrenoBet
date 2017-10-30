@@ -102,7 +102,7 @@ public class FacadeController {
 		
 		
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
-		resetStats(actualSeasonDay);
+//		resetStats(actualSeasonDay);
 		resultAnalyzer.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();

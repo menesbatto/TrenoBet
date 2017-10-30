@@ -1,5 +1,6 @@
 package app.logic._9_alghoritmTester;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,28 +73,28 @@ public class AlghoritmTester {
 		
 		for (int seasonDay = 7; seasonDay < actualSeasonDay; seasonDay++) {
 //			Date dateOfBet = getDateOfBet(seasonDay);
-			System.out.println(seasonDay + " 1");
+			System.out.println(seasonDay + " - 1");
 			if (calculateStats) {
 				resultAnalyzer.execute(seasonDay, champs);
 //				rankingCalculator.execute(seasonDay, champs);
-				System.out.println(seasonDay + " 2");
+				System.out.println(seasonDay + " - 2");
 				goodnessCalculator.execute(seasonDay, champs);
 			}
-			System.out.println(seasonDay + " 3");
+			System.out.println(seasonDay + " - 3");
 			
 			betCreator.execute(seasonDay, champs);
 			
-			System.out.println(seasonDay + " 4");
+			System.out.println(seasonDay + " - 4");
 			
 			List<SingleBetBean> bets = betAnalyzer.execute(seasonDay, champs);
 			
-			System.out.println(seasonDay + " 5");
+			System.out.println(seasonDay + " - 5");
 			
 			allChampsSingleBets.addAll(bets);
 			printSeasonDayTitle(seasonDay+"");
 			printAllBetStats(bets);
 			
-			System.out.println(seasonDay + " 6");
+			System.out.println(seasonDay + " - 6");
 		
 		}
 		
@@ -106,23 +107,32 @@ public class AlghoritmTester {
 
 	private void printSeasonDayTitle(String seasonDay) {
 		
-		System.out.println("#################################");
+		System.out.println("#################################################################");
 		Integer seasonDayInt = 0;
+		Date endDate;
 		if (seasonDay!= "Total") {
 			seasonDayInt = Integer.valueOf(seasonDay);
+			endDate = Utils.getDateOfBet(seasonDayInt+1);
+		}
+		else {
+			int actualTrenoSeasonDay = Utils.getActualTrenoSeasonDay();
+			endDate = Utils.getDateOfBet(actualTrenoSeasonDay);
 		}
 		
-		System.out.print("############  " + seasonDay + " - da " + Utils.getDateOfBet(seasonDayInt) + " a " + Utils.getDateOfBet(seasonDayInt + 1));
+		Date startDate = Utils.getDateOfBet(seasonDayInt);
 		
-		if (seasonDay.length() == 1) 		System.out.println("  ################");
-		else if (seasonDay.length() == 5)	System.out.println("  ############");
-		else								System.out.println("  ###############");
-		System.out.println("#################################");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		System.out.println();
+		System.out.print("############  " + seasonDay + " - da " + simpleDateFormat.format(startDate) + " a " + simpleDateFormat.format(endDate));
+		
+		if (seasonDay.length() == 1) 		System.out.println("  ###################");
+		else if (seasonDay.length() == 5)	System.out.println("  ##############");
+		else								System.out.println("  ###############");
+		System.out.println("#################################################################");
 	}
 
 
-	private void printAllBetStats(List<SingleBetBean> allChampsSingleBets) {
+	public void printAllBetStats(List<SingleBetBean> allChampsSingleBets) {
 		
 //		Map<TimeTypeEnum, ArrayList<SingleBetBean>> mapByTimeType = new HashMap<TimeTypeEnum, ArrayList<SingleBetBean>>();
 //		for (SingleBetBean singleBet : allChampsSingleBets) {

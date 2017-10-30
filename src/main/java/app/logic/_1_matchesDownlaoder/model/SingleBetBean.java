@@ -122,8 +122,7 @@ public class SingleBetBean implements Serializable {
 			matchString =  match.getHomeTeam() + " - " + match.getAwayTeam() + " " + match.getFTHG() + "-" + match.getFTAG() + " (" + match.getHTHG() + "-" + match.getHTAG() + ") " + "\n";
 		};
 		
-		return "betType=" + betType + "\tmatchResultForecast=" + matchResultForecast + "\twinOdds=" + winOdds
-				+ "\ttimeTypeEnum=" + Utils.redimString(timeTypeEnum.name(),8) + "\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n"
+		return matchResultForecast + "\t" + betType + "\t" + Utils.redimString(timeTypeEnum.name(),8) + "\t" + winOdds + "\t\t\t\t\t\t\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n"
 				+ matchString  + "\n";
 	}
 

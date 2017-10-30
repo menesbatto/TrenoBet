@@ -28,6 +28,10 @@ public class ResultGoodnessWDLBean implements Serializable{
 		return  "\t" + goodnessW + "\t" + goodnessD + "\t" + goodnessL;
 	}
 
+	public String toStringAway() {
+		return  "\t" + goodnessL + "\t" + goodnessD + "\t" + goodnessW;
+	}
+
 	public Double getGoodnessW() {
 		return goodnessW;
 	}
