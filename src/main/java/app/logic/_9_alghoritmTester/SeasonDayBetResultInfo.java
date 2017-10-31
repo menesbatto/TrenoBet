@@ -132,6 +132,15 @@ public class SeasonDayBetResultInfo {
 	public void setTotalWinAmount(Double totalWinAmount) {
 		this.totalWinAmount = totalWinAmount;
 	}
+	@Override
+	public String toString() {
+		return "SeasonDayBetResultInfo [_12BetNum=" + _12BetNum + ", xBetNum=" + xBetNum + ", uoBetNum=" + uoBetNum
+				+ ", ehBetNum=" + ehBetNum + ", totalBetNum=" + totalBetNum + ", _12WinBetNum=" + _12WinBetNum
+				+ ", xWinBetNum=" + xWinBetNum + ", uoWinBetNum=" + uoWinBetNum + ", ehWinBetNum=" + ehWinBetNum
+				+ ", totalWinBetNum=" + totalWinBetNum + ", _12WinAmount=" + _12WinAmount + ", xWinAmount=" + xWinAmount
+				+ ", uoWinAmount=" + uoWinAmount + ", ehWinAmount=" + ehWinAmount + ", totalWinAmount=" + totalWinAmount
+				+ "]";
+	}
 
 	
 	

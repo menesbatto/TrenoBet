@@ -212,9 +212,9 @@ public class BetAnalyzer {
 				
 			}
 
-			algoritmTester.printAllBetStats( singleBetsToPrint );
+			//algoritmTester.printAllBetStats( singleBetsToPrint );
 			
-			System.out.println(singleBets);
+//			System.out.println(singleBets);
 			
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
 			singleBetDao.saveBetResult(singleBets, champ);

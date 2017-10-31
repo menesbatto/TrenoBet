@@ -194,18 +194,21 @@ public class BetCreator {
 		
 		Double limit = 0.65;
 //		Double limit = 0.1;
-//		Double limitSum = 1.5;
+		Double limitSum = 1.5;
 		Double limitMix = 0.3;
+		Double singleLimit = 0.9;
 		
 //		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
-//		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4){
-		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
+//		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4);
+		Boolean condition1 = goodnessHW >= singleLimit || goodnessAL >= singleLimit; // && if (eo.getOddsH() <= 1.4);
+//		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
 		condition1 = condition1 && winFinalH.getTotalEventsW() != 0 && winFinalA.getTotalEventsL() != 0;
 		
 		
 //		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
 //		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
-		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
+		Boolean condition2 = goodnessHL >= singleLimit || goodnessAW >= singleLimit; // && if (eo.getOddsA() <= 1.4){ 
+//		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
 		condition2 = condition2 && winFinalH.getTotalEventsL() != 0 && winFinalA.getTotalEventsW() != 0;
 		
 		
@@ -243,7 +246,7 @@ public class BetCreator {
 	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
 		
 		Double limit = 0.1;
-		Double limitMix = 2.0;
+		Double limitMix = 4.0;
 		
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();

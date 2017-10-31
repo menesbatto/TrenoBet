@@ -53,16 +53,23 @@ public class AppConstants {
 	public static String ENG_PREMIER_RESULTS = 					SITE_URL + "/soccer/england/premier-league/results";
 	public static String ENG_PREMIER_NEXT_MATCHES = 			SITE_URL + "/soccer/england/premier-league";
 	
-	public static String ENG_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/england/championship/results/";
+	public static String ENG_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/england/championship/results";
 	public static String ENG_CHAMPIONSHIP_NEXT_MATCHES = 		SITE_URL + "/soccer/england/championship";
 	
+
+	//France
+	public static String FRA_LIGUE_1_RESULTS  = 				SITE_URL + "/soccer/france/ligue-1/results";
+	public static String FRA_LIGUE_1_NEXT_MATCHES = 			SITE_URL + "/soccer/france/ligue-1";
+	
+	public static String FRA_LIGUE_2_RESULTS  = 				SITE_URL + "/soccer/france/ligue-2/results";
+	public static String FRA_LIGUE_2_NEXT_MATCHES = 			SITE_URL + "/soccer/france/ligue-2";
 	
 	
 	// Germany
-	public static String GER_BUNDESLIGA_RESULTS = 				SITE_URL + "/soccer/germany/bundesliga/results/";
+	public static String GER_BUNDESLIGA_RESULTS = 				SITE_URL + "/soccer/germany/bundesliga/results";
 	public static String GER_BUNDESLIGA_NEXT_MATCHES = 			SITE_URL + "/soccer/germany/bundesliga";
 	
-	public static String GER_2_BUNDESLIGA_RESULTS = 			SITE_URL + "/soccer/germany/2-bundesliga/results/";
+	public static String GER_2_BUNDESLIGA_RESULTS = 			SITE_URL + "/soccer/germany/2-bundesliga/results";
 	public static String GER_2_BUNDESLIGA_NEXT_MATCHES = 		SITE_URL + "/soccer/germany/2-bundesliga";
 	
 	
@@ -75,23 +82,29 @@ public class AppConstants {
 	public static String ITA_SERIE_B_NEXT_MATCHES = 			SITE_URL + "/soccer/italy/serie-b";
 	
 	
+	//Scotland
+	public static String SCO_PREMIERSHIP_RESULTS = 				SITE_URL + "/soccer/scotland/premiership/results";
+	public static String SCO_PREMIERSHIP_NEXT_MATCHES = 		SITE_URL + "/soccer/scotland/premiership";
+	
+	public static String SCO_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/scotland/championship/results";
+	public static String SCO_CHAMPIONSHIP_NEXT_MATCHES = 		SITE_URL + "/soccer/scotland/championship";
+	
+	
+	
+	//Spain
+	public static String SPA_LA_LIGA_RESULTS  = 					SITE_URL + "/soccer/spain/laliga/results";
+	public static String SPA_LA_LIGA_NEXT_MATCHES = 				SITE_URL + "/soccer/spain/laliga";
+	
+	public static String SPA_LA_LIGA_2_RESULTS  = 					SITE_URL + "/soccer/spain/laliga2/results";
+	public static String SPA_LA_LIGA_2_NEXT_MATCHES = 				SITE_URL + "/soccer/spain/laliga2";
+	
+	
 	//########################################################################################################################
 	//########################################################################################################################
 	//########################################################################################################################
 	
-	public static String FRA_LIGUE_1_RESULTS = 					SITE_URL + "/soccer/france/ligue-1/results/";
-	public static String FRA_LIGUE_1_WIN_ODDS = 				"http://www.statto.com/football/odds/france/ligue-1/";
-	public static String FRA_LIGUE_1_UO_ODDS = 					FRA_LIGUE_1_WIN_ODDS + "over-under/";
-	public static String FRA_LIGUE_1_DOUBLE_CHANCE_ODDS = 		FRA_LIGUE_1_WIN_ODDS + "double-chance/";
-	public static String FRA_LIGUE_1_HALF_TIME_ODDS = 			FRA_LIGUE_1_WIN_ODDS + "half-time/";
 	
 	
-	
-	public static String SPA_LIGA_RESULTS = 					SITE_URL + "/soccer/spain/laliga/results/";
-	public static String SPA_LIGA_WIN_ODDS = 					"http://www.statto.com/football/odds/spain/primera-division/";
-	public static String SPA_LIGA_UO_ODDS = 					SPA_LIGA_WIN_ODDS + "over-under/";
-	public static String SPA_LIGA_DOUBLE_CHANCE_ODDS = 			SPA_LIGA_WIN_ODDS + "double-chance/";
-	public static String SPA_LIGA_HALF_TIME_ODDS = 				SPA_LIGA_WIN_ODDS + "half-time/";
 
 	public static String OLA_ERE_DIVISIE_RESULTS = 				SITE_URL + "/soccer/netherlands/eredivisie/results/";
 	public static String OLA_ERE_DIVISIE_WIN_ODDS = 			"http://www.statto.com/football/odds/netherlands/eredivisie/";
@@ -135,18 +148,18 @@ public class AppConstants {
 	public static String ENG_LEAGUE_TWO_DOUBLE_CHANCE_ODDS = 	ENG_LEAGUE_TWO_WIN_ODDS + "double-chance/";
 	public static String ENG_LEAGUE_TWO_HALF_TIME_ODDS = 		ENG_LEAGUE_TWO_WIN_ODDS + "half-time/";
 	
-	public static String SCO_PREMIERSHIP_RESULTS = 				SITE_URL + "/soccer/scotland/premiership/results/";
-	public static String SCO_PREMIERSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/scotland/premiership/";
-	public static String SCO_PREMIERSHIP_UO_ODDS = 				SCO_PREMIERSHIP_WIN_ODDS + "over-under/";
-	public static String SCO_PREMIERSHIP_DOUBLE_CHANCE_ODDS = 	SCO_PREMIERSHIP_WIN_ODDS + "double-chance/";
-	public static String SCO_PREMIERSHIP_HALF_TIME_ODDS = 		SCO_PREMIERSHIP_WIN_ODDS + "half-time/";
-	
-	public static String SCO_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/scotland/championship/results/";
-	public static String SCO_CHAMPIONSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/scotland/championship/";
-	public static String SCO_CHAMPIONSHIP_UO_ODDS = 			SCO_CHAMPIONSHIP_WIN_ODDS + "over-under/";
-	public static String SCO_CHAMPIONSHIP_DOUBLE_CHANCE_ODDS = 	SCO_CHAMPIONSHIP_WIN_ODDS + "double-chance/";
-	public static String SCO_CHAMPIONSHIP_HALF_TIME_ODDS = 		SCO_CHAMPIONSHIP_WIN_ODDS + "half-time/";
-	
+//	public static String SCO_PREMIERSHIP_RESULTS = 				SITE_URL + "/soccer/scotland/premiership/results/";
+//	public static String SCO_PREMIERSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/scotland/premiership/";
+//	public static String SCO_PREMIERSHIP_UO_ODDS = 				SCO_PREMIERSHIP_WIN_ODDS + "over-under/";
+//	public static String SCO_PREMIERSHIP_DOUBLE_CHANCE_ODDS = 	SCO_PREMIERSHIP_WIN_ODDS + "double-chance/";
+//	public static String SCO_PREMIERSHIP_HALF_TIME_ODDS = 		SCO_PREMIERSHIP_WIN_ODDS + "half-time/";
+//	
+//	public static String SCO_CHAMPIONSHIP_RESULTS = 			SITE_URL + "/soccer/scotland/championship/results/";
+//	public static String SCO_CHAMPIONSHIP_WIN_ODDS = 			"http://www.statto.com/football/odds/scotland/championship/";
+//	public static String SCO_CHAMPIONSHIP_UO_ODDS = 			SCO_CHAMPIONSHIP_WIN_ODDS + "over-under/";
+//	public static String SCO_CHAMPIONSHIP_DOUBLE_CHANCE_ODDS = 	SCO_CHAMPIONSHIP_WIN_ODDS + "double-chance/";
+//	public static String SCO_CHAMPIONSHIP_HALF_TIME_ODDS = 		SCO_CHAMPIONSHIP_WIN_ODDS + "half-time/";
+//	
 	public static String SCO_LEAGUE_ONE_RESULTS = 				SITE_URL + "/soccer/scotland/league-one/results/";
 	public static String SCO_LEAGUE_ONE_WIN_ODDS = 				"http://www.statto.com/football/odds/scotland/league-one/";
 	public static String SCO_LEAGUE_ONE_UO_ODDS = 				SCO_LEAGUE_ONE_WIN_ODDS + "over-under/";

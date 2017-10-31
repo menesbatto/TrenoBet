@@ -1,53 +1,38 @@
 package app.dao.tipologiche;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
-import app.dao.tipologiche.entities.BetHouse;
-import app.dao.tipologiche.entities.HomeVariationType;
-import app.dao.tipologiche.entities.TimeType;
 import app.dao.tipologiche.entities.UoThresholdType;
-import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
 import app.logic._1_matchesDownlaoder.model.UoThresholdEnum;
 
 @Service
+@EnableCaching
 public class UoThresholdTypeDao {
 
 	@Autowired
 	private UoThresholdTypeRepo uoThresholdTypeRepo;
 	
-	private HashMap<String, UoThresholdType> cacheMap;
-	
-	private HashMap<String, UoThresholdEnum> cacheMapBean;
-
-	private List<UoThresholdType> cacheList;
-	
+	@Cacheable("uoThresholdTypes")
 	public List<UoThresholdType> findAll() {
-		if (cacheList == null)
-			cacheList = uoThresholdTypeRepo.findAll();
-		return cacheList;		
+		List<UoThresholdType> list = uoThresholdTypeRepo.findAll();
+		return list;		
 		
 	}
 
+	@Cacheable("uoThresholdType")
 	public UoThresholdType findByValue(String value) {
-		if (cacheMap == null || cacheMap.isEmpty())
-			initCacheMap();
-			
-		UoThresholdType entity = cacheMap.get(value);
-		
+		UoThresholdType entity = uoThresholdTypeRepo.findByValue(value);
 		return entity;
 	}
 	
+	@Cacheable("uoThresholdEnum")
 	public UoThresholdEnum findBeanByEnt(UoThresholdType ent) {
-		if (cacheMapBean == null || cacheMapBean.isEmpty())
-			initCacheMapBean();
-		
-		UoThresholdEnum bean = cacheMapBean.get(ent.getValue());
-		
+		UoThresholdEnum bean = UoThresholdEnum.valueOf(ent.getValue());
 		return bean;
 	}
 
@@ -74,24 +59,6 @@ public class UoThresholdTypeDao {
 		uoThresholdTypeRepo.save(_9_5);
 		UoThresholdType _10_5 = new UoThresholdType(10, "_10_5", 10.5);
 		uoThresholdTypeRepo.save(_10_5);
-	}
-	
-	private void initCacheMap() {
-		cacheMap = new HashMap<String, UoThresholdType>();
-		Iterable<UoThresholdType> findAll = uoThresholdTypeRepo.findAll();
-		for (Iterator<UoThresholdType> iter = findAll.iterator(); iter.hasNext(); ) {
-			UoThresholdType element = iter.next();
-			cacheMap.put(element.getValue(), element);
-		}	
-	}
-	private void initCacheMapBean() {
-		cacheMapBean = new HashMap<String, UoThresholdEnum>();
-		Iterable<UoThresholdType> findAll = uoThresholdTypeRepo.findAll();
-		for (Iterator<UoThresholdType> iter = findAll.iterator(); iter.hasNext(); ) {
-			UoThresholdType element = iter.next();
-			UoThresholdEnum bean = UoThresholdEnum.valueOf(element.getValue());
-			cacheMapBean.put(element.getValue(), bean);
-		}
 	}
 	
 }

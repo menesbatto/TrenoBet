@@ -1,17 +1,12 @@
 package app.dao.tipologiche;
 
-import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import app.dao.tipologiche.entities.BetHouse;
 import app.dao.tipologiche.entities.RankingCriteria;
 
 @RepositoryRestResource
-public interface RankingCriteriaRepo extends PagingAndSortingRepository<RankingCriteria, Long> {
+public interface RankingCriteriaRepo extends JpaRepository<RankingCriteria, Long> {
 
 	void findByValue(String name);
 

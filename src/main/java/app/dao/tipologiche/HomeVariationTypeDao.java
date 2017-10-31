@@ -1,44 +1,42 @@
 package app.dao.tipologiche;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tipologiche.entities.HomeVariationType;
 import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 
 @Service
+@EnableCaching
 public class HomeVariationTypeDao {
 
 	@Autowired
 	private HomeVariationTypeRepo homeVariationTypeRepo;
 	
-	private HashMap<String, HomeVariationEnum> cacheMapBean;
 	
-	private HashMap<String, HomeVariationType> cacheMap;
-	
+	@Cacheable("homeVariationEnt")
 	public HomeVariationType findByValue(String value) {
-		if (cacheMap == null || cacheMap.isEmpty())
-			initCacheMap();
-			
-		HomeVariationType entity = cacheMap.get(value);
-		
-		return entity;
+		HomeVariationType entity = homeVariationTypeRepo.findByValue(value);
+		return entity ;
 	}
 	
+	@Cacheable("homeVariationEnum")
 	public HomeVariationEnum findBeanByEnt(HomeVariationType ent) {
-		if (cacheMapBean == null || cacheMapBean.isEmpty())
-			initCacheMapBean();
-		
-		HomeVariationEnum bean = cacheMapBean.get(ent.getValue());
-		
+		String name = ent.getValue();
+		HomeVariationEnum bean = HomeVariationEnum.valueOf(name);
 		return bean;
 	}
 
+	@Cacheable("homeVariationEnts")
+	public List<HomeVariationType> findAll() {
+		List<HomeVariationType> list = homeVariationTypeRepo.findAll();
+		return list; 
+	}
+	
 	public void initTable() {
 		HomeVariationType p9 = new HomeVariationType(9, "p9");
 		homeVariationTypeRepo.save(p9);
@@ -80,34 +78,5 @@ public class HomeVariationTypeDao {
 
 	
 	}
-	
-	private void initCacheMap() {
-		cacheMap = new HashMap<String, HomeVariationType>();
-		Iterable<HomeVariationType> findAll = homeVariationTypeRepo.findAll();
-		for (Iterator<HomeVariationType> iter = findAll.iterator(); iter.hasNext(); ) {
-			HomeVariationType element = iter.next();
-			cacheMap.put(element.getValue(), element);
-		}	
-	}
-	
-	private void initCacheMapBean() {
-		cacheMapBean = new HashMap<String, HomeVariationEnum>();
-		Iterable<HomeVariationType> findAll = homeVariationTypeRepo.findAll();
-		for (Iterator<HomeVariationType> iter = findAll.iterator(); iter.hasNext(); ) {
-			HomeVariationType element = iter.next();
-			HomeVariationEnum bean = HomeVariationEnum.valueOf(element.getValue());
-			cacheMapBean.put(element.getValue(), bean);
-		}
-	}
-
-	public List<HomeVariationType> findAll() {
-		if (cacheMap == null || cacheMap.isEmpty())
-			initCacheMap();
-		List<HomeVariationType> list = new ArrayList<HomeVariationType>();
-		list.addAll(cacheMap.values());
-		return list; 
-	}
-	
-
 	
 }

@@ -48,6 +48,7 @@ public class AlghoritmTester {
 	@Autowired
 	private BetAnalyzer betAnalyzer;
 	
+	Map<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo >>> seasonDayInfoMap = null;
 	
 	public void execute(){
 		
@@ -67,42 +68,196 @@ public class AlghoritmTester {
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		
 		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ITA_SERIE_A_2017};
-		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_B_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_B_2017};
 		ChampEnum[] champs = ChampEnum.values();//new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
 		
-		
-		for (int seasonDay = 7; seasonDay < actualSeasonDay; seasonDay++) {
-//			Date dateOfBet = getDateOfBet(seasonDay);
-			System.out.println(seasonDay + " - 1");
-			if (calculateStats) {
-				resultAnalyzer.execute(seasonDay, champs);
-//				rankingCalculator.execute(seasonDay, champs);
-				System.out.println(seasonDay + " - 2");
-				goodnessCalculator.execute(seasonDay, champs);
+		if (seasonDayInfoMap == null) {
+			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
+	
+			
+			for (int seasonDay = 7; seasonDay < actualSeasonDay + 1; seasonDay++) {
+	//			Date dateOfBet = getDateOfBet(seasonDay);
+				System.out.println(seasonDay + " - 1");
+				if (calculateStats) {
+					resultAnalyzer.execute(seasonDay, champs);
+	//				rankingCalculator.execute(seasonDay, champs);
+					System.out.println(seasonDay + " - 2");
+					goodnessCalculator.execute(seasonDay, champs);
+				}
+				System.out.println(seasonDay + " - 3");
+				
+				betCreator.execute(seasonDay, champs);
+				
+				System.out.println(seasonDay + " - 4");
+				
+				List<SingleBetBean> bets = betAnalyzer.execute(seasonDay, champs);
+				
+				System.out.println(seasonDay + " - 5");
+				
+				allChampsSingleBets.addAll(bets);
+				printSeasonDayTitle(seasonDay+"");
+				
+				
+				HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> seasonDayInfoTotal = printAllBetStats(bets);;
+				seasonDayInfoMap.put(seasonDay, seasonDayInfoTotal);
+				System.out.println(seasonDay + " - 6");
+			
 			}
-			System.out.println(seasonDay + " - 3");
 			
-			betCreator.execute(seasonDay, champs);
+			printSeasonDayTitle("Total");
+			HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> seasonDayInfoTotal = printAllBetStats(allChampsSingleBets);
+			seasonDayInfoMap.put(null, seasonDayInfoTotal);
 			
-			System.out.println(seasonDay + " - 4");
-			
-			List<SingleBetBean> bets = betAnalyzer.execute(seasonDay, champs);
-			
-			System.out.println(seasonDay + " - 5");
-			
-			allChampsSingleBets.addAll(bets);
-			printSeasonDayTitle(seasonDay+"");
-			printAllBetStats(bets);
-			
-			System.out.println(seasonDay + " - 6");
-		
 		}
+		Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> calculateMapBySeasonDay = calculateMapBySeasonDay(seasonDayInfoMap);
 		
-		printSeasonDayTitle("Total");
-		printAllBetStats(allChampsSingleBets);
+		Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> progressBalance = calcolateProgressBalance(calculateMapBySeasonDay);
+		
+		
+		printProgressBalance(progressBalance);
+		
 		
 		
 	}
+
+
+	private void printProgressBalance( Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> progressBalance) {
+		for (ChampEnum champ : progressBalance.keySet()) {
+			System.out.println(champ);
+			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> seasonDayMap = progressBalance.get(champ);
+			
+			String _12 = "";
+			String x = "";
+			String uo = "";
+			String eh = "";
+			String total = "";
+			for (Integer seasonDay : seasonDayMap.keySet()) {
+				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeMap = seasonDayMap.get(seasonDay);
+				for (TimeTypeEnum timeType: timeMap.keySet()) {
+					SeasonDayBetResultInfo seasonDayBetResultInfo = timeMap.get(timeType);
+					if (TimeTypeEnum._final.equals(timeType)) {
+						_12 += Utils.redimString(seasonDayBetResultInfo.get_12WinAmount()) + "\t";
+						x += Utils.redimString(seasonDayBetResultInfo.getxWinAmount()) + "\t";
+						uo += Utils.redimString(seasonDayBetResultInfo.getUoWinAmount()) + "\t";
+						eh += Utils.redimString(seasonDayBetResultInfo.getEhWinAmount()) + "\t";
+						total += Utils.redimString(seasonDayBetResultInfo.getTotalWinAmount()) + "\t";
+					}
+				}
+			}
+			System.out.println(_12);
+			System.out.println(x);
+			System.out.println(uo);
+			System.out.println(eh);
+			System.out.println(total);
+		}
+	}
+
+	
+	
+
+	private	Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> calcolateProgressBalance(Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> calculateMapBySeasonDay) {
+		Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> progressMap = new HashMap<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>>();
+		for (ChampEnum champ : calculateMapBySeasonDay.keySet()) {
+			 
+			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> champMap = calculateMapBySeasonDay.get(champ);
+			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> progressChampMap = progressMap.get(champ);
+			
+			if (progressChampMap== null) {
+				progressChampMap = new HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>();
+				progressMap.put(champ, progressChampMap);
+			}
+			 
+			for (Integer seasonDay: champMap.keySet()) {
+				
+				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap = champMap.get(seasonDay);
+				
+				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = progressChampMap.get(seasonDay);
+				
+				
+				if (progressTimeTypeMap == null) {
+					progressTimeTypeMap = timeTypeMap;
+					progressChampMap.put(seasonDay, progressTimeTypeMap);
+					continue;
+				}
+				
+				progressTimeTypeMap = updateProgressTimeTypeMap(progressTimeTypeMap, timeTypeMap);
+				
+				
+			}
+			
+			
+		}
+		return progressMap;
+	}
+
+
+	private HashMap<TimeTypeEnum, SeasonDayBetResultInfo> updateProgressTimeTypeMap(HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap, HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap) {
+		for (TimeTypeEnum timeType : timeTypeMap.keySet()) {
+			SeasonDayBetResultInfo seasonDayInfo = timeTypeMap.get(timeType);
+			
+			SeasonDayBetResultInfo progressSeasonDayInfo = progressTimeTypeMap.get(timeType);
+			
+			progressSeasonDayInfo.set_12BetNum(progressSeasonDayInfo.get_12BetNum() + seasonDayInfo.get_12BetNum());
+			progressSeasonDayInfo.set_12WinBetNum(progressSeasonDayInfo.get_12WinBetNum() + seasonDayInfo.get_12WinBetNum());
+			progressSeasonDayInfo.set_12WinAmount(progressSeasonDayInfo.get_12WinAmount() + seasonDayInfo.get_12WinAmount());
+			
+			progressSeasonDayInfo.setxBetNum(progressSeasonDayInfo.getxBetNum() + seasonDayInfo.getxBetNum());
+			progressSeasonDayInfo.setxWinBetNum(progressSeasonDayInfo.getxWinBetNum() + seasonDayInfo.getxWinBetNum());
+			progressSeasonDayInfo.setxWinAmount(progressSeasonDayInfo.getxWinAmount() + seasonDayInfo.getxWinAmount());
+			
+			progressSeasonDayInfo.setUoBetNum(progressSeasonDayInfo.getUoBetNum() + seasonDayInfo.getUoBetNum());
+			progressSeasonDayInfo.setUoWinBetNum(progressSeasonDayInfo.getUoWinBetNum() + seasonDayInfo.getUoWinBetNum());
+			progressSeasonDayInfo.setUoWinAmount(progressSeasonDayInfo.getUoWinAmount() + seasonDayInfo.getUoWinAmount());
+			
+			progressSeasonDayInfo.setEhBetNum(progressSeasonDayInfo.getEhBetNum() + seasonDayInfo.getEhBetNum());
+			progressSeasonDayInfo.setEhWinBetNum(progressSeasonDayInfo.getEhWinBetNum() + seasonDayInfo.getEhWinBetNum());
+			progressSeasonDayInfo.setEhWinAmount(progressSeasonDayInfo.getEhWinAmount() + seasonDayInfo.getEhWinAmount());
+			
+			progressSeasonDayInfo.setTotalBetNum(progressSeasonDayInfo.getTotalBetNum() + seasonDayInfo.getTotalBetNum());
+			progressSeasonDayInfo.setTotalWinBetNum(progressSeasonDayInfo.getTotalWinBetNum() + seasonDayInfo.getTotalWinBetNum());
+			progressSeasonDayInfo.setTotalWinAmount(progressSeasonDayInfo.getTotalWinAmount() + seasonDayInfo.getTotalWinAmount());
+			
+			
+		}
+		
+		return progressTimeTypeMap;
+		
+	}
+
+
+	private Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> calculateMapBySeasonDay( Map<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>> seasonMap) {
+		Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> champsMap = new HashMap<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>>();
+		
+		for (Integer seasonDay : seasonMap.keySet()) {
+			HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> seasonDayInfoMap = seasonMap.get(seasonDay);
+			for (TimeTypeEnum timeType : seasonDayInfoMap.keySet()) {
+				HashMap<ChampEnum, SeasonDayBetResultInfo> timeMap = seasonDayInfoMap.get(timeType);
+				for(ChampEnum champ : timeMap.keySet()){
+					SeasonDayBetResultInfo champInfo = timeMap.get(champ);
+					HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> champMap = champsMap.get(champ);
+					if (champMap == null) {
+						champMap = new HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>();
+						champsMap.put(champ, champMap);
+					}
+					
+					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> seasonDayMap = champMap.get(seasonDay);
+					if (seasonDayMap== null) {
+						seasonDayMap = new HashMap<TimeTypeEnum, SeasonDayBetResultInfo>();
+						champMap.put(seasonDay, seasonDayMap);
+					}
+					seasonDayMap.put(timeType, champInfo);
+					
+				}
+			}
+		}
+		return champsMap;
+		
+		
+	}
+
+
 
 
 	private void printSeasonDayTitle(String seasonDay) {
@@ -132,7 +287,7 @@ public class AlghoritmTester {
 	}
 
 
-	public void printAllBetStats(List<SingleBetBean> allChampsSingleBets) {
+	public HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> printAllBetStats(List<SingleBetBean> allChampsSingleBets) {
 		
 //		Map<TimeTypeEnum, ArrayList<SingleBetBean>> mapByTimeType = new HashMap<TimeTypeEnum, ArrayList<SingleBetBean>>();
 //		for (SingleBetBean singleBet : allChampsSingleBets) {
@@ -177,10 +332,12 @@ public class AlghoritmTester {
 		}
 		
 		
+		
+		
 		// Crea delle statistiche per ogni sotto lista ottenuta dalla organizzazione precedente
 		HashMap<ChampEnum, SeasonDayBetResultInfo> seasonDayBetInfoAlTimeTogheter = new HashMap<ChampEnum, SeasonDayBetResultInfo>();
 		
-		Map<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo >> mapBetResultInfoGeneral = new HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>();
+		HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo >> mapBetResultInfoGeneral = new HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>();
 		
  		for ( Entry<TimeTypeEnum, HashMap<ChampEnum, ArrayList<SingleBetBean>>> entry: mapByChampAndTime.entrySet()) {
  			TimeTypeEnum key = entry.getKey();
@@ -200,6 +357,8 @@ public class AlghoritmTester {
 				addPartialToTotalChamp(seasonDayBetInfo, seasonDayBetInfoAllChampTogheter);
 			}
 			mapBetResultInfoByChamp.put(null, seasonDayBetInfoAllChampTogheter);
+			
+			
 			
 			addPartialToTotalTime(mapBetResultInfoByChamp, seasonDayBetInfoAlTimeTogheter);
 			
@@ -249,7 +408,7 @@ public class AlghoritmTester {
  		
  		
  		
- 		
+ 		return mapBetResultInfoGeneral;
  		
  		
  		
@@ -351,7 +510,8 @@ public class AlghoritmTester {
 		
 		
 		for (SingleBetBean bet : allChampsSingleBets) {
-			
+			if (bet.getWin()== null)
+				continue;
 			Double winOdds = bet.getWinOdds();
 			if (bet.getBetType().equals(BetType._1x2)) {
 				if ( bet.getMatchResultForecast().name().equals(MatchResultEnum.D.name())) {

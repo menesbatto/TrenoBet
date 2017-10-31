@@ -1,16 +1,14 @@
 package app.dao.tipologiche;
 
-import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import app.dao.tipologiche.entities.BetHouse;
 
 @RepositoryRestResource
-public interface BetHouseRepo extends PagingAndSortingRepository<BetHouse, Long> {
+public interface BetHouseRepo extends JpaRepository<BetHouse, Long> {
+
+	BetHouse findByValue(String value);
 
 //	List<BetHouse> findAll();
 //

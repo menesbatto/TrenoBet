@@ -108,6 +108,12 @@ public class MatchesDownloader {
 	
 	private int createMatches(Element matchesTable, String champSubsetUrl, ChampEnum champ, ArrayList<MatchResult> downloadedMatches) {
 		Elements tableRows = matchesTable.getElementsByTag("tr");
+		String[] split = champSubsetUrl.split("/");
+		String pageNumString = split[split.length-1];
+		Integer pageNum = 0;
+		if (!pageNumString.equals("results") && !pageNumString.equals("#") )
+			pageNum = Integer.valueOf(pageNumString);
+
 		Date matchDate = null;
 		MatchResult matchResult = null;
 		int matchNum = 1;
@@ -171,7 +177,7 @@ public class MatchesDownloader {
 //			else if (row.hasClass("odd") || row.hasAttr("heid")){ //next xxx
 			else if (row.hasClass("deactivate") || row.hasClass("odd") || row.hasAttr("xeid")){ //results
 					long startTime = System.nanoTime();
-					System.out.println(champ + " Match " + matchNum++);
+					System.out.println(champ + " Match " + ((pageNum-1)*50) + matchNum++);
 					
 //				if (matchSkipped >= alreadySavedMatcheOnThisPage) {
 					matchResult = createMatchResult(row, matchDate, champSubsetUrl, downloadedMatches); 

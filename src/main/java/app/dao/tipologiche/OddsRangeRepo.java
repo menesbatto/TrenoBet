@@ -1,17 +1,14 @@
 package app.dao.tipologiche;
 
-import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import app.dao.tipologiche.entities.BetHouse;
 import app.dao.tipologiche.entities.OddsRange;
 
 @RepositoryRestResource
-public interface OddsRangeRepo extends PagingAndSortingRepository<OddsRange, Long> {
+public interface OddsRangeRepo extends JpaRepository<OddsRange, Long> {
+
+	OddsRange findByValueUp(Double value);
 
 //	List<BetHouse> findAll();
 //

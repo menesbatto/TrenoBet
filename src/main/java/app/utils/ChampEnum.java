@@ -36,6 +36,35 @@ public enum ChampEnum {
 									"Championship",
 									2017),
 	
+	
+	
+	
+	//##################################
+	//##########   FRANCE    ###########
+	//##################################
+	
+	FRA_LIGUE_1_2017 			(	AppConstants.FRA_LIGUE_1_RESULTS,
+									AppConstants.FRA_LIGUE_1_NEXT_MATCHES, 	
+									new Integer[]{ 1,2,3,6,17 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS,
+														RankCritEnum.GOALS_DIFFERENCE,
+														RankCritEnum.GOALS_SCORED,
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE},
+									"France",
+									"Ligue 1",
+									2017),
+	
+	FRA_LIGUE_2_2017 			(	AppConstants.FRA_LIGUE_2_RESULTS,
+									AppConstants.FRA_LIGUE_2_NEXT_MATCHES, 	
+									new Integer[]{ 2,3,6,17,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS,
+											RankCritEnum.GOALS_DIFFERENCE,
+											RankCritEnum.GOALS_SCORED,
+											RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE },
+									"France",
+									"Ligue 2",
+									2017),
+	
 	//##################################
 	//##########   GERMANY   ###########
 	//##################################
@@ -95,32 +124,66 @@ public enum ChampEnum {
 									2017),
 
 	
-//	
-//SPA_LIGA_2017 			(	AppConstants.SPA_LIGA_RESULTS,
-//	AppConstants.SPA_LIGA_WIN_ODDS, 	
-//	AppConstants.SPA_LIGA_UO_ODDS, 
-//	AppConstants.SPA_LIGA_HALF_TIME_ODDS,
-//	AppConstants.SPA_LIGA_HISTORY_RESULTS,
-//	new Integer[]{ 1,3,4,7,17 }, 
-//	new RankCritEnum[]{	RankCritEnum.POINTS, 
-//						RankCritEnum.HEAD_TO_HEAD_POINTS, 
-//						RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
-//						RankCritEnum.GOALS_DIFFERENCE, 
-//						RankCritEnum.GOALS_SCORED, }),
-//	
+	//##################################
+	//##########    SPAIN    ###########
+	//##################################
+		
+		
+	SPA_LA_LIGA_2017 			(	AppConstants.SPA_LA_LIGA_RESULTS,
+									AppConstants.SPA_LA_LIGA_NEXT_MATCHES, 	
+									new Integer[]{ 1,3,4,7,17 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_SCORED, },
+									"Spain",
+									"La Liga",
+									2017),	
 	
+	
+	
+	SPA_LA_LIGA_2_2017 			(	AppConstants.SPA_LA_LIGA_2_RESULTS,
+									AppConstants.SPA_LA_LIGA_2_NEXT_MATCHES, 	
+									new Integer[]{ 2,6,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_SCORED },
+									"Spain",
+									"La Liga 2",
+									2017),
+
+	//##################################
+	//##########   SCOTLAND   ##########
+	//##################################
+
+	SCO_PREMIERSHIP_2017	(		AppConstants.SCO_PREMIERSHIP_RESULTS,
+									AppConstants.SCO_PREMIERSHIP_NEXT_MATCHES, 	
+									new Integer[]{ 1,4,10,11 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_SCORED},
+									"Scotland",
+									"Premiership",
+									2017),
+	
+	SCO_CHAMPIONSHIP_2017	(		AppConstants.SCO_CHAMPIONSHIP_RESULTS,
+									AppConstants.SCO_CHAMPIONSHIP_NEXT_MATCHES, 	
+									new Integer[]{ 1,4,8,9 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_SCORED},
+									"Scotland",
+									"Championship",
+									2017)
+	
+	
+
 	
 //							
-//	FRA_LIGUE_1_2017 		(	AppConstants.FRA_LIGUE_1_RESULTS,
-//							AppConstants.FRA_LIGUE_1_WIN_ODDS, 	
-//							AppConstants.FRA_LIGUE_1_UO_ODDS, 
-//							AppConstants.FRA_LIGUE_1_HALF_TIME_ODDS,
-//							AppConstants.FRA_LIGUE_1_HISTORY_RESULTS,
-//							new Integer[]{ 1,2,3,6,17 }, 
-//							new RankCritEnum[]{	RankCritEnum.POINTS,
-//												RankCritEnum.GOALS_DIFFERENCE,
-//												RankCritEnum.GOALS_SCORED,
-//												RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE}),
+
 //							
 //	OLA_ERE_DIVISIE_2017		(	AppConstants.OLA_ERE_DIVISIE_RESULTS,
 //							AppConstants.OLA_ERE_DIVISIE_WIN_ODDS, 	
@@ -210,25 +273,8 @@ public enum ChampEnum {
 //												RankCritEnum.GOALS_DIFFERENCE, 
 //												RankCritEnum.GOALS_SCORED}),
 //							
-//	SCO_PREMIERSHIP_2017	(		AppConstants.SCO_PREMIERSHIP_RESULTS,
-//							AppConstants.SCO_PREMIERSHIP_WIN_ODDS, 	
-//							AppConstants.SCO_PREMIERSHIP_UO_ODDS, 
-//							AppConstants.SCO_PREMIERSHIP_HALF_TIME_ODDS,
-//							AppConstants.SCO_PREMIERSHIP_HISTORY_RESULTS,
-//							new Integer[]{ 1,4,10,11 }, 
-//							new RankCritEnum[]{	RankCritEnum.POINTS, 
-//												RankCritEnum.GOALS_DIFFERENCE, 
-//												RankCritEnum.GOALS_SCORED}),
-//							
-//	SCO_CHAMPIONSHIP_2017	(	AppConstants.SCO_CHAMPIONSHIP_RESULTS,
-//							AppConstants.SCO_CHAMPIONSHIP_WIN_ODDS, 	
-//							AppConstants.SCO_CHAMPIONSHIP_UO_ODDS, 
-//							AppConstants.SCO_CHAMPIONSHIP_HALF_TIME_ODDS,
-//							AppConstants.SCO_CHAMPIONSHIP_HISTORY_RESULTS,
-//							new Integer[]{ 1,4,8,9 }, 
-//							new RankCritEnum[]{	RankCritEnum.POINTS, 
-//												RankCritEnum.GOALS_DIFFERENCE, 
-//												RankCritEnum.GOALS_SCORED}),
+
+
 //							
 //	SCO_LEAGUE_ONE_2017	(		AppConstants.SCO_LEAGUE_ONE_RESULTS,
 //							AppConstants.SCO_LEAGUE_ONE_WIN_ODDS, 	
