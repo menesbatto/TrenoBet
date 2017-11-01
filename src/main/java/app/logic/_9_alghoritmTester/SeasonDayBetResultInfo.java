@@ -42,6 +42,38 @@ public class SeasonDayBetResultInfo {
 		this.ehWinAmount = 0.0;
 		this.totalWinAmount = 0.0;
 	}
+	public SeasonDayBetResultInfo(SeasonDayBetResultInfo s) {
+			this(s.get_12BetNum(), s.getxBetNum(), s.getUoBetNum(), s.getEhBetNum(), s.getTotalBetNum(), 
+				s.get_12WinBetNum(), s.getxWinBetNum(), s.getUoWinBetNum(), s.getEhWinBetNum(), 
+				s.getTotalWinBetNum(), s.get_12WinAmount(), s.getxWinAmount(), s.getUoWinAmount(), 
+				s.getEhWinAmount(), s.getTotalWinAmount());
+	}
+	
+	
+	 
+	
+	public SeasonDayBetResultInfo(Integer _12BetNum, Integer xBetNum, Integer uoBetNum, Integer ehBetNum,
+			Integer totalBetNum, Integer _12WinBetNum, Integer xWinBetNum, Integer uoWinBetNum, Integer ehWinBetNum,
+			Integer totalWinBetNum, Double _12WinAmount, Double xWinAmount, Double uoWinAmount, Double ehWinAmount,
+			Double totalWinAmount) {
+		super();
+		this._12BetNum = _12BetNum;
+		this.xBetNum = xBetNum;
+		this.uoBetNum = uoBetNum;
+		this.ehBetNum = ehBetNum;
+		this.totalBetNum = totalBetNum;
+		this._12WinBetNum = _12WinBetNum;
+		this.xWinBetNum = xWinBetNum;
+		this.uoWinBetNum = uoWinBetNum;
+		this.ehWinBetNum = ehWinBetNum;
+		this.totalWinBetNum = totalWinBetNum;
+		this._12WinAmount = _12WinAmount;
+		this.xWinAmount = xWinAmount;
+		this.uoWinAmount = uoWinAmount;
+		this.ehWinAmount = ehWinAmount;
+		this.totalWinAmount = totalWinAmount;
+	}
+	
 	public Integer get_12BetNum() {
 		return _12BetNum;
 	}
@@ -132,17 +164,5 @@ public class SeasonDayBetResultInfo {
 	public void setTotalWinAmount(Double totalWinAmount) {
 		this.totalWinAmount = totalWinAmount;
 	}
-	@Override
-	public String toString() {
-		return "SeasonDayBetResultInfo [_12BetNum=" + _12BetNum + ", xBetNum=" + xBetNum + ", uoBetNum=" + uoBetNum
-				+ ", ehBetNum=" + ehBetNum + ", totalBetNum=" + totalBetNum + ", _12WinBetNum=" + _12WinBetNum
-				+ ", xWinBetNum=" + xWinBetNum + ", uoWinBetNum=" + uoWinBetNum + ", ehWinBetNum=" + ehWinBetNum
-				+ ", totalWinBetNum=" + totalWinBetNum + ", _12WinAmount=" + _12WinAmount + ", xWinAmount=" + xWinAmount
-				+ ", uoWinAmount=" + uoWinAmount + ", ehWinAmount=" + ehWinAmount + ", totalWinAmount=" + totalWinAmount
-				+ "]";
-	}
 
-	
-	
-	
 }

@@ -69,9 +69,9 @@ public class AlghoritmTester {
 		
 		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ITA_SERIE_A_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_B_2017};
-		ChampEnum[] champs = ChampEnum.values();//new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_B_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
+		ChampEnum[] champs = ChampEnum.values();
 		
 		if (seasonDayInfoMap == null) {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
@@ -128,11 +128,11 @@ public class AlghoritmTester {
 			System.out.println(champ);
 			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> seasonDayMap = progressBalance.get(champ);
 			
-			String _12 = "";
-			String x = "";
-			String uo = "";
-			String eh = "";
-			String total = "";
+			String _12 = champ + " _12\t";
+			String x = champ + "x\t";
+			String uo = champ + "uo\t";
+			String eh = champ + " eh\t";
+			String total = champ + " total\t";
 			for (Integer seasonDay : seasonDayMap.keySet()) {
 				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeMap = seasonDayMap.get(seasonDay);
 				for (TimeTypeEnum timeType: timeMap.keySet()) {
@@ -151,6 +151,7 @@ public class AlghoritmTester {
 			System.out.println(uo);
 			System.out.println(eh);
 			System.out.println(total);
+			System.out.println("\n\n\n\n\n\n\n\n\n");
 		}
 	}
 
@@ -162,67 +163,112 @@ public class AlghoritmTester {
 		for (ChampEnum champ : calculateMapBySeasonDay.keySet()) {
 			 
 			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> champMap = calculateMapBySeasonDay.get(champ);
-			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> progressChampMap = progressMap.get(champ);
+
+			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> progressChampMap = new HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>();
+			progressMap.put(champ, progressChampMap);
 			
-			if (progressChampMap== null) {
-				progressChampMap = new HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>();
-				progressMap.put(champ, progressChampMap);
-			}
 			 
 			for (Integer seasonDay: champMap.keySet()) {
-				
-				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap = champMap.get(seasonDay);
-				
-				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = progressChampMap.get(seasonDay);
-				
-				
-				if (progressTimeTypeMap == null) {
-					progressTimeTypeMap = timeTypeMap;
+				if (seasonDay != null){ // elimina i totali
+					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap = champMap.get(seasonDay);
+					
+					if (progressChampMap.keySet().isEmpty()) { // prima seasonDay
+						HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = new HashMap<TimeTypeEnum, SeasonDayBetResultInfo>();
+						progressTimeTypeMap = createCopy(timeTypeMap);
+						HashMap<TimeTypeEnum, SeasonDayBetResultInfo> startSituazione = createStartSituation();
+						progressChampMap.put(seasonDay-1, startSituazione);
+						
+						progressChampMap.put(seasonDay, progressTimeTypeMap);
+						continue;
+					}	
+					
+					 
+					//Nel caso ci siano pause di campionato //METODO CHE é UNA CACATA
+					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressLastSeasonInfo = progressChampMap.get(seasonDay-1);
+					if (progressLastSeasonInfo == null)
+						 progressLastSeasonInfo = progressChampMap.get(seasonDay-2);
+					if (progressLastSeasonInfo == null)
+						 progressLastSeasonInfo = progressChampMap.get(seasonDay-3);
+					
+					
+					
+					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = updateProgressTimeTypeMap(progressLastSeasonInfo, timeTypeMap);
 					progressChampMap.put(seasonDay, progressTimeTypeMap);
-					continue;
 				}
-				
-				progressTimeTypeMap = updateProgressTimeTypeMap(progressTimeTypeMap, timeTypeMap);
-				
-				
 			}
-			
-			
 		}
 		return progressMap;
 	}
 
 
-	private HashMap<TimeTypeEnum, SeasonDayBetResultInfo> updateProgressTimeTypeMap(HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap, HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap) {
-		for (TimeTypeEnum timeType : timeTypeMap.keySet()) {
-			SeasonDayBetResultInfo seasonDayInfo = timeTypeMap.get(timeType);
+	private HashMap<TimeTypeEnum, SeasonDayBetResultInfo> createStartSituation() {
+		
+		HashMap<TimeTypeEnum, SeasonDayBetResultInfo> startMap = new HashMap<TimeTypeEnum, SeasonDayBetResultInfo>();
+		for (TimeTypeEnum timeType : TimeTypeEnum.values()) {
+			startMap.put(timeType, new SeasonDayBetResultInfo());
+		}
+		startMap.put(null, new SeasonDayBetResultInfo());
+		
+		return startMap;
+	}
+
+
+	private HashMap<TimeTypeEnum, SeasonDayBetResultInfo> createCopy(HashMap<TimeTypeEnum, SeasonDayBetResultInfo> orig) {
+		
+		HashMap<TimeTypeEnum, SeasonDayBetResultInfo> copy = new HashMap<TimeTypeEnum, SeasonDayBetResultInfo>();
+		for (TimeTypeEnum key : orig.keySet()) {
 			
-			SeasonDayBetResultInfo progressSeasonDayInfo = progressTimeTypeMap.get(timeType);
+			SeasonDayBetResultInfo origInfo = orig.get(key);
+			SeasonDayBetResultInfo progressInfo = new SeasonDayBetResultInfo(origInfo);
 			
-			progressSeasonDayInfo.set_12BetNum(progressSeasonDayInfo.get_12BetNum() + seasonDayInfo.get_12BetNum());
-			progressSeasonDayInfo.set_12WinBetNum(progressSeasonDayInfo.get_12WinBetNum() + seasonDayInfo.get_12WinBetNum());
-			progressSeasonDayInfo.set_12WinAmount(progressSeasonDayInfo.get_12WinAmount() + seasonDayInfo.get_12WinAmount());
+			copy.put(key, progressInfo);
+		}
+		
+		return copy;
+	}
+
+
+	private HashMap<TimeTypeEnum, SeasonDayBetResultInfo> updateProgressTimeTypeMap(HashMap<TimeTypeEnum, SeasonDayBetResultInfo> lastProgress, HashMap<TimeTypeEnum, SeasonDayBetResultInfo> singleSeasonDayMap) {
+		HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressMapToAdd = new HashMap<TimeTypeEnum, SeasonDayBetResultInfo>(); 
+	
+		
+		for (TimeTypeEnum timeType : singleSeasonDayMap.keySet()) {
 			
-			progressSeasonDayInfo.setxBetNum(progressSeasonDayInfo.getxBetNum() + seasonDayInfo.getxBetNum());
-			progressSeasonDayInfo.setxWinBetNum(progressSeasonDayInfo.getxWinBetNum() + seasonDayInfo.getxWinBetNum());
-			progressSeasonDayInfo.setxWinAmount(progressSeasonDayInfo.getxWinAmount() + seasonDayInfo.getxWinAmount());
+			SeasonDayBetResultInfo singleSeasonDayInfo = singleSeasonDayMap.get(timeType);
 			
-			progressSeasonDayInfo.setUoBetNum(progressSeasonDayInfo.getUoBetNum() + seasonDayInfo.getUoBetNum());
-			progressSeasonDayInfo.setUoWinBetNum(progressSeasonDayInfo.getUoWinBetNum() + seasonDayInfo.getUoWinBetNum());
-			progressSeasonDayInfo.setUoWinAmount(progressSeasonDayInfo.getUoWinAmount() + seasonDayInfo.getUoWinAmount());
+			SeasonDayBetResultInfo progressLastSeasonDayInfo = lastProgress.get(timeType);
 			
-			progressSeasonDayInfo.setEhBetNum(progressSeasonDayInfo.getEhBetNum() + seasonDayInfo.getEhBetNum());
-			progressSeasonDayInfo.setEhWinBetNum(progressSeasonDayInfo.getEhWinBetNum() + seasonDayInfo.getEhWinBetNum());
-			progressSeasonDayInfo.setEhWinAmount(progressSeasonDayInfo.getEhWinAmount() + seasonDayInfo.getEhWinAmount());
+			if (progressLastSeasonDayInfo == null)
+				progressLastSeasonDayInfo = new SeasonDayBetResultInfo();
 			
-			progressSeasonDayInfo.setTotalBetNum(progressSeasonDayInfo.getTotalBetNum() + seasonDayInfo.getTotalBetNum());
-			progressSeasonDayInfo.setTotalWinBetNum(progressSeasonDayInfo.getTotalWinBetNum() + seasonDayInfo.getTotalWinBetNum());
-			progressSeasonDayInfo.setTotalWinAmount(progressSeasonDayInfo.getTotalWinAmount() + seasonDayInfo.getTotalWinAmount());
+			SeasonDayBetResultInfo progressSeasonDayInfoToAdd  = new SeasonDayBetResultInfo();
+			
+			progressSeasonDayInfoToAdd.set_12BetNum(progressLastSeasonDayInfo.get_12BetNum() + singleSeasonDayInfo.get_12BetNum());
+			progressSeasonDayInfoToAdd.set_12WinBetNum(progressLastSeasonDayInfo.get_12WinBetNum() + singleSeasonDayInfo.get_12WinBetNum());
+			progressSeasonDayInfoToAdd.set_12WinAmount(progressLastSeasonDayInfo.get_12WinAmount() + singleSeasonDayInfo.get_12WinAmount());
+			
+			progressSeasonDayInfoToAdd.setxBetNum(progressLastSeasonDayInfo.getxBetNum() + singleSeasonDayInfo.getxBetNum());
+			progressSeasonDayInfoToAdd.setxWinBetNum(progressLastSeasonDayInfo.getxWinBetNum() + singleSeasonDayInfo.getxWinBetNum());
+			progressSeasonDayInfoToAdd.setxWinAmount(progressLastSeasonDayInfo.getxWinAmount() + singleSeasonDayInfo.getxWinAmount());
+			
+			progressSeasonDayInfoToAdd.setUoBetNum(progressLastSeasonDayInfo.getUoBetNum() + singleSeasonDayInfo.getUoBetNum());
+			progressSeasonDayInfoToAdd.setUoWinBetNum(progressLastSeasonDayInfo.getUoWinBetNum() + singleSeasonDayInfo.getUoWinBetNum());
+			progressSeasonDayInfoToAdd.setUoWinAmount(progressLastSeasonDayInfo.getUoWinAmount() + singleSeasonDayInfo.getUoWinAmount());
+			
+			progressSeasonDayInfoToAdd.setEhBetNum(progressLastSeasonDayInfo.getEhBetNum() + singleSeasonDayInfo.getEhBetNum());
+			progressSeasonDayInfoToAdd.setEhWinBetNum(progressLastSeasonDayInfo.getEhWinBetNum() + singleSeasonDayInfo.getEhWinBetNum());
+			progressSeasonDayInfoToAdd.setEhWinAmount(progressLastSeasonDayInfo.getEhWinAmount() + singleSeasonDayInfo.getEhWinAmount());
+			
+			progressSeasonDayInfoToAdd.setTotalBetNum(progressLastSeasonDayInfo.getTotalBetNum() + singleSeasonDayInfo.getTotalBetNum());
+			progressSeasonDayInfoToAdd.setTotalWinBetNum(progressLastSeasonDayInfo.getTotalWinBetNum() + singleSeasonDayInfo.getTotalWinBetNum());
+			progressSeasonDayInfoToAdd.setTotalWinAmount(progressLastSeasonDayInfo.getTotalWinAmount() + singleSeasonDayInfo.getTotalWinAmount());
+			
+			progressMapToAdd.put(timeType, progressSeasonDayInfoToAdd);
 			
 			
 		}
 		
-		return progressTimeTypeMap;
+		return progressMapToAdd;
 		
 	}
 
