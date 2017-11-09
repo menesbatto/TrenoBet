@@ -67,17 +67,20 @@ public class AlghoritmTester {
 		List<SingleBetBean> allChampsSingleBets = new ArrayList<SingleBetBean>();
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		
-		//ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ITA_SERIE_A_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_B_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_B_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_A_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
-		ChampEnum[] champs = ChampEnum.values();
+//		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.FRA_LIGUE_1_2017,  ChampEnum.GER_BUNDESLIGA_2017};
+		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_A_2017, ChampEnum.ITA_SERIE_B_2017};
+//		ChampEnum[] champs = ChampEnum.values();
 		
+		
+		seasonDayInfoMap = null;
 		if (seasonDayInfoMap == null) {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
 	
 			
-			for (int seasonDay = 7; seasonDay < actualSeasonDay + 1; seasonDay++) {
+			for (int seasonDay = 7; seasonDay < actualSeasonDay; seasonDay++) {
 	//			Date dateOfBet = getDateOfBet(seasonDay);
 				System.out.println(seasonDay + " - 1");
 				if (calculateStats) {
@@ -128,11 +131,11 @@ public class AlghoritmTester {
 			System.out.println(champ);
 			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> seasonDayMap = progressBalance.get(champ);
 			
-			String _12 = champ + " _12\t";
-			String x = champ + "x\t";
-			String uo = champ + "uo\t";
-			String eh = champ + " eh\t";
-			String total = champ + " total\t";
+			String _12 =	Utils.redimString(champ + " _12", 25) + "\t";
+			String x = 		Utils.redimString(champ + " x", 25) + "\t";
+			String uo = 	Utils.redimString(champ + " uo", 25) + "\t";
+			String eh = 	Utils.redimString(champ + " eh", 25) + "\t";
+			String total = 	Utils.redimString(champ + " tot", 25) + "\t";
 			for (Integer seasonDay : seasonDayMap.keySet()) {
 				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeMap = seasonDayMap.get(seasonDay);
 				for (TimeTypeEnum timeType: timeMap.keySet()) {
@@ -185,12 +188,22 @@ public class AlghoritmTester {
 					 
 					//Nel caso ci siano pause di campionato //METODO CHE é UNA CACATA
 					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressLastSeasonInfo = progressChampMap.get(seasonDay-1);
-					if (progressLastSeasonInfo == null)
-						 progressLastSeasonInfo = progressChampMap.get(seasonDay-2);
-					if (progressLastSeasonInfo == null)
-						 progressLastSeasonInfo = progressChampMap.get(seasonDay-3);
+					if (progressLastSeasonInfo == null) {
+						progressLastSeasonInfo = progressChampMap.get(seasonDay-2);
+						progressChampMap.put(seasonDay-1, progressChampMap.get(seasonDay-2));
+					}
+					if (progressLastSeasonInfo == null) {
+						progressLastSeasonInfo = progressChampMap.get(seasonDay-3);
+						progressChampMap.put(seasonDay-1, progressChampMap.get(seasonDay-3));
+						progressChampMap.put(seasonDay-2, progressChampMap.get(seasonDay-3));
+					}
 					
-					
+					if (progressLastSeasonInfo == null) {
+						progressLastSeasonInfo = progressChampMap.get(seasonDay-4);
+						progressChampMap.put(seasonDay-1, progressChampMap.get(seasonDay-4));
+						progressChampMap.put(seasonDay-2, progressChampMap.get(seasonDay-4));
+						progressChampMap.put(seasonDay-3, progressChampMap.get(seasonDay-4));
+					}
 					
 					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = updateProgressTimeTypeMap(progressLastSeasonInfo, timeTypeMap);
 					progressChampMap.put(seasonDay, progressTimeTypeMap);

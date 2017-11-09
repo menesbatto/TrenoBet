@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.entities.Champ;
@@ -23,6 +25,7 @@ import app.utils.ChampEnum;
 import ma.glasnost.orika.MapperFacade;
 
 @Service
+@EnableCaching
 public class WinRangeStatsDao {
 
 	@Autowired
@@ -46,6 +49,8 @@ public class WinRangeStatsDao {
 	@Autowired
 	private HomeVariationTypeDao homeVariationTypeDao;
 	
+	
+	@Cacheable("winRangeStats")
 	public List<WinRangeStatsBean> findByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		List<WinRangeStats> ents = winRangeStatsRepo.findByTeamChampAndSeasonDayOrderByTeam(champ, seasonDay);

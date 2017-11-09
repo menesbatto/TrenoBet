@@ -66,6 +66,8 @@ public class GoodnessCalculator {
 	@Autowired
 	private EventOddsDao eventOddsDao;
 	
+	private boolean printInfo = false;
+	
 	public void execute(int seasonDay) {
 		ChampEnum[] allChamps = ChampEnum.values();
 		execute(seasonDay, allChamps);
@@ -147,7 +149,7 @@ public class GoodnessCalculator {
 				
 				ResultGoodnessBean resultGoodnessHome = createPlayingFieldStats(mapTeamWinRangStats, mapTeamGoalsStats, mapTeamWinEhRangStats, timeType, "H", eo);
 				eo.setHomeResultGoodness(resultGoodnessHome);
-				
+				 
 				ResultGoodnessBean resultGoodnessAway = createPlayingFieldStats(mapTeamWinRangStats, mapTeamGoalsStats, mapTeamWinEhRangStats, timeType, "A", eo);
 				eo.setAwayResultGoodness(resultGoodnessAway);
 				
@@ -155,12 +157,14 @@ public class GoodnessCalculator {
 				eo.setTimeType(timeType);
 				eo.setSeasonDay(seasonDay);
 			}
-//			if (timeType == TimeTypeEnum._final) {
-//				System.out.println("###############################");
-//				System.out.println(timeType);
-//				System.out.println("###############################");
-//				System.out.println(mapNextMatchOdds.get(timeType));
-//			}
+			if(printInfo) {
+				if (timeType == TimeTypeEnum._final) {
+					System.out.println("###############################");
+					System.out.println(timeType);
+					System.out.println("###############################");
+					System.out.println(mapNextMatchOdds.get(timeType));
+				}
+			}
 		}
 		
 		
@@ -967,7 +971,8 @@ public class GoodnessCalculator {
 			} 
 			
 			if (hitPercentage == 0) {
-				goodness =  1 - Math.pow(0.9, index);  
+//				goodness =  1 - Math.pow(0.9, index);  
+				goodness =  0.0;
 			}
 			else
 				goodness = hitPercentage * Math.pow(0.9, index);

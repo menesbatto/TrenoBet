@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.entities.SingleBet;
@@ -43,6 +45,7 @@ import app.logic._1_matchesDownlaoder.model._1x2Leaf;
 import app.utils.ChampEnum;
 
 @Service
+@EnableCaching
 public class EventOddsDao {
 
 	@Autowired
@@ -483,6 +486,7 @@ public class EventOddsDao {
 		return beanMap;
 	}
 
+	@Cacheable("eventsOdds")
 	public List<EventOddsBean> getNextEventsOdds(ChampEnum champEnum, Integer seasonDay) { 
 		List<EventOddsBean> beans = new ArrayList<EventOddsBean>();
 		Champ champ = champDao.findByChampEnum(champEnum);

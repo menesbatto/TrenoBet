@@ -11,6 +11,8 @@ import app.dao.tabelle.entities.Champ;
 public interface ChampRepo extends JpaRepository<Champ, Long> {
 
 	Champ findByNameAndStartYearAndNation(String name, int startYear, String nation);
+	
+	Champ findById(Integer id);
 //	
 //	List<Person> findDistinctPeopleByFirstNameOrLastNameIgnoreCase(String lastname, String firstname);
 	

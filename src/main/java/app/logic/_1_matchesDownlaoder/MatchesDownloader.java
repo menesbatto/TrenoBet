@@ -3,11 +3,7 @@ package app.logic._1_matchesDownlaoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -19,8 +15,8 @@ import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.MatchoDao;
 import app.logic._1_matchesDownlaoder.model.BetHouseEnum;
-import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 import app.logic._1_matchesDownlaoder.model.EhTimeType;
+import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
 import app.logic._1_matchesDownlaoder.model.MatchResult;
 import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
 import app.logic._1_matchesDownlaoder.model.UoFull;
@@ -110,8 +106,10 @@ public class MatchesDownloader {
 		Elements tableRows = matchesTable.getElementsByTag("tr");
 		String[] split = champSubsetUrl.split("/");
 		String pageNumString = split[split.length-1];
-		Integer pageNum = 0;
-		if (!pageNumString.equals("results") && !pageNumString.equals("#") )
+		Integer pageNum = 1;
+		
+//		if (!pageNumString.equals("results") && !pageNumString.equals("#") )
+		if (pageNumString.chars().allMatch( Character::isDigit ))
 			pageNum = Integer.valueOf(pageNumString);
 
 		Date matchDate = null;
@@ -177,7 +175,7 @@ public class MatchesDownloader {
 //			else if (row.hasClass("odd") || row.hasAttr("heid")){ //next xxx
 			else if (row.hasClass("deactivate") || row.hasClass("odd") || row.hasAttr("xeid")){ //results
 					long startTime = System.nanoTime();
-					System.out.println(champ + " Match " + ((pageNum-1)*50) + matchNum++);
+					System.out.println(champ + " Match " + ( (pageNum-1) * 50 + matchNum++ ) );
 					
 //				if (matchSkipped >= alreadySavedMatcheOnThisPage) {
 					matchResult = createMatchResult(row, matchDate, champSubsetUrl, downloadedMatches); 

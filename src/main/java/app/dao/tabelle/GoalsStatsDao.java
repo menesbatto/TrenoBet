@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import app.dao.tabelle.entities.Champ;
@@ -22,6 +24,7 @@ import app.utils.ChampEnum;
 import ma.glasnost.orika.MapperFacade;
 
 @Service
+@EnableCaching
 public class GoalsStatsDao {
 
 	@Autowired
@@ -42,6 +45,7 @@ public class GoalsStatsDao {
 	@Autowired
 	private MapperFacade mapper;
 	
+	@Cacheable("goalsStats")
 	public List<GoalsStatsBean> findByChampInSeasonDay(ChampEnum champEnum, Integer seasonDay) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		List<GoalsStats> ents = goalsStatsRepo.findByTeamChampAndSeasonDayOrderByTeam(champ, seasonDay);

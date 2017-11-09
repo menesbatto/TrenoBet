@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import app.dao.tabelle.ChampDao;
+import app.dao.tabelle.ChampRepo;
 import app.dao.tabelle.EventOddsDao;
 import app.dao.tabelle.EventOddsRepo;
 import app.dao.tabelle.MatchoDao;
@@ -80,7 +82,18 @@ public class FacadeController {
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
 		return response;
 	}
-
+	
+	@RequestMapping(value = "/downloadNextMatches/{champId}", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadNextMatchesByChamp(@PathVariable Integer champId) {
+		ChampEnum champ = champDao.findChampEnumById(champId);
+//		ChampEnum champ = ChampEnum.valueOf(champName);
+		ChampEnum[] champs = new ChampEnum[] {champ};
+		nextMatchesDownloader.execute(champs);
+		String body = "Downloading next matches for champ " + champ.getName() + " COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
+	
 	// ###################################################
 	// ##########            2                ############
 	// ###################################################
@@ -92,6 +105,19 @@ public class FacadeController {
 		return response;
 	}
 
+	@Autowired
+	private ChampDao champDao;
+	
+	@RequestMapping(value = "/downloadPastMatches/{champId}", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadPastMatchesByChamp(@PathVariable Integer champId) {
+		ChampEnum champ = champDao.findChampEnumById(champId);
+//		ChampEnum champ = ChampEnum.valueOf(champId);
+		ChampEnum[] champs = new ChampEnum[] {champ};
+		pastMatchesDownloader.execute(champs);
+		String body = "Downloading past matches for champ " + champ.getName() + " COMPLETED";
+		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
+		return response;
+	}
 	// ###################################################
 	// ##########            3                ############
 	// ###################################################
@@ -107,7 +133,7 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("resultAnalyzer " + duration / 1000000);
+		System.out.println("resultAnalyzer " +new Double (duration) / 1000000.0/ 1000.0);
 		
 		String body = "Calculating Teams Stats COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -149,11 +175,13 @@ public class FacadeController {
 		
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		removeAllEventOdds(actualSeasonDay);
+//		ChampEnum[] champs = {ChampEnum.ITA_SERIE_A_2017};
+//		goodnessCalculator.execute(actualSeasonDay-1, champs);
 		goodnessCalculator.execute(actualSeasonDay);
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("goodnessCalculator " + duration / 1000000);
+		System.out.println("goodnessCalculator " + new Double (duration) / 1000000.0/ 1000.0);
 		
 		String body = "Calculating Next Matches Odds Goodness COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -167,12 +195,13 @@ public class FacadeController {
 	public ResponseEntity<String>  createBet6() {
 		long startTime = System.nanoTime();
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
-		
+//		ChampEnum[] champs = {ChampEnum.ITA_SERIE_A_2017};
+//		betCreator.execute(actualSeasonDay-1, champs);
 		betCreator.execute(actualSeasonDay);
-
+		
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("betCreator " + duration / 1000000);
+		System.out.println("betCreator " + new Double (duration) / 1000000.0/ 1000.0);
 		
 		String body = "Creating Bet COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -191,7 +220,7 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("betAnalyzer " + duration / 1000000);
+		System.out.println("betAnalyzer " + new Double (duration) / 1000000.0/ 1000.0);
 		
 		String body = "Analyzing Bet COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -210,7 +239,7 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("betAnalyzer " + duration / 1000000);
+		System.out.println("betAnalyzer " +new Double (duration) / 1000000.0/ 1000.0);
 		
 		String body = "Analyzing Bet COMPLETED";
 		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
@@ -294,7 +323,7 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("resetRankings " + duration / 1000000);
+		System.out.println("resetRankings " + new Double (duration) / 1000000.0/ 1000.0);
 	}
 	
 	@RequestMapping(value = "/resetAllStats", method = RequestMethod.GET)
@@ -306,7 +335,7 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("resetStats " + duration / 1000000);
+		System.out.println("resetStats " + new Double (duration) / 1000000.0/ 1000.0);
 	}
 	
 	@Transactional
@@ -319,13 +348,14 @@ public class FacadeController {
 
 		long currentTime = System.nanoTime();
 		long duration = (currentTime - startTime); // divide by 1000000 to get milliseconds.
-		System.out.println("resetStats " + duration / 1000000);
+		System.out.println("resetStats " + new Double (duration) / 1000000.0/ 1000.0);
 	}
 
 	
 	@RequestMapping(value = "/removeAllEventOdds", method = RequestMethod.GET)
 	public void removeAllEventOdds(Integer seasonDay) {
-		eventOddsRepo.deleteAll();
+		
+		eventOddsRepo.deleteBySeasonDay(seasonDay);
 	}
 	
 
@@ -355,25 +385,7 @@ public class FacadeController {
 		matchDao.deleteMatch(idMatch);
 	}
 
-	@RequestMapping(value = "/downloadNextMatches/{champName}", method = RequestMethod.GET)
-	public ResponseEntity<String> downloadNextMatchesByChamp(@PathVariable String champName) {
-		ChampEnum champ = ChampEnum.valueOf(champName);
-		ChampEnum[] champs = new ChampEnum[] {champ};
-		nextMatchesDownloader.execute(champs);
-		String body = "Downloading next matches for champ " + champName + " COMPLETED";
-		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
-		return response;
-	}
-	
-	@RequestMapping(value = "/downloadPastMatches/{champName}", method = RequestMethod.GET)
-	public ResponseEntity<String> downloadPastMatchesByChamp(@PathVariable String champName) {
-		ChampEnum champ = ChampEnum.valueOf(champName);
-		ChampEnum[] champs = new ChampEnum[] {champ};
-		pastMatchesDownloader.execute(champs);
-		String body = "Downloading past matches for champ " + champName + " COMPLETED";
-		ResponseEntity<String> response = new ResponseEntity<String>(body, HttpStatus.OK);
-		return response;
-	}
+
 	
 	// @GetMapping(path="/all")
 	// public @ResponseBody Iterable<User> getAllUsers() {

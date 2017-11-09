@@ -89,6 +89,13 @@ public class ChampDao {
 
 		return champEnt;
 	}
+
+
+	public ChampEnum findChampEnumById(Integer champId) {
+		Champ champ = champRepo.findById(champId);
+		ChampEnum champEnum = findChampEnumByChamp(champ);
+		return champEnum;
+	}
 	
 	
 	

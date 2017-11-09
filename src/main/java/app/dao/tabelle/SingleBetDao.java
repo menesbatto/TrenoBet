@@ -48,7 +48,7 @@ public class SingleBetDao {
 			TimeTypeEnum timeTypeEnum = timeTypeDao.findBeanByEnt(betEnt.getTimeType());
 			ChampEnum champ = champDao.findChampEnumByChamp(betEnt.getChamp());
 
-			betBean= new SingleBetBean(betTypeEnum,  matchResultEnum , betEnt.getWinOdds(), timeTypeEnum, champ);
+			betBean= new SingleBetBean(betTypeEnum,  matchResultEnum , betEnt.getWinOdds(), timeTypeEnum, champ, null);
 			
 			MatchResult matchResultBean = matchoDao.mapMatchoToMatchResult(betEnt.getMatch(), true);
 			betBean.setMatch(matchResultBean);

@@ -18,6 +18,7 @@ import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.RankingRowDao;
 import app.dao.tabelle.SingleBetDao;
 import app.logic._1_matchesDownlaoder.model.SingleBetBean;
+import app.logic._1_matchesDownlaoder.model.TimeTypeEnum;
 import app.logic._1_matchesDownlaoder.model.BetType;
 import app.logic._1_matchesDownlaoder.model.EventOddsBean;
 import app.logic._1_matchesDownlaoder.model.HomeVariationEnum;
@@ -62,7 +63,7 @@ public class BetCreator {
 	@Autowired
 	private SingleBetDao singleBetDao;
 
-	private boolean printBet = false;
+	private boolean printBet = true; 
 	
 	
 
@@ -82,6 +83,7 @@ public class BetCreator {
 			System.out.println("\tBC t1 deleteSingleBets");
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
 			System.out.println("\tBC t2 createBetsOfChamp");
+			System.out.println(champ);
 			createBetsOfChamp(champ, seasonDay);
 			System.out.println("\tBC t3 createBetsOfChampComplete");
 //			Collections.sort(mainBet.get(champ));
@@ -116,6 +118,9 @@ public class BetCreator {
 		List<SingleBetBean> singleBetList = new ArrayList<SingleBetBean>();
 
 		for (EventOddsBean eo : eventsOdds){
+			
+			if (eo.getTimeType()!= TimeTypeEnum._final)
+				continue;
 			
 			ResultGoodnessBean homeResultGoodness = eo.getHomeResultGoodness();
 			ResultGoodnessBean awayResultGoodness = eo.getAwayResultGoodness();
@@ -163,7 +168,7 @@ public class BetCreator {
 			//#############################  X  #############################	
 			addXmatches(champ, eo, singleBetList, seasonDay);	
 				
-			//############################# UO ############################# 
+//			############################# UO ############################# 
 			addUOmatches(champ, eo, homeResultGoodness, awayResultGoodness, singleBetList, seasonDay);
 		
 			//############################# EH ############################# 
@@ -200,14 +205,14 @@ public class BetCreator {
 		
 //		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
 //		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4);
-		Boolean condition1 = goodnessHW >= singleLimit || goodnessAL >= singleLimit; // && if (eo.getOddsH() <= 1.4);
+		Boolean condition1 = goodnessHW >= singleLimit || goodnessAL >= singleLimit;
 //		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
 		condition1 = condition1 && winFinalH.getTotalEventsW() != 0 && winFinalA.getTotalEventsL() != 0;
 		
 		
 //		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
 //		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
-		Boolean condition2 = goodnessHL >= singleLimit || goodnessAW >= singleLimit; // && if (eo.getOddsA() <= 1.4){ 
+		Boolean condition2 = goodnessHL >= singleLimit || goodnessAW >= singleLimit;
 //		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
 		condition2 = condition2 && winFinalH.getTotalEventsL() != 0 && winFinalA.getTotalEventsW() != 0;
 		
@@ -219,7 +224,7 @@ public class BetCreator {
 			SingleBetBean br = null;
 			
 			if ( condition1	) {
-				br = new SingleBetBean(BetType._1x2, MatchResultEnum.H, eo.getOdds1(), eo.getTimeType(), champ);
+				br = new SingleBetBean(BetType._1x2, MatchResultEnum.H, eo.getOdds1(), eo.getTimeType(), champ, eo.getDate());
 				br.setMatchId(eo.getMatchId());
 				br.setSeasonDay(seasonDay);
 				singleBetList.add(br);
@@ -227,7 +232,7 @@ public class BetCreator {
 //				System.out.println(br);
 			}
 			else if ( condition2 ) {
-				br = new SingleBetBean(BetType._1x2, MatchResultEnum.A, eo.getOdds2(), eo.getTimeType(), champ);
+				br = new SingleBetBean(BetType._1x2, MatchResultEnum.A, eo.getOdds2(), eo.getTimeType(), champ, eo.getDate());
 				br.setMatchId(eo.getMatchId());
 				br.setSeasonDay(seasonDay);
 				singleBetList.add(br);
@@ -246,7 +251,9 @@ public class BetCreator {
 	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
 		
 		Double limit = 0.1;
-		Double limitMix = 4.0;
+		Double limitMix = 1.0;
+		Double singleLimit = 0.7;
+		Double xLimit = 0.4;
 		
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();
@@ -269,15 +276,19 @@ public class BetCreator {
 			if (ehGoodnessH.getGoodnessW() != null && ehGoodnessA.getGoodnessL() != null) {
 //				condition1 = ehGoodnessH.getGoodnessW() >= limit && ehGoodnessA.getGoodnessL() >= limit;
 //				condition1 = ehGoodnessH.getGoodnessW() + ehGoodnessA.getGoodnessL() >= 1.6 && if (eo.getOddsH() <= 1.4){
-				condition1 = ehGoodnessH.getGoodnessW() * (_1x2leaf.getOdd1() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessL() * (_1x2leaf.getOdd1() - 1.0)  >= limitMix;
-				condition1 = condition1 && ehGoodnessH.getTotalEventsW() != 0 && ehGoodnessA.getTotalEventsL() != 0;
+//				condition1 = ehGoodnessH.getGoodnessW() * (_1x2leaf.getOdd1() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessL() * (_1x2leaf.getOdd1() - 1.0)  >= limitMix;
+				condition1 = ehGoodnessH.getGoodnessW() >= singleLimit || ehGoodnessA.getGoodnessL() >= singleLimit;
+				condition1 = condition1 && ehGoodnessH.getTotalEventsW() != 0 && ehGoodnessA.getTotalEventsL() != 0 && _1x2leaf.getOdd1() > 5;
+				condition1 = false;
+
 			}
 			
 			Boolean conditionX = false;
 			if (ehGoodnessH.getGoodnessD() != null && ehGoodnessA.getGoodnessD() != null) {
 //				conditionX = ehGoodnessH.getGoodnessD() >= limit && ehGoodnessA.getGoodnessD() >= limit;
-//				condition2 = ehGoodnessH.getGoodnessD() + ehGoodnessA.getGoodnessD() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
-				conditionX = ehGoodnessH.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)  >= limitMix;
+//				conditionX = ehGoodnessH.getGoodnessD() + ehGoodnessA.getGoodnessD() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
+//				conditionX = ehGoodnessH.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)  >= limitMix;
+				conditionX = ehGoodnessH.getGoodnessD() >= xLimit && ehGoodnessA.getGoodnessD() >= xLimit;
 				conditionX = conditionX && ehGoodnessH.getTotalEventsD() != 0 && ehGoodnessA.getTotalEventsD() != 0;
 			}
 			
@@ -285,8 +296,10 @@ public class BetCreator {
 			if (ehGoodnessH.getGoodnessL() != null && ehGoodnessA.getGoodnessW() != null) {
 //				condition2 = ehGoodnessH.getGoodnessL() >= limit && ehGoodnessA.getGoodnessW() >= limit;
 //				condition2 = ehGoodnessH.getGoodnessL() + ehGoodnessA.getGoodnessW() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
-				condition2 = ehGoodnessH.getGoodnessL() * (_1x2leaf.getOdd2() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessW() * (_1x2leaf.getOdd2() - 1.0)  >= limitMix;
-				condition2 = condition2 && ehGoodnessH.getTotalEventsL() != 0 && ehGoodnessA.getTotalEventsW() != 0;
+//				condition2 = ehGoodnessH.getGoodnessL() * (_1x2leaf.getOdd2() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessW() * (_1x2leaf.getOdd2() - 1.0)  >= limitMix;
+				condition2 = ehGoodnessH.getGoodnessL() >= singleLimit || ehGoodnessA.getGoodnessW() >= singleLimit;
+				condition2 = condition2 && ehGoodnessH.getTotalEventsL() != 0 && ehGoodnessA.getTotalEventsW() != 0 && _1x2leaf.getOdd2() > 5;
+				condition2 = false;
 			}
 			
 			
@@ -296,7 +309,7 @@ public class BetCreator {
 				BetType betType = BetType.valueOf(homeVar.name());
 				SingleBetBean br = null;
 				if ( condition1	) {
-					br = new SingleBetBean(betType, MatchResultEnum.H, _1x2leaf.getOdd1(), eo.getTimeType(), champ);
+					br = new SingleBetBean(betType, MatchResultEnum.H, _1x2leaf.getOdd1(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
@@ -305,7 +318,7 @@ public class BetCreator {
 //					System.out.println(eo.toStringInner(null, null, homeVar, false));
 				}
 				else if ( conditionX ) {
-					br = new SingleBetBean(betType, MatchResultEnum.D, _1x2leaf.getOddX(), eo.getTimeType(), champ);
+					br = new SingleBetBean(betType, MatchResultEnum.D, _1x2leaf.getOddX(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
@@ -314,14 +327,14 @@ public class BetCreator {
 //					System.out.println(eo.toStringInner(null, null, homeVar, false));
 				}
 				else if ( condition2 ) {
-					br = new SingleBetBean(betType, MatchResultEnum.A, _1x2leaf.getOdd2(), eo.getTimeType(), champ);
+					br = new SingleBetBean(betType, MatchResultEnum.A, _1x2leaf.getOdd2(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
 					
 //					System.out.println(br);
 //					System.out.println(eo.toStringInner(null, null, homeVar, false));
-				}
+				} 
 				if (printBet) {
 					if (br != null) {
 						printEhSingleBet(eo, homeVar, br);
@@ -383,7 +396,7 @@ public class BetCreator {
 				SingleBetBean br = null;
 
 				if ( conditionO ){
-					br = new SingleBetBean(betType, MatchResultEnum.O, uoLeaf.getO(), eo.getTimeType(), champ);
+					br = new SingleBetBean(betType, MatchResultEnum.O, uoLeaf.getO(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
@@ -391,7 +404,7 @@ public class BetCreator {
 //					System.out.println(eo.toStringInner(null, uoThr, null, false));
 				}
 				else if ( conditionU ){
-					br = new SingleBetBean(betType, MatchResultEnum.U, uoLeaf.getU(), eo.getTimeType(), champ);
+					br = new SingleBetBean(betType, MatchResultEnum.U, uoLeaf.getU(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
@@ -439,7 +452,7 @@ public class BetCreator {
 		Date betDate = Utils.getDateOfBet(seasonDay);
 		if (Utils.isMatchInTemporalRange(eo.getDate(), betDate, AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
 			if ( conditionX ){
-				br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ);
+				br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ, eo.getDate());
 				br.setMatchId(eo.getMatchId());
 				br.setSeasonDay(seasonDay);
 				singleBetList.add(br);
@@ -471,7 +484,7 @@ public class BetCreator {
 		ResultGoodnessWDLBean _1x2BeanH = eo.getHomeResultGoodness().getWinFinal();
 		ResultGoodnessWDLBean _1x2BeanA = eo.getAwayResultGoodness().getWinFinal();
 		System.out.println(Utils.redimString(eo.getHomeTeam(), 16) + " " + _1x2BeanH);
-		System.out.println(Utils.redimString(eo.getAwayTeam(), 16) + " " + _1x2BeanA);
+		System.out.println(Utils.redimString(eo.getAwayTeam(), 16) + " " + _1x2BeanA.toStringAway());
 		
 		System.out.print(br);
 		System.out.println("----------------");
@@ -491,7 +504,7 @@ public class BetCreator {
 		Date betDate = Utils.getDateOfBet(seasonDay);
 		if (Utils.isMatchInTemporalRange(eo.getDate(), betDate, AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {
 			if ( conditionMot1 ){
-				br = new SingleBetBean(BetType._1x2, MatchResultEnum.H, eo.getOdds1(), eo.getTimeType(), champ);
+				br = new SingleBetBean(BetType._1x2, MatchResultEnum.H, eo.getOdds1(), eo.getTimeType(), champ, eo.getDate());
 				br.setMatchId(eo.getMatchId());
 				br.setSeasonDay(seasonDay);
 				singleBetList.add(br);
@@ -506,7 +519,7 @@ public class BetCreator {
 				
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 				if (eo.getOdds1() >= 6){
-					br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ);
+					br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);
@@ -518,7 +531,7 @@ public class BetCreator {
 				}
 			}
 			else if ( conditionMot2 ){
-				br = new SingleBetBean(BetType._1x2, MatchResultEnum.A, eo.getOdds2(), eo.getTimeType(), champ);
+				br = new SingleBetBean(BetType._1x2, MatchResultEnum.A, eo.getOdds2(), eo.getTimeType(), champ, eo.getDate());
 				br.setMatchId(eo.getMatchId());
 				br.setSeasonDay(seasonDay);
 				singleBetList.add(br);
@@ -531,7 +544,7 @@ public class BetCreator {
 //				System.out.println(eo);
 //				mainBet.get(champ).add(SerializationUtils.clone(eo));
 				if (eo.getOdds2() >= 6){
-					br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ);
+					br = new SingleBetBean(BetType._1x2, MatchResultEnum.D, eo.getOddsX(), eo.getTimeType(), champ, eo.getDate());
 					br.setMatchId(eo.getMatchId());
 					br.setSeasonDay(seasonDay);
 					singleBetList.add(br);

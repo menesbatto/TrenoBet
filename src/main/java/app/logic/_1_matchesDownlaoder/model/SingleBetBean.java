@@ -1,6 +1,7 @@
 package app.logic._1_matchesDownlaoder.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import app.utils.ChampEnum;
 import app.utils.Utils;
@@ -27,18 +28,21 @@ public class SingleBetBean implements Serializable {
 	
 	private ChampEnum champ;
 	
+	private Date matchDate;
+	
 
 	public SingleBetBean() {
 	}
 
 	
 	
-	public SingleBetBean(BetType betType, MatchResultEnum matchResultForecast, Double winOdds, TimeTypeEnum timeTypeEnum, ChampEnum champ) {
+	public SingleBetBean(BetType betType, MatchResultEnum matchResultForecast, Double winOdds, TimeTypeEnum timeTypeEnum, ChampEnum champ, Date matchDate) {
 		this.betType = betType;
 		this.matchResultForecast = matchResultForecast;
 		this.winOdds = winOdds;
 		this.timeTypeEnum = timeTypeEnum;
 		this.champ = champ;
+		this.matchDate = matchDate;
 	}
 
 
@@ -122,7 +126,7 @@ public class SingleBetBean implements Serializable {
 			matchString =  match.getHomeTeam() + " - " + match.getAwayTeam() + " " + match.getFTHG() + "-" + match.getFTAG() + " (" + match.getHTHG() + "-" + match.getHTAG() + ") " + "\n";
 		};
 		
-		return matchResultForecast + "\t" + betType + "\t" + Utils.redimString(timeTypeEnum.name(),8) + "\t" + winOdds + "\t\t\t\t\t\t\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\n"
+		return matchResultForecast + "\t" + betType + "\t" + Utils.redimString(timeTypeEnum.name(),8) + "\t" + winOdds + "\t\t\t\t\t\t\tseasonDay=" + seasonDay +  "\twin=" + win + "\tmatchId=" + matchId + "\t" + matchDate + "\n"
 				+ matchString  + "\n";
 	}
 
@@ -148,6 +152,18 @@ public class SingleBetBean implements Serializable {
 
 	public void setChamp(ChampEnum champ) {
 		this.champ = champ;
+	}
+
+
+
+	public Date getMatchDate() {
+		return matchDate;
+	}
+
+
+
+	public void setMatchDate(Date matchDate) {
+		this.matchDate = matchDate;
 	}
 
 	
