@@ -3,11 +3,14 @@ package app.logic._9_alghoritmTester;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,11 +71,19 @@ public class AlghoritmTester {
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_A_2017};
+
+//		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.FRA_LIGUE_1_2017,  ChampEnum.GER_BUNDESLIGA_2017}; //sfigati
+		
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER_2017, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_A_2017, ChampEnum.ITA_SERIE_B_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.FRA_LIGUE_1_2017,  ChampEnum.GER_BUNDESLIGA_2017};
-		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ENG_PREMIER, ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.ITA_SERIE_A_2017, ChampEnum.ITA_SERIE_B_2017};
-//		ChampEnum[] champs = ChampEnum.values();
+//		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017,
+//				 ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017,
+//				 ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
+		
+		ChampEnum[] champs = ChampEnum.values();
+//		ChampEnum[] champs = new ChampEnum[] {ChampEnum.SCO_CHAMPIONSHIP_2017};
 		
 		
 		seasonDayInfoMap = null;
@@ -80,7 +91,7 @@ public class AlghoritmTester {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
 	
 			
-			for (int seasonDay = 7; seasonDay < actualSeasonDay; seasonDay++) {
+			for (int seasonDay = 14; seasonDay < actualSeasonDay; seasonDay++) {
 	//			Date dateOfBet = getDateOfBet(seasonDay);
 				System.out.println(seasonDay + " - 1");
 				if (calculateStats) {
@@ -127,6 +138,8 @@ public class AlghoritmTester {
 
 
 	private void printProgressBalance( Map<ChampEnum, HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>>> progressBalance) {
+		
+		
 		for (ChampEnum champ : progressBalance.keySet()) {
 			System.out.println(champ);
 			HashMap<Integer, HashMap<TimeTypeEnum, SeasonDayBetResultInfo>> seasonDayMap = progressBalance.get(champ);
@@ -136,7 +149,9 @@ public class AlghoritmTester {
 			String uo = 	Utils.redimString(champ + " uo", 25) + "\t";
 			String eh = 	Utils.redimString(champ + " eh", 25) + "\t";
 			String total = 	Utils.redimString(champ + " tot", 25) + "\t";
-			for (Integer seasonDay : seasonDayMap.keySet()) {
+			List<Integer> keyList = sortKeySet(seasonDayMap.keySet());
+			
+			for (Integer seasonDay : keyList) {
 				HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeMap = seasonDayMap.get(seasonDay);
 				for (TimeTypeEnum timeType: timeMap.keySet()) {
 					SeasonDayBetResultInfo seasonDayBetResultInfo = timeMap.get(timeType);
@@ -171,7 +186,10 @@ public class AlghoritmTester {
 			progressMap.put(champ, progressChampMap);
 			
 			 
-			for (Integer seasonDay: champMap.keySet()) {
+			Set<Integer> keySet = champMap.keySet();
+			List<Integer> keyList = sortKeySet(keySet);
+			
+			for (Integer seasonDay: keyList) {
 				if (seasonDay != null){ // elimina i totali
 					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> timeTypeMap = champMap.get(seasonDay);
 					
@@ -205,12 +223,36 @@ public class AlghoritmTester {
 						progressChampMap.put(seasonDay-3, progressChampMap.get(seasonDay-4));
 					}
 					
+//					if (progressLastSeasonInfo== null) {
+//						progressLastSeasonInfo = createStartSituation();
+//					}
+					
 					HashMap<TimeTypeEnum, SeasonDayBetResultInfo> progressTimeTypeMap = updateProgressTimeTypeMap(progressLastSeasonInfo, timeTypeMap);
 					progressChampMap.put(seasonDay, progressTimeTypeMap);
 				}
 			}
 		}
 		return progressMap;
+	}
+
+
+	private List<Integer> sortKeySet(Set<Integer> keySet) {
+		List<Integer> keyList = new ArrayList<Integer>();
+		keyList.addAll(keySet);
+		Collections.sort(keyList, new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				if (o1 == null){
+					return -1;
+				}
+				else if (o2 == null){
+					return 1;
+				}
+				return o1.compareTo(o2);
+			}
+		});
+		return keyList;
 	}
 
 

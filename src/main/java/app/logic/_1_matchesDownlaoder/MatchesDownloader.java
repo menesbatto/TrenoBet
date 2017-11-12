@@ -1,9 +1,11 @@
 package app.logic._1_matchesDownlaoder;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.transaction.Transactional;
 
@@ -265,6 +267,9 @@ public class MatchesDownloader {
 			//	RISULTATO
 				
 				String result = tableScoreElems.get(0).text();
+				if (result.equals("abn.") || result.equals("award.")) {
+					return null;
+				}
 				Integer homeScoreScoredGoals = Integer.valueOf(result.split(":")[0]);
 				m.setFTHG(homeScoreScoredGoals);
 				Integer awayScoredGoals = Integer.valueOf(result.split(":")[1]);
@@ -574,17 +579,16 @@ public class MatchesDownloader {
 		
 		Elements betHouses = infoPage.getElementById("col-content").getElementsByClass("detail-odds").get(0).getElementsByClass("lo");
 		
-		_1x2Full _1x2 = m.get_1x2().get(timeType);
-
 		Elements averageTds = infoPage.getElementById("col-content").getElementsByClass("detail-odds").get(0).getElementsByClass("aver").first().getElementsByTag("td");
-		Double oddsH = Double.valueOf(averageTds.get(1).text());
-		Double oddsD = Double.valueOf(averageTds.get(2).text());
-		Double oddsA = Double.valueOf(averageTds.get(3).text());
-		_1x2Leaf _1x2avgMatch = new _1x2Leaf(oddsH, oddsD, oddsA);
-		_1x2.setAvg1x2Odds(_1x2avgMatch);
+		Double oddsH;
+		Double oddsD;
+		Double oddsA;
 		
 		for (Element house : betHouses){
 			String betHouseName = getBetHouseName(house);
+			if (betHouseName.equals("")) {
+				continue;
+			}
 			BetHouseEnum betHouse = BetHouseEnum.valueOf(betHouseName);
 			oddsH = Double.valueOf(house.getElementsByClass("right").get(0).text());
 			oddsD = Double.valueOf(house.getElementsByClass("right").get(1).text());
@@ -593,9 +597,40 @@ public class MatchesDownloader {
 			
 			_1x2Leaf _1x2Match = new _1x2Leaf(oddsH, oddsD, oddsA);
 			
-			_1x2.getBetHouseTo1x2Odds().put(betHouse, _1x2Match);
+			m.get_1x2().get(timeType).getBetHouseTo1x2Odds().put(betHouse, _1x2Match);
 			
 		}
+		
+		_1x2Leaf _1x2avgMatch;
+		try {
+			oddsH = Double.valueOf(averageTds.get(1).text());
+			oddsD = Double.valueOf(averageTds.get(2).text());
+			oddsA = Double.valueOf(averageTds.get(3).text());
+
+			_1x2avgMatch = new _1x2Leaf(oddsH, oddsD, oddsA);
+		}
+		catch (Exception e) { // caso in cui ci sono dei dati malformati e manca la quota avg allora se la calcola
+			HashMap<BetHouseEnum, _1x2Leaf> betHouseMap = m.get_1x2().get(timeType).getBetHouseTo1x2Odds();
+			_1x2Leaf sum = new _1x2Leaf(0.0,0.0,0.0);
+			for (BetHouseEnum betHouse: betHouseMap.keySet()) {
+				_1x2Leaf single = betHouseMap.get(betHouse);
+				
+				sum.setOdd1(sum.getOdd1() + single.getOdd1());
+				sum.setOddX(sum.getOddX() + single.getOddX());
+				sum.setOdd2(sum.getOdd2() + single.getOdd2());
+			}
+			
+			Double betHouseNum = new Double(betHouseMap.size());
+			
+			double odd1 = Math.round(sum.getOdd1()/betHouseNum * 100.0)/100.0;
+			double oddX = Math.round(sum.getOddX()/betHouseNum * 100.0)/100.0;
+			double odd2 = Math.round(sum.getOdd2()/betHouseNum * 100.0)/100.0;
+			
+			_1x2avgMatch = new _1x2Leaf(odd1, oddX, odd2);
+			
+		}
+		
+		m.get_1x2().get(timeType).setAvg1x2Odds(_1x2avgMatch);
 		
 		
 		

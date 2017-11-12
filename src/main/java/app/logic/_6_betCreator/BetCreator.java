@@ -197,23 +197,25 @@ public class BetCreator {
 		Double goodnessAL = winFinalA.getGoodnessL() != null ? winFinalA.getGoodnessL() : 0;
 		
 		
-		Double limit = 0.65;
+		Double limit = 0.6;
 //		Double limit = 0.1;
-		Double limitSum = 1.5;
-		Double limitMix = 0.3;
+		Double limitSum = 1.5; //2 su 41
+		Double limitMix = 0.6;
 		Double singleLimit = 0.9;
 		
-//		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit;
+//		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit; //-1,28
 //		Boolean condition1 = goodnessHW + goodnessAL >= limitSum; // && if (eo.getOddsH() <= 1.4);
-		Boolean condition1 = goodnessHW >= singleLimit || goodnessAL >= singleLimit;
-//		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
+//		Boolean condition1 = (goodnessHW >= singleLimit && goodnessAW <= 0.4) || (goodnessAL >= singleLimit && goodnessHL <= 0.4);
+//		Boolean condition1 = goodnessHW >= singleLimit || goodnessAL >= singleLimit;
+		Boolean condition1 = goodnessHW * (eo.getOdds1() - 1.0)>= limitMix 	&& goodnessAL * (eo.getOdds1() - 1.0)  >= limitMix;
 		condition1 = condition1 && winFinalH.getTotalEventsW() != 0 && winFinalA.getTotalEventsL() != 0;
 		
 		
 //		Boolean condition2 = goodnessHL >= limit && goodnessAW >= limit;
 //		Boolean condition2 = goodnessHL + goodnessAW >= limitSum; // && if (eo.getOddsA() <= 1.4){ 
-		Boolean condition2 = goodnessHL >= singleLimit || goodnessAW >= singleLimit;
-//		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
+//		Boolean condition2 = (goodnessHL >= singleLimit && goodnessAL <= 0.4) || (goodnessAW >= singleLimit && goodnessHW < 0.4);
+//		Boolean condition2 = goodnessHL >= singleLimit || goodnessAW >= singleLimit;
+		Boolean condition2 = goodnessHL * (eo.getOdds2() - 1.0)>= limitMix 	&& goodnessAW * (eo.getOdds2() - 1.0)  >= limitMix;
 		condition2 = condition2 && winFinalH.getTotalEventsL() != 0 && winFinalA.getTotalEventsW() != 0;
 		
 		
@@ -251,9 +253,10 @@ public class BetCreator {
 	private void addEhmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
 		
 		Double limit = 0.1;
-		Double limitMix = 1.0;
-		Double singleLimit = 0.7;
-		Double xLimit = 0.4;
+		Double limitMix = 0.7;
+		Double singleLimit = 0.8;
+		// migliore è sfanculare 1 e 2 e lavorare con X con single limit a 0,5
+		Double xLimit = 0.5; //21 su 16
 		
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapH = homeResultGoodness.getEhGoodness();
 		Map<HomeVariationEnum, ResultGoodnessWDLBean> ehGoodnessMapA = awayResultGoodness.getEhGoodness();
@@ -272,13 +275,21 @@ public class BetCreator {
 			if (_1x2leaf == null)	// la scommessa non è quotata
 				continue;
 			
+			if (ehGoodnessH.getGoodnessW() == null)  ehGoodnessH.setGoodnessW(0.0);
+			if (ehGoodnessH.getGoodnessD() == null)  ehGoodnessH.setGoodnessD(0.0);
+			if (ehGoodnessH.getGoodnessL() == null)  ehGoodnessH.setGoodnessL(0.0);
+			if (ehGoodnessA.getGoodnessW() == null)  ehGoodnessA.setGoodnessW(0.0);
+			if (ehGoodnessA.getGoodnessD() == null)  ehGoodnessA.setGoodnessD(0.0);
+			if (ehGoodnessA.getGoodnessL() == null)  ehGoodnessA.setGoodnessL(0.0);
+			
 			Boolean condition1 = false;
 			if (ehGoodnessH.getGoodnessW() != null && ehGoodnessA.getGoodnessL() != null) {
 //				condition1 = ehGoodnessH.getGoodnessW() >= limit && ehGoodnessA.getGoodnessL() >= limit;
 //				condition1 = ehGoodnessH.getGoodnessW() + ehGoodnessA.getGoodnessL() >= 1.6 && if (eo.getOddsH() <= 1.4){
+//				condition1 = (ehGoodnessH.getGoodnessW() >= singleLimit && ehGoodnessA.getGoodnessW() <= 0.4) || (ehGoodnessA.getGoodnessL() >= singleLimit && ehGoodnessH.getGoodnessL() <= 0.4);
 //				condition1 = ehGoodnessH.getGoodnessW() * (_1x2leaf.getOdd1() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessL() * (_1x2leaf.getOdd1() - 1.0)  >= limitMix;
-				condition1 = ehGoodnessH.getGoodnessW() >= singleLimit || ehGoodnessA.getGoodnessL() >= singleLimit;
-				condition1 = condition1 && ehGoodnessH.getTotalEventsW() != 0 && ehGoodnessA.getTotalEventsL() != 0 && _1x2leaf.getOdd1() > 5;
+//				condition1 = ehGoodnessH.getGoodnessW() >= singleLimit || ehGoodnessA.getGoodnessL() >= singleLimit;
+				condition1 = condition1 && ehGoodnessH.getTotalEventsW() != 0 && ehGoodnessA.getTotalEventsL() != 0;// && _1x2leaf.getOdd1() > 5;
 				condition1 = false;
 
 			}
@@ -286,19 +297,22 @@ public class BetCreator {
 			Boolean conditionX = false;
 			if (ehGoodnessH.getGoodnessD() != null && ehGoodnessA.getGoodnessD() != null) {
 //				conditionX = ehGoodnessH.getGoodnessD() >= limit && ehGoodnessA.getGoodnessD() >= limit;
-//				conditionX = ehGoodnessH.getGoodnessD() + ehGoodnessA.getGoodnessD() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
+//				conditionX = ehGoodnessH.getGoodnessD() + ehGoodnessA.getGoodnessD() >= 1.6 && if (eo.getOddsA() <= 1.4){
 //				conditionX = ehGoodnessH.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessD() * (_1x2leaf.getOddX() - 1.0)  >= limitMix;
-				conditionX = ehGoodnessH.getGoodnessD() >= xLimit && ehGoodnessA.getGoodnessD() >= xLimit;
+//				conditionX = ehGoodnessH.getGoodnessD() >= 0.8 || ehGoodnessA.getGoodnessD() >= 0.8;
+				conditionX = ehGoodnessH.getGoodnessD() >= xLimit && ehGoodnessA.getGoodnessD() >= xLimit; //Ottimo
 				conditionX = conditionX && ehGoodnessH.getTotalEventsD() != 0 && ehGoodnessA.getTotalEventsD() != 0;
+//				conditionX = false;
 			}
 			
 			Boolean condition2 = false;
 			if (ehGoodnessH.getGoodnessL() != null && ehGoodnessA.getGoodnessW() != null) {
 //				condition2 = ehGoodnessH.getGoodnessL() >= limit && ehGoodnessA.getGoodnessW() >= limit;
 //				condition2 = ehGoodnessH.getGoodnessL() + ehGoodnessA.getGoodnessW() >= 1.6 && if (eo.getOddsA() <= 1.4){ 
+//				condition2 = (ehGoodnessH.getGoodnessL() >= singleLimit && ehGoodnessA.getGoodnessL() <= 0.4) || (ehGoodnessA.getGoodnessW() >= singleLimit && ehGoodnessH.getGoodnessW() <= 0.4);
 //				condition2 = ehGoodnessH.getGoodnessL() * (_1x2leaf.getOdd2() - 1.0)>= limitMix 	&& ehGoodnessA.getGoodnessW() * (_1x2leaf.getOdd2() - 1.0)  >= limitMix;
-				condition2 = ehGoodnessH.getGoodnessL() >= singleLimit || ehGoodnessA.getGoodnessW() >= singleLimit;
-				condition2 = condition2 && ehGoodnessH.getTotalEventsL() != 0 && ehGoodnessA.getTotalEventsW() != 0 && _1x2leaf.getOdd2() > 5;
+//				condition2 = ehGoodnessH.getGoodnessL() >= singleLimit || ehGoodnessA.getGoodnessW() >= singleLimit;
+				condition2 = condition2 && ehGoodnessH.getTotalEventsL() != 0 && ehGoodnessA.getTotalEventsW() != 0;// && _1x2leaf.getOdd2() > 5;
 				condition2 = false;
 			}
 			
@@ -360,9 +374,8 @@ public class BetCreator {
 
 
 	private void addUOmatches(ChampEnum champ, EventOddsBean eo, ResultGoodnessBean homeResultGoodness, ResultGoodnessBean awayResultGoodness, List<SingleBetBean> singleBetList, Integer seasonDay) {
-//		Double limitGoodness = 0.75;
-//		Double limitGoodness = 1.0;
-		Double limitMix = 1.0;
+		Double limitGoodness = 0.65;
+		Double limitMix = 2.0;
 		
 		Map<UoThresholdEnum, ResultGoodnessUoBean> uoGoodnessMapHome = homeResultGoodness.getUoGoodness();
 		Map<UoThresholdEnum, ResultGoodnessUoBean> uoGoodnessMapAway = awayResultGoodness.getUoGoodness();
@@ -377,16 +390,16 @@ public class BetCreator {
 				continue;
 			
 //			Boolean conditionO = uoGoodnessH.getGoodnessO() >= limitGoodness 	|| uoGoodnessA.getGoodnessO() >= limitGoodness;
-//			Boolean conditionO = uoGoodnessH.getGoodnessO() >= limitGoodness 	&& uoGoodnessA.getGoodnessO() >= limitGoodness;
+//			Boolean conditionO = uoGoodnessH.getGoodnessO() >= limitGoodness 	&& uoGoodnessA.getGoodnessO() >= limitGoodness	&& uoLeaf.getO( ) >= 1.6;
 //			Boolean conditionO = uoGoodnessH.getGoodnessO() 					+ uoGoodnessA.getGoodnessO() >= 1.3;
-			Boolean conditionO = uoGoodnessH.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix 	&& uoGoodnessA.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix;
+			Boolean conditionO = uoGoodnessH.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix 	&& uoGoodnessA.getGoodnessO() * (uoLeaf.getO() - 1.0) >= limitMix;//Ottimo per alcuni 2.0
 			
 			
 			
 //			Boolean conditionU = uoGoodnessH.getGoodnessU() >= limitGoodness 	|| uoGoodnessA.getGoodnessU() >= limitGoodness;
-//			Boolean conditionU = uoGoodnessH.getGoodnessU() >= limitGoodness	&& uoGoodnessA.getGoodnessU() >= limitGoodness;
+//			Boolean conditionU = uoGoodnessH.getGoodnessU() >= limitGoodness	&& uoGoodnessA.getGoodnessU() >= limitGoodness  && uoLeaf.getU() >= 1.6;
 //			Boolean conditionU = uoGoodnessH.getGoodnessU() 					+ uoGoodnessA.getGoodnessU() >= 1.3:
-			Boolean conditionU = uoGoodnessH.getGoodnessU() * (uoLeaf.getU() - 1.0)>= limitMix 	&& uoGoodnessA.getGoodnessU() * (uoLeaf.getU() - 1.0)  >= limitMix;
+			Boolean conditionU = uoGoodnessH.getGoodnessU() * (uoLeaf.getU() - 1.0)>= limitMix 	&& uoGoodnessA.getGoodnessU() * (uoLeaf.getU() - 1.0)  >= limitMix;////Ottimo per alcuni 2.0
 			
 			Date betDate = Utils.getDateOfBet(seasonDay);
 			if (Utils.isMatchInTemporalRange(eo.getDate(), betDate, AppConstants.DAYS_FAR_BET_FROM, AppConstants.DAYS_FAR_BET_TO)) {		
@@ -436,8 +449,8 @@ public class BetCreator {
 
 
 	private void addXmatches(ChampEnum champ, EventOddsBean eo, List<SingleBetBean> singleBetList, Integer seasonDay) {
-//		Double limit = 0.4;
-		Double limit = 0.65;
+		Double limit = 0.4;
+//		Double limit = 0.5;
 		
 		ResultGoodnessWDLBean winCleanH = eo.getHomeResultGoodness().getWinClean();
 		ResultGoodnessWDLBean winCleanA = eo.getAwayResultGoodness().getWinClean();
@@ -561,21 +574,6 @@ public class BetCreator {
 	}
 
 
-
-	private static void initStaticFields() {
-//
-//		allTeams =  ResultParserOld.retrieveTeams();
-//		matchesOddWithGoodness =  GoodnessCalculator.retrieveMatchesOddsWithGoodness();
-//		for (ChampEnum champ : ChampEnum.values()){
-//			mainBet.put(champ, new ArrayList<EventOddsBean>());
-//		}
-//		rankings = RankingCalculator.retrieveRankings();
-	}
-	
-	public static  HashMap<ChampEnum, ArrayList<EventOddsBean>>  retrieveMainBet() {
-		HashMap<ChampEnum, ArrayList<EventOddsBean>> mainBet = IOUtils.read(AppConstants.MAIN_BET_PATH,  HashMap.class);
-		return mainBet;
-	}
 
 	
 }

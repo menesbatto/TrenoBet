@@ -102,11 +102,6 @@ public class UtilityModel {
 	}
 	
 	
-	public void initChampsTable() {
-		champDao.initTable();
-	}
-
-	
 	public Champ saveChamp(ChampEnum champEnum) {
 		Champ saveChamp = champDao.saveChamp(champEnum);
 		return saveChamp;

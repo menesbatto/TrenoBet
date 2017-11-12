@@ -119,12 +119,6 @@ public class WinRangeStatsDao {
 	}
 
 	
-	public List<WinRangeStats> saveWinRangeStats(List<WinRangeStatsBean> listBean, String teamName, ChampEnum champEnum, String playingField, HomeVariationEnum homeVariationEnum) {
-		List<WinRangeStats> allWinRangeStats = createWinRangesToSave(listBean, teamName, champEnum, playingField, homeVariationEnum);
-		
-		winRangeStatsRepo.save(allWinRangeStats);
-		return allWinRangeStats;
-	}
 
 	public void saveWinRangeStats(List<WinRangeStats> allWinRangeStats) {
 		winRangeStatsRepo.save(allWinRangeStats);
@@ -177,6 +171,15 @@ public class WinRangeStatsDao {
 	
 	
 	//#######################################################################################################################
+	
+	@Deprecated
+	public List<WinRangeStats> saveWinRangeStats(List<WinRangeStatsBean> listBean, String teamName, ChampEnum champEnum, String playingField, HomeVariationEnum homeVariationEnum) {
+		List<WinRangeStats> allWinRangeStats = createWinRangesToSave(listBean, teamName, champEnum, playingField, homeVariationEnum);
+		
+		winRangeStatsRepo.save(allWinRangeStats);
+		return allWinRangeStats;
+	}
+	
 	@Deprecated
 	public ArrayList<WinRangeStatsBean> findByTeamNameAndChampAndTimeTypeAndPlayingField(String teamName, ChampEnum champEnum, TimeTypeEnum timeTypeEnum, String playingField) {
 		Champ champ = champDao.findByChampEnum(champEnum);

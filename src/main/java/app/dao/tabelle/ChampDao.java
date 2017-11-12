@@ -51,19 +51,6 @@ public class ChampDao {
 	}
 	
 	
-	public void initTable() {
-//		ChampEnum champEnum = ChampEnum.ENG_PREMIER;
-//		Champ champEnt = saveChamp(champEnum);
-////		ChampImpPos champImpPosEnt =  saveChampImpPos(champEnum, champEnt);
-//		List<RankingCriteria> rankingCriteriaEnts =  getRankingCriteria(champEnum, champEnt);
-//		
-////		champEnt.setImpPos(champImpPosEnt);
-//		champEnt.setRankingCriteria(rankingCriteriaEnts);
-//		champRepo.save(champEnt);
-//		//...
-//		System.out.println("");
-		
-	}
 	
 	private List<RankingCriteria> getRankingCriteria(ChampEnum champEnum, Champ champEnt) {
 		List<RankingCriteria> criteriaEnt = new ArrayList<RankingCriteria>();

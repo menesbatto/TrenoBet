@@ -376,7 +376,6 @@ public class GoodnessCalculator {
 
 	private HashMap<HomeVariationEnum, List<WinRangeStatsBean>> createMapInput(List<WinRangeStatsBean> teamWinRangeStats) {
 		HashMap<HomeVariationEnum, List<WinRangeStatsBean>> mapInput = new HashMap<HomeVariationEnum, List<WinRangeStatsBean>>();
-		
 		HomeVariationEnum homeVariationBean;
 		for (WinRangeStatsBean winStats : teamWinRangeStats) {
 			homeVariationBean = winStats.getHomeVariationBean();
@@ -412,10 +411,38 @@ public class GoodnessCalculator {
 				map.put(teamNameClean, teamMap);
 				
 			}
-			map.get(teamNameClean).get(rangeStats.getPlayingField()).get(rangeStats.getTimeTypeBean()).add(rangeStats);
+			int correctInsertPosition = insertInCorrectPosition(map.get(teamNameClean).get(rangeStats.getPlayingField()).get(rangeStats.getTimeTypeBean()), rangeStats);
+//			map.get(teamNameClean).get(rangeStats.getPlayingField()).get(rangeStats.getTimeTypeBean()).add(rangeStats);
 		}
 		
 		return map;
+	}
+
+	private int insertInCorrectPosition(ArrayList<WinRangeStatsBean> list, WinRangeStatsBean ins) {
+		if (list.isEmpty()) {
+			list.add(ins);
+			return 0;
+		}
+		
+		if (ins.getRange() == null) {
+			list.add(list.size(), ins);
+			return  0;
+		}
+		int i = 0;
+		for (; i < list.size(); i++) {
+			WinRangeStatsBean elem = list.get(i);
+			if (elem.getEdgeUp() == null) {
+				list.add(i, ins);
+				return 0;
+			};
+			
+			if(ins.getEdgeUp() < elem.getEdgeUp()) {
+				list.add(i, ins);
+				return 0;
+			}
+		}
+		list.add(i, ins);
+		return 0;
 	}
 
 	private Map<String, HashMap<String, HashMap<TimeTypeEnum, GoalsStatsBean>>> createGoalsStatsMap( List<GoalsStatsBean> teamGoalsStats) {
@@ -823,6 +850,7 @@ public class GoodnessCalculator {
 
 					if (AppConstants.ENABLE_ODD_IMPROVEMENTS_ALGHORITM) {
 										
+						// Check 1 distance range
 						WinRangeStatsBean nearRange = null;
 						if (needToCheckNextRange(rangesStats, i, teamResulOfInterest, odds)){
 							nearRange = rangesStats.get(i + 1);
@@ -835,9 +863,9 @@ public class GoodnessCalculator {
 						if (nearRange != null){
 	
 							Double nearRangeHitPercentage = null;
-							switch (teamResulOfInterest) {	case W:		nearRangeHitPercentage = new Double(nearRange.getWinPerc());		break;
-															case D:		nearRangeHitPercentage = new Double(nearRange.getDrawPerc());		break;
-															case L:		nearRangeHitPercentage = new Double(nearRange.getLosePerc());		break;
+							switch (teamResulOfInterest) {	case W:		nearRangeHitPercentage = nearRange.getWinPerc()!= null ? new Double(nearRange.getWinPerc())	: 0.0;		break;
+															case D:		nearRangeHitPercentage = nearRange.getDrawPerc() != null ? new Double(nearRange.getDrawPerc()) : 0.0;	break;
+															case L:		nearRangeHitPercentage = nearRange.getLosePerc() != null ? new Double(nearRange.getLosePerc()) : 0.0;	break;
 															default:	break;	}
 							
 							Double bothRangeHitPercentage = null;
@@ -845,15 +873,96 @@ public class GoodnessCalculator {
 							Integer nearRangeTotal = nearRange.getTotal();
 							
 							
-							if (sameRangeHitPercentage > nearRangeHitPercentage)
+							if (sameRangeHitPercentage > nearRangeHitPercentage) {
 								bothRangeHitPercentage = (sameRangeHitPercentage * sameRangeTotal * 4 + nearRangeHitPercentage * nearRangeTotal * 1) / ( sameRangeTotal * 4 + nearRangeTotal * 1);
-							else
+								if (bothRangeHitPercentage.equals(Double.NaN)) bothRangeHitPercentage = 0.0;
+								return calculateGoodnessReturn(gi, sameRangeTotal, bothRangeHitPercentage, nearRangeTotal);
+							}
+							else {
 								bothRangeHitPercentage = (sameRangeHitPercentage * sameRangeTotal * 1 + nearRangeHitPercentage * nearRangeTotal * 4) / ( sameRangeTotal * 1 + nearRangeTotal * 4);
 	//														1					*	3			* 	4	 + 0,5				*	3		* 1 / ( 3 * 4 + 3*1)
+								if (bothRangeHitPercentage.equals(Double.NaN)) bothRangeHitPercentage = 0.0;
+							}
+							// Check 2 distance range
+							WinRangeStatsBean nearRange2 = null;
+							if (needToCheckNextRange(rangesStats, i + 1, teamResulOfInterest, odds)){
+								nearRange2 = rangesStats.get(i + 2);
+							}
+							else if (needToCheckPrevRange(rangesStats, i - 1, teamResulOfInterest, odds)){
+								nearRange2 = rangesStats.get(i - 2);
+							}
 							
-							goodness = improveGoodness(sameRangeTotal + nearRangeTotal , bothRangeHitPercentage);
-							gi.setTotalEvents(sameRangeTotal + nearRangeTotal);
-							gi.setGoodness(goodness);
+							if (nearRange2 != null) {
+								Double nearRangeHitPercentage2 = null;
+								switch (teamResulOfInterest) {	case W:		nearRangeHitPercentage2 = nearRange2.getWinPerc()!= null ? new Double(nearRange2.getWinPerc())	: 0.0;		break;
+																case D:		nearRangeHitPercentage2 = nearRange2.getDrawPerc() != null ? new Double(nearRange2.getDrawPerc()) : 0.0;	break;
+																case L:		nearRangeHitPercentage2 = nearRange2.getLosePerc() != null ? new Double(nearRange2.getLosePerc()) : 0.0;	break;
+																default:	break;	}
+							
+							
+								Double bothRangeHitPercentage2 = null;
+								
+								Integer nearRangeTotal2 = nearRange.getTotal();
+								
+								if (nearRangeHitPercentage > nearRangeHitPercentage2) {
+									bothRangeHitPercentage2 = (nearRangeHitPercentage * nearRangeTotal * 4 + nearRangeHitPercentage2 * nearRangeTotal2 * 1) / ( nearRangeTotal * 4 + nearRangeTotal2 * 1);
+									if (bothRangeHitPercentage2.equals(Double.NaN)) bothRangeHitPercentage2 = 0.0;
+									return calculateGoodnessReturn(gi, nearRangeTotal, bothRangeHitPercentage2, nearRangeTotal2);
+								}
+								else {
+									bothRangeHitPercentage2 = (nearRangeHitPercentage * nearRangeTotal * 1 + nearRangeHitPercentage2 * nearRangeTotal2 * 4) / ( nearRangeTotal * 1 + nearRangeTotal2 * 4);
+		//														1					*	3			* 	4	 + 0,5				*	3		* 1 / ( 3 * 4 + 3*1)
+									if (bothRangeHitPercentage2.equals(Double.NaN)) bothRangeHitPercentage2 = 0.0;
+								}
+								
+								
+								
+								
+								
+								// Check 3 distance range
+								WinRangeStatsBean nearRange3 = null;
+								if (needToCheckNextRange(rangesStats, i + 2, teamResulOfInterest, odds)){
+									nearRange3 = rangesStats.get(i + 3);
+								}
+								else if (needToCheckPrevRange(rangesStats, i - 2, teamResulOfInterest, odds)){
+									nearRange3 = rangesStats.get(i - 3);
+								}
+								
+								if (nearRange3 != null) {
+									Double nearRangeHitPercentage3 = null;
+									switch (teamResulOfInterest) {	case W:		nearRangeHitPercentage3 = nearRange3.getWinPerc()!= null ? new Double(nearRange3.getWinPerc())	: 0.0;		break;
+																	case D:		nearRangeHitPercentage3 = nearRange3.getDrawPerc() != null ? new Double(nearRange3.getDrawPerc()) : 0.0;	break;
+																	case L:		nearRangeHitPercentage3 = nearRange3.getLosePerc() != null ? new Double(nearRange3.getLosePerc()) : 0.0;	break;
+																	default:	break;	}
+								
+								
+									Double bothRangeHitPercentage3 = null;
+									
+									Integer nearRangeTotal3 = nearRange.getTotal();
+									
+									if (nearRangeHitPercentage2 > nearRangeHitPercentage3) {
+										bothRangeHitPercentage3 = (nearRangeHitPercentage2 * nearRangeTotal2 * 4 + nearRangeHitPercentage3 * nearRangeTotal3 * 1) / ( nearRangeTotal2 * 4 + nearRangeTotal3 * 1);
+										if (bothRangeHitPercentage3.equals(Double.NaN)) bothRangeHitPercentage3 = 0.0;
+										return calculateGoodnessReturn(gi, nearRangeTotal2, bothRangeHitPercentage3, nearRangeTotal3);	
+									}
+									else {
+										bothRangeHitPercentage3 = (nearRangeHitPercentage2 * nearRangeTotal2 * 1 + nearRangeHitPercentage3 * nearRangeTotal3 * 4) / ( nearRangeTotal2 * 1 + nearRangeTotal3 * 4);
+			//														1					*	3			* 	4	 + 0,5				*	3		* 1 / ( 3 * 4 + 3*1)
+										if (bothRangeHitPercentage3.equals(Double.NaN)) bothRangeHitPercentage3 = 0.0;
+									}
+
+									return calculateGoodnessReturn(gi, nearRangeTotal2, bothRangeHitPercentage3, nearRangeTotal3);
+									
+								}
+								
+
+								return calculateGoodnessReturn(gi, nearRangeTotal, bothRangeHitPercentage2, nearRangeTotal2);
+								
+							}
+							
+							
+							
+							return calculateGoodnessReturn(gi, sameRangeTotal, bothRangeHitPercentage, nearRangeTotal);
 							
 						}
 					}
@@ -862,6 +971,14 @@ public class GoodnessCalculator {
 			}
 		}
 		
+		return gi;
+	}
+
+	private static GoodnessInfo calculateGoodnessReturn(GoodnessInfo gi, Integer sameRangeTotal, Double bothRangeHitPercentage, 	Integer nearRangeTotal) {
+		Double goodness;
+		goodness = improveGoodness(sameRangeTotal + nearRangeTotal , bothRangeHitPercentage);
+		gi.setTotalEvents(sameRangeTotal + nearRangeTotal);
+		gi.setGoodness(goodness);
 		return gi;
 	}
 
@@ -921,6 +1038,8 @@ public class GoodnessCalculator {
 	}
 	
 	private static Boolean needToCheckPrevRange(ArrayList<WinRangeStatsBean> rangesStats, Integer i, TeamResultEnum resultOfInterest, Double odds) {
+		if (i < 0)
+			return false; //nel caso dei miglioramenti ai range successivi
 		
 		if (resultOfInterest.equals(TeamResultEnum.D))
 			return false;
@@ -928,11 +1047,12 @@ public class GoodnessCalculator {
 		if (i == 0)
 			return false;
 		
-		if (rangesStats.get(i).getTotal() + rangesStats.get(i-1).getTotal() < 2 )
-			return false;
-		
-		if (rangesStats.get(i-1).getTotal() == 0 )
-			return false;
+		// tolgo la limitazione che controlla i range successivi solo se sono pieni
+//		if (rangesStats.get(i).getTotal() + rangesStats.get(i-1).getTotal() < 2 )
+//			return false;
+//		
+//		if (rangesStats.get(i-1).getTotal() == 0 )
+//			return false;
 		
 		if (resultOfInterest.equals(TeamResultEnum.W))
 			return false;
@@ -942,6 +1062,8 @@ public class GoodnessCalculator {
 	}
 
 	private static Boolean needToCheckNextRange(ArrayList<WinRangeStatsBean> rangesStats, Integer i, TeamResultEnum resultOfInterest, Double odds) {
+		if (i >= rangesStats.size())
+			return false; //nel caso dei miglioramenti ai range successivi
 		
 		if (resultOfInterest.equals(TeamResultEnum.D))
 			return false;
@@ -949,11 +1071,12 @@ public class GoodnessCalculator {
 		if (i == rangesStats.size() - 1)
 			return false;
 		
-		if (rangesStats.get(i).getTotal() + rangesStats.get(i+1).getTotal() < 2 )
-			return false;
+		// tolgo la limitazione che controlla i range successivi solo se sono pieni
+//		if (rangesStats.get(i).getTotal() + rangesStats.get(i+1).getTotal() < 2 )
+//			return false;
 		
-		if (rangesStats.get(i+1).getTotal() == 0 )
-			return false;
+//		if (rangesStats.get(i+1).getTotal() == 0 )
+//			return false;
 		
 		if (resultOfInterest.equals(TeamResultEnum.L))
 			return false;
@@ -987,36 +1110,4 @@ public class GoodnessCalculator {
 		return goodness;
 	}
 	
-	
-	
-	private static void initStaticFields() {
-//		if (allMatchesOdds == null){
-//			allMatchesOdds =  EventsOddsDownloader.retrieveEventsOdds();
-//		}
-//		allTeams =  ResultParserOld.retrieveTeams();
-//		
-//		allAnalyzedChampsWinHome =  ResultAnalyzer.retrieveTeamsToRangeStatsWinHome();
-//		allAnalyzedChampsWinAway =  ResultAnalyzer.retrieveTeamsToRangeStatsWinAway();
-//		allAnalyzedChampsWinAll =  ResultAnalyzer.retrieveTeamsToRangeStatsWinAll();
-//		
-//		allAnalyzedChampsUoHome =  ResultAnalyzer.retrieveTeamsToRangeStatsUoHome();
-//		allAnalyzedChampsUoAway =  ResultAnalyzer.retrieveTeamsToRangeStatsUoAway();
-//		
-//		trends = TrendCalculator.retrieveTrends();
-//		rankings = RankingCalculator.retrieveRankings();
-//		
-//		
-	}
-	
-	public static  HashMap<ChampEnum, ArrayList<EventOddsBean>>  retrieveMatchesOddsWithGoodness() {
-		HashMap<ChampEnum, ArrayList<EventOddsBean>> matchesOddWithGoodness = IOUtils.read(AppConstants.MATCHES_ODDS_WITH_GOODNESS_PATH,  HashMap.class);
-		return matchesOddWithGoodness;
-	}
-
-
-
-	
-
-	
-
 }

@@ -166,8 +166,8 @@ public class Utils {
 	public static Calendar getCalendarStartDate() {
 		Calendar c = Calendar.getInstance();
 		
-		c.set(Calendar.DATE, 10);			//10 giovedi
-		c.set(Calendar.MONTH, 7);			//agosto
+		c.set(Calendar.DATE, 6);			//6 giovedi
+		c.set(Calendar.MONTH, 6);			//luglio
 		c.set(Calendar.YEAR, 2017);			//2017
 		c.set(Calendar.HOUR_OF_DAY, 0);		//0
 		c.set(Calendar.MINUTE, 0);			//0

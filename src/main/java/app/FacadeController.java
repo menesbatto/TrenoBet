@@ -285,7 +285,6 @@ public class FacadeController {
 	@RequestMapping(value = "/initTipologiche", method = RequestMethod.GET)
 	public @ResponseBody void initTipologiche() {
 		utilityModel.execute();
-		initChampTable();
 	}
 	
 	
@@ -295,12 +294,6 @@ public class FacadeController {
 	}
 
 	
-	@RequestMapping(value = "/initChampTable", method = RequestMethod.GET)
-	public @ResponseBody void initChampTable() {
-        utilityModel.initChampsTable();
-	}
-
-
 	@RequestMapping(value = "/getAllMatchResults", method = RequestMethod.GET)
 	public @ResponseBody List<Matcho> getAllMatchResults() {
 		List<Matcho> findAll = matchRepo.findAll();
@@ -352,8 +345,17 @@ public class FacadeController {
 	}
 
 	
+
 	@RequestMapping(value = "/removeAllEventOdds", method = RequestMethod.GET)
-	public void removeAllEventOdds(Integer seasonDay) {
+	public void removeAllEventOdds() {
+		
+		eventOddsRepo.deleteAll();
+	}
+	
+	
+	@RequestMapping(value = "/removeEventOdds/{seasonDay}", method = RequestMethod.GET)
+	@Transactional
+	public void removeAllEventOdds(@PathVariable Integer seasonDay) {
 		
 		eventOddsRepo.deleteBySeasonDay(seasonDay);
 	}
