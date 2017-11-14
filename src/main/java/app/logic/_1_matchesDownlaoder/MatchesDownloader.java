@@ -13,8 +13,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import app.ApplicationContextProvider;
 import app.dao.tabelle.MatchoDao;
 import app.logic._1_matchesDownlaoder.model.BetHouseEnum;
 import app.logic._1_matchesDownlaoder.model.EhTimeType;
@@ -33,32 +38,50 @@ import app.utils.HttpUtils;
 import app.utils.IOUtils;
 import app.utils.Utils;
 
-@Service
-public class MatchesDownloader {
+public class MatchesDownloader implements Runnable {
 
 	@Autowired
 	private MatchoDao matchDao;
 	
 	
-	public void execute(String type){
-		ChampEnum[] allChamps = ChampEnum.values();
-		execute(type, allChamps);
-		
-	}
 	
-	
-	public void execute(String type, ChampEnum[] champs){
-		
-		//Ciclo su tutti i campionati per i risultati dei match giocati e le quote
-		for (ChampEnum champ : champs){
-			int savedMatchesNum = downloadChampionshipResults(champ, type);
-		}
-		
+	private ChampEnum champ;
+	private String type;
+
+	public void setChamp(ChampEnum champ) {
+		this.champ = champ;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void run() {
+		downloadChampionshipResults(champ, type);
+		HttpUtils.shutdown(champ);
+	}
+
+//	public void execute(String type){
+//		ChampEnum[] allChamps = ChampEnum.values();
+//		execute(type, allChamps);
+//		
+//	}
+	
+	
+//	public void execute(String type, ChampEnum[] champs){
+//		
+//		//Ciclo su tutti i campionati per i risultati dei match giocati e le quote
+//		for (ChampEnum champ : champs){
+//			int savedMatchesNum = downloadChampionshipResults(champ, type);
+//		}
+//		
+//	}
+	
+	
+	
 	@Transactional
 	private int downloadChampionshipResults(ChampEnum champ, String type) {
-
+		matchDao = ApplicationContextProvider.getApplicationContext().getBean(MatchoDao.class);
 		String champSuffixUrl; 
 		ArrayList<MatchResult> downloadedMatches;
 		if (type == "Next") {

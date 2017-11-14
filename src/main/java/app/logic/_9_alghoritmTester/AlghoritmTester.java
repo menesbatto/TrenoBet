@@ -82,8 +82,8 @@ public class AlghoritmTester {
 //				 ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017,
 //				 ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
 		
-		ChampEnum[] champs = ChampEnum.values();
-//		ChampEnum[] champs = new ChampEnum[] {ChampEnum.SCO_CHAMPIONSHIP_2017};
+//		ChampEnum[] champs = ChampEnum.values();
+		ChampEnum[] champs = new ChampEnum[] {ChampEnum.SCO_CHAMPIONSHIP_2017};
 		
 		
 		seasonDayInfoMap = null;
@@ -91,7 +91,7 @@ public class AlghoritmTester {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
 	
 			
-			for (int seasonDay = 14; seasonDay < actualSeasonDay; seasonDay++) {
+			for (int seasonDay = 16; seasonDay < actualSeasonDay; seasonDay++) {
 	//			Date dateOfBet = getDateOfBet(seasonDay);
 				System.out.println(seasonDay + " - 1");
 				if (calculateStats) {

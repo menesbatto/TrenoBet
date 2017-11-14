@@ -66,6 +66,9 @@ public class AppConstants {
 	//Greece
 	public static String GRE_SUPER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/greece/super-league/results";
 	public static String GRE_SUPER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/greece/super-league";
+
+	public static String GRE_FOOTBALL_LEAGUE_RESULTS = 			SITE_URL + "/soccer/greece/football-league/results";
+	public static String GRE_FOOTBALL_LEAGUE_NEXT_MATCHES = 	SITE_URL + "/soccer/greece/football-league";
 	
 	
 	
@@ -89,12 +92,18 @@ public class AppConstants {
 	//Netherlands
 	public static String NED_EREDIVISIE_RESULTS = 				SITE_URL + "/soccer/netherlands/eredivisie/results";
 	public static String NED_EREDIVISIE_NEXT_MATCHES = 			SITE_URL + "/soccer/netherlands/eredivisie";
+
+	public static String NED_EERSTE_DIVISIE_RESULTS = 			SITE_URL + "/soccer/netherlands/eerste-divisie/results";
+	public static String NED_EERSTE_DIVISIE_NEXT_MATCHES = 		SITE_URL + "/soccer/netherlands/eerste-divisie";
 	
 	
 	
 	//Portugal
 	public static String POR_PRIMERA_LIGA_RESULTS = 			SITE_URL + "/soccer/portugal/primeira-liga/results";
 	public static String POR_PRIMERA_LIGA_NEXT_MATCHES = 		SITE_URL + "/soccer/portugal/primeira-liga";
+	
+	public static String POR_SEGUNDA_LIGA_RESULTS = 			SITE_URL + "/soccer/portugal/segunda-liga/results";
+	public static String POR_SEGUNDA_LIGA_NEXT_MATCHES = 		SITE_URL + "/soccer/portugal/segunda-liga";
 	
 	
 	
@@ -120,6 +129,17 @@ public class AppConstants {
 	public static String SPA_LA_LIGA_2_RESULTS  = 				SITE_URL + "/soccer/spain/laliga2/results";
 	public static String SPA_LA_LIGA_2_NEXT_MATCHES = 			SITE_URL + "/soccer/spain/laliga2";
 	
+	public static String SPA_SEGUNDA_DIVISION_B_1_RESULTS  = 		SITE_URL + "/soccer/spain/segunda-division-b-group-1/results";
+	public static String SPA_SEGUNDA_DIVISION_B_1_NEXT_MATCHES = 	SITE_URL + "/soccer/spain/segunda-division-b-group-1";
+	
+	public static String SPA_SEGUNDA_DIVISION_B_2_RESULTS  = 		SITE_URL + "/soccer/spain/segunda-division-b-group-2/results";
+	public static String SPA_SEGUNDA_DIVISION_B_2_NEXT_MATCHES = 	SITE_URL + "/soccer/spain/segunda-division-b-group-2";
+	
+	public static String SPA_SEGUNDA_DIVISION_B_3_RESULTS  = 		SITE_URL + "/soccer/spain/segunda-division-b-group-3/results";
+	public static String SPA_SEGUNDA_DIVISION_B_3_NEXT_MATCHES = 	SITE_URL + "/soccer/spain/segunda-division-b-group-3";
+	
+	public static String SPA_SEGUNDA_DIVISION_B_4_RESULTS  = 		SITE_URL + "/soccer/spain/segunda-division-b-group-4/results";
+	public static String SPA_SEGUNDA_DIVISION_B_4_NEXT_MATCHES = 	SITE_URL + "/soccer/spain/segunda-division-b-group-4";
 	
 	
 	

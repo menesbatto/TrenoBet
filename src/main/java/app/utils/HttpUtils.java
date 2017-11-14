@@ -249,14 +249,22 @@ public class HttpUtils {
 
 
 	private static WebDriver getChampDriver(String url) {
-		String[] split = url.split("/");
-		String driverName = split[4] + "/" + split[5];
+		String driverName = getChampName(url);
 		WebDriver champDriver = driversMap.get(driverName);
 		if (champDriver == null) {
 			champDriver = initDriver();
 			driversMap.put(driverName, champDriver);
 		}
 		return champDriver;
+	}
+
+
+
+
+	private static String getChampName(String url) {
+		String[] split = url.split("/");
+		String driverName = split[4] + "/" + split[5];
+		return driverName;
 	}
 
 
@@ -349,6 +357,16 @@ public class HttpUtils {
 		//wait.until(ExpectedConditions.presenceOfElementLocated(By.id("tournamentTable")));
 		
     }
+
+
+
+
+	public static void shutdown(ChampEnum champ) {
+		WebDriver driver = getChampDriver(champ.getNextMatchesUrl());
+		driver.close();
+		String champName = getChampName(champ.getResultsUrl());
+		driversMap.remove(champName);
+	}
 	
 	
 //	import javax.ws.rs.core.NewCookie;

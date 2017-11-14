@@ -145,7 +145,18 @@ public enum ChampEnum {
 									"Greece",
 									"Super League",
 									2017),
-	
+
+	GRE_FOOTBALL_LEAGUE_2017	(	AppConstants.GRE_FOOTBALL_LEAGUE_RESULTS,
+									AppConstants.GRE_FOOTBALL_LEAGUE_NEXT_MATCHES,
+									new Integer[]{ 2, 12 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.GOALS_SCORED, 
+														RankCritEnum.GOALS_TAKEN, },
+									"Greece",
+									"Football League",
+									2017),
 	
 	//##################################
 	//##########    ITALY    ###########
@@ -212,7 +223,7 @@ public enum ChampEnum {
 														RankCritEnum.GOALS_DIFFERENCE, 
 														RankCritEnum.GOALS_SCORED,},
 									"Italy",
-									"Serie C - CS",
+									"Serie C - C",
 									2017),
 
 	
@@ -235,7 +246,21 @@ public enum ChampEnum {
 									"Eredivisie",
 									2017),
 		
-
+//	NED_EERSTE_DIVISIE_2017		(	AppConstants.NED_EERSTE_DIVISIE_RESULTS,
+//									AppConstants.NED_EERSTE_DIVISIE_NEXT_MATCHES, 	
+//									new Integer[]{ 1,2,3,7,15,17 },	 
+//									new RankCritEnum[]{	RankCritEnum.POINTS,
+//														RankCritEnum.GOALS_DIFFERENCE,
+//														RankCritEnum.GOALS_SCORED,
+//														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+//														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE,
+//														RankCritEnum.HEAD_TO_HEAD_GOALS_SCORED_AWAY},
+//									"Netherlands",
+//									"Eredivisie",
+//									2017),
+	
+	
+	
 	//##################################
 	//##########   PORTUGAL   ##########
 	//##################################
@@ -252,6 +277,14 @@ public enum ChampEnum {
 														RankCritEnum.GOALS_SCORED},
 									"Portugal",
 									"Primeira Liga",
+									2017),
+
+	POR_SEGUNDA_LIGA_2017		(	AppConstants.POR_SEGUNDA_LIGA_RESULTS,
+									AppConstants.POR_SEGUNDA_LIGA_NEXT_MATCHES, 	
+									new Integer[]{ 2, 16, 18 }, 
+									new RankCritEnum[]{	},
+									"Portugal",
+									"Segunda Liga",
 									2017),
 
 	
@@ -287,6 +320,66 @@ public enum ChampEnum {
 									"La Liga 2",
 									2017),
 
+	
+	
+	SPA_SEGUNDA_DIVISION_B_1_2017 	(AppConstants.SPA_SEGUNDA_DIVISION_B_1_RESULTS,
+									AppConstants.SPA_SEGUNDA_DIVISION_B_1_NEXT_MATCHES, 	
+									new Integer[]{ 2,6,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_SCORED_AWAY,
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.MATCHES_WON,
+														RankCritEnum.GOALS_SCORED },
+									"Spain",
+									"Segunda Division B - 1",
+									2017),
+
+	SPA_SEGUNDA_DIVISION_B_2_2017 	(AppConstants.SPA_SEGUNDA_DIVISION_B_2_RESULTS,
+									AppConstants.SPA_SEGUNDA_DIVISION_B_2_NEXT_MATCHES, 	
+									new Integer[]{ 2,6,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_SCORED_AWAY,
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.MATCHES_WON,
+														RankCritEnum.GOALS_SCORED },
+									"Spain",
+									"Segunda Division B - 2",
+									2017),
+
+	SPA_SEGUNDA_DIVISION_B_3_2017 	(AppConstants.SPA_SEGUNDA_DIVISION_B_3_RESULTS,
+									AppConstants.SPA_SEGUNDA_DIVISION_B_3_NEXT_MATCHES, 	
+									new Integer[]{ 2,6,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_SCORED_AWAY,
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.MATCHES_WON,
+														RankCritEnum.GOALS_SCORED },
+									"Spain",
+									"Segunda Division B - 3",
+									2017),
+
+	SPA_SEGUNDA_DIVISION_B_4_2017 	(AppConstants.SPA_SEGUNDA_DIVISION_B_4_RESULTS,
+									AppConstants.SPA_SEGUNDA_DIVISION_B_4_NEXT_MATCHES, 	
+									new Integer[]{ 2,6,18 }, 
+									new RankCritEnum[]{	RankCritEnum.POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_POINTS, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
+														RankCritEnum.HEAD_TO_HEAD_GOALS_SCORED_AWAY,
+														RankCritEnum.GOALS_DIFFERENCE, 
+														RankCritEnum.MATCHES_WON,
+														RankCritEnum.GOALS_SCORED },
+									"Spain",
+									"Segunda Division B - 4",
+									2017),
+
+	
+	
 	//##################################
 	//##########   SCOTLAND   ##########
 	//##################################
