@@ -298,4 +298,11 @@ public class WinRangeStatsDao {
 	}
 
 
+	public void deleteWinRangeStatsByChampId(Integer champId) {
+		ChampEnum champEnum = champDao.findChampEnumById(champId);
+		Champ champ = champDao.findByChampEnum(champEnum );
+		winRangeStatsRepo.deleteByTeamChamp(champ);
+	}
+
+
 }

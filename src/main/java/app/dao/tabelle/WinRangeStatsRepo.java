@@ -28,6 +28,8 @@ public interface WinRangeStatsRepo extends JpaRepository<WinRangeStats, Long> {
 	void deleteBySeasonDay(Integer seasonDay);
 	
 	WinRangeStats findFirstByTeamChampAndSeasonDay(Champ champ, Integer seasonDay);
+
+	void deleteByTeamChamp(Champ champ);
 	
 //	List<Person> findByLastName(@Param("name") String name);
 //	

@@ -22,7 +22,7 @@ public interface SingleBetRepo extends JpaRepository<SingleBet, Long> {
 	void deleteByMatchId(Integer idMatch);
 
 
-	
+	void deleteByChampId(Integer champId);
 	
 	
 	

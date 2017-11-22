@@ -137,7 +137,12 @@ public class SingleBetDao {
 		singleBetRepo.deleteByMatchId(idMatch);
 		
 	}
-
+	
+	@Transactional
+	public void deleteByChampId(Integer champId) {
+		singleBetRepo.deleteByChampId(champId);
+		
+	}
 	
 	
 }

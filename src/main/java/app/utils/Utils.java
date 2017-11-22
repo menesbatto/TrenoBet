@@ -190,7 +190,7 @@ public class Utils {
 	
 	public static Date getLimitDayOfCurrentSeasonDay() {
 		
-		int actualTrenoSeasonDay = getActualTrenoSeasonDay();
+		int actualTrenoSeasonDay = getActualTrenoSeasonDay() ;
 		Calendar cal = getCalendarStartDate();
 		cal.add(Calendar.DATE, (actualTrenoSeasonDay + 1 ) * 7);
 		Date limitDayOfSeasonDayByDate = cal.getTime();

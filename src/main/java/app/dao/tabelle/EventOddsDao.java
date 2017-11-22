@@ -513,6 +513,13 @@ public class EventOddsDao {
 		
 	}
 
+    @Transactional
+   	public void deleteByChampId(Integer champId) {
+    	ChampEnum chamEnum = champDao.findChampEnumById(champId);
+    	Champ champ = champDao.findByChampEnum(chamEnum);
+   		eventOddsRepo.deleteByMatchChamp(champ);
+   	}
+    
 
 	public EventOdds findById(int id) {
 		EventOdds ent = eventOddsRepo.findById(id);

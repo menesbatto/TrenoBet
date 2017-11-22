@@ -284,6 +284,12 @@ public class GoalsStatsDao {
 //		saveGoalsStats(totalStatses, teamName, champEnum, "T");
 
 	}
+
+	public void deleteGoalsStatsByChampId(Integer champId) {
+		ChampEnum champEnum = champDao.findChampEnumById(champId);
+		Champ champ = champDao.findByChampEnum(champEnum );
+		goalsStatsRepo.deleteByTeamChamp(champ);
+	}
 	
 	
 

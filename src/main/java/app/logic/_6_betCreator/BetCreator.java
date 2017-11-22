@@ -200,7 +200,7 @@ public class BetCreator {
 		Double limit = 0.6;
 //		Double limit = 0.1;
 		Double limitSum = 1.5; //2 su 41
-		Double limitMix = 0.6;
+		Double limitMix = 1.2;
 		Double singleLimit = 0.9;
 		
 //		Boolean condition1 = goodnessHW >= limit && goodnessAL >= limit; //-1,28

@@ -21,6 +21,7 @@ import app.dao.tabelle.GoalsStatsDao;
 import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.SingleBetDao;
 import app.dao.tabelle.WinRangeStatsDao;
+import app.dao.tabelle.entities.Champ;
 import app.logic._1_matchesDownlaoder.model.BetType;
 import app.logic._1_matchesDownlaoder.model.MatchResultEnum;
 import app.logic._1_matchesDownlaoder.model.SingleBetBean;
@@ -70,7 +71,7 @@ public class AlghoritmTester {
 		List<SingleBetBean> allChampsSingleBets = new ArrayList<SingleBetBean>();
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 		
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_A_2017};
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_C_C_2017};
 
 //		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.FRA_LIGUE_1_2017,  ChampEnum.GER_BUNDESLIGA_2017}; //sfigati
 		
@@ -78,12 +79,38 @@ public class AlghoritmTester {
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
-//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017,
-//				 ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017,
-//				 ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
+		ChampEnum[] champs = new ChampEnum[]{
+				
+				
+				ChampEnum.BEL_JUPILER_LEAGUE_2017, ChampEnum.BEL_PROXIMUS_LEAGUE_2017,
+				ChampEnum.BUL_PARVA_LIGA_2017, ChampEnum.CRO_1_HNL_2017,
+				
+				//ChampEnum.CYP_FIRST_DIVISION_2017, 
+				ChampEnum.DEN_1ST_DIVISION_2017, ChampEnum.DEN_SUPERLIGA_2017,
+		
+				ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ENG_PREMIER_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, 
+				ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017,
+				
+				ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.GER_3_LIGA_2017, 
+				
+				ChampEnum.GRE_SUPER_LEAGUE_2017,
+				
+				 ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017,
+				 ChampEnum.NED_EREDIVISIE_2017, ChampEnum.NED_EERSTE_DIVISIE_2017,
+				 
+				 ChampEnum.POR_PRIMERA_LIGA_2017,  ChampEnum.POR_SEGUNDA_LIGA_2017, 
+				
+				 ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, 
+				 ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017,
+				   
+				ChampEnum.TUR_SUPER_LIG_2017,ChampEnum.TUR_TFF_1_LIG_2017,
+				};
+		
+		
+//		ChampEnum[] champs = new ChampEnum[]{ChampEnum.BEL_PROXIMUS_LEAGUE_2017,ChampEnum.BUL_PARVA_LIGA_2017, ChampEnum.GER_3_LIGA_2017, ChampEnum.TUR_TFF_1_LIG_2017, ChampEnum.CRO_1_HNL_2017,
+//				ChampEnum.CYP_FIRST_DIVISION_2017, ChampEnum.DEN_1ST_DIVISION_2017, ChampEnum.DEN_SUPERLIGA_2017};
 		
 //		ChampEnum[] champs = ChampEnum.values();
-		ChampEnum[] champs = new ChampEnum[] {ChampEnum.SCO_CHAMPIONSHIP_2017};
 		
 		
 		seasonDayInfoMap = null;
@@ -91,23 +118,21 @@ public class AlghoritmTester {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
 	
 			
-			for (int seasonDay = 16; seasonDay < actualSeasonDay; seasonDay++) {
-	//			Date dateOfBet = getDateOfBet(seasonDay);
+			for (int seasonDay = 14; seasonDay < actualSeasonDay +1; seasonDay++) {
+//			for (int seasonDay = actualSeasonDay ; seasonDay < actualSeasonDay+1; seasonDay++) {
 				System.out.println(seasonDay + " - 1");
-				if (calculateStats) {
-					resultAnalyzer.execute(seasonDay, champs);
-	//				rankingCalculator.execute(seasonDay, champs);
-					System.out.println(seasonDay + " - 2");
-					goodnessCalculator.execute(seasonDay, champs);
-				}
+				
+				resultAnalyzer.execute(seasonDay, champs);
+//				rankingCalculator.execute(seasonDay, champs);
+				System.out.println(seasonDay + " - 2");
+				
+				goodnessCalculator.execute(seasonDay, champs);
 				System.out.println(seasonDay + " - 3");
 				
 				betCreator.execute(seasonDay, champs);
-				
 				System.out.println(seasonDay + " - 4");
 				
 				List<SingleBetBean> bets = betAnalyzer.execute(seasonDay, champs);
-				
 				System.out.println(seasonDay + " - 5");
 				
 				allChampsSingleBets.addAll(bets);

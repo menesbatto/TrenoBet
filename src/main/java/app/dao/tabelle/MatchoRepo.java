@@ -34,6 +34,8 @@ public interface MatchoRepo extends JpaRepository<Matcho, Long> {
 
 	Matcho findByHomeTeamNameAndAwayTeamName(String homeTeam, String awayTeam);
 	
+	void deleteByChampId(Integer champId);
+	
 //	###########################################################################################
 	@Deprecated
 	List<Matcho> findByChampAndHomeTeamAndFullTimeResultIsNotNullOrderByMatchDate(Champ champ, Team team);

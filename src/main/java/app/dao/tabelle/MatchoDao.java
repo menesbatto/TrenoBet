@@ -460,7 +460,11 @@ public class MatchoDao {
 		matchRepo.deleteById(idMatch);
 		
 	}
-
+    
+    @Transactional
+   	public void deleteByChampId(Integer champId) {
+   		matchRepo.deleteByChampId(champId);
+   	}
     
     
     // ##################################################################################################################

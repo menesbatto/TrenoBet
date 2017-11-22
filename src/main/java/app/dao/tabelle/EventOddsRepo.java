@@ -14,7 +14,7 @@ public interface EventOddsRepo extends JpaRepository<EventOdds, Long> {
 //	List<BetHouse> findByValue(@Param("value") String string);
 
 
-	void deleteByMatchId(Integer idMatch);
+	void deleteByMatchChamp(Champ champ);
 	
 	EventOdds findById(Integer id);
 
@@ -28,6 +28,9 @@ public interface EventOddsRepo extends JpaRepository<EventOdds, Long> {
 
 	void deleteBySeasonDay(Integer seasonDay);
 
+	
+	void deleteByMatchId(Integer idMatch);
+	
 //	List<GoalsStats> findByTeamAndPlayingField(Team team, String playingField);
 //
 //	int countByTeam(Team team);

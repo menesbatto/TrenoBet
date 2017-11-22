@@ -23,7 +23,7 @@ public class PastMatchesDownlaoder {
 	
 	public void execute(ChampEnum[] champs) {
 		
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
 		for (ChampEnum champ : champs) {
 			MatchesDownloader downloader = new MatchesDownloader();
 			downloader.setChamp(champ);

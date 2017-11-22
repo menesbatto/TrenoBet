@@ -31,6 +31,8 @@ public interface GoalsStatsRepo extends JpaRepository<GoalsStats, Long> {
 	List<GoalsStats> findByTeamChampAndSeasonDayOrderByTeam(Champ champ, Integer seasonDay);
 
 	void deleteBySeasonDay(Integer seasonDay);
+
+	void deleteByTeamChamp(Champ champ);
 	
 //	List<Person> findByLastName(@Param("name") String name);
 //	

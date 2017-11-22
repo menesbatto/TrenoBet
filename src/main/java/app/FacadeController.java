@@ -18,10 +18,12 @@ import app.dao.tabelle.ChampDao;
 import app.dao.tabelle.ChampRepo;
 import app.dao.tabelle.EventOddsDao;
 import app.dao.tabelle.EventOddsRepo;
+import app.dao.tabelle.GoalsStatsDao;
 import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.MatchoRepo;
 import app.dao.tabelle.SingleBetDao;
 import app.dao.tabelle.SingleBetRepo;
+import app.dao.tabelle.WinRangeStatsDao;
 import app.dao.tabelle.entities.Matcho;
 import app.logic.UtilityModel;
 import app.logic._1_matchesDownlaoder.NextMatchesDownloader;
@@ -387,7 +389,24 @@ public class FacadeController {
 		matchDao.deleteMatch(idMatch);
 	}
 
-
+	@Autowired
+	private WinRangeStatsDao winRangeStatsDao;
+	@Autowired
+	private GoalsStatsDao goalsStatsDao;
+	
+	@RequestMapping(value = "/deleteChamp/{champId}", method = RequestMethod.GET)
+	@Transactional
+	public void deleteChamp(@PathVariable Integer champId) {
+		
+		eventOddsDao.deleteByChampId(champId);
+		singleBetDao.deleteByChampId(champId);
+		matchDao.deleteByChampId(champId);
+		winRangeStatsDao.deleteWinRangeStatsByChampId(champId);
+		goalsStatsDao.deleteGoalsStatsByChampId(champId);
+		matchDao.deleteByChampId(champId);
+		//elimina team e champ
+		
+	}
 	
 	// @GetMapping(path="/all")
 	// public @ResponseBody Iterable<User> getAllUsers() {

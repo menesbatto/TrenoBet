@@ -14,6 +14,8 @@ public class AppConstants {
 	public static final boolean ENABLE_DOWNLOAD_ONLY_NEAR_MATCHES = true;	//Scarica o calcola la bet solo i match entro i giorni definiti sopra ???
 
 	public static final boolean DO_NOT_UPDATE_NEXT_MATCH = true;
+
+
 	
 	
 	public static boolean ENABLE_ODD_IMPROVEMENTS_ALGHORITM = true;		//abiliata la ricerca nei range vicini, limita la goodness se esistono pochi precedenti. DISABILITA PER TEST
@@ -26,8 +28,35 @@ public class AppConstants {
 	//http://www.oddsportal.com/soccer/england/premier-league/
 	
 	//Belgium
-	public static String BEL_PRO_LEAGUE_RESULTS = 				SITE_URL + "/soccer/belgium/jupiler-league/results";
-	public static String BEL_PRO_LEAGUE_NEXT_MATCHES = 			SITE_URL + "/soccer/belgium/jupiler-league";
+	public static String BEL_JUPILER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/belgium/jupiler-league/results";
+	public static String BEL_JUPILER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/belgium/jupiler-league";
+	
+	public static String BEL_PROXIMUS_LEAGUE_RESULTS = 			SITE_URL + "/soccer/belgium/proximus-league/results";
+	public static String BEL_PROXIMUS_LEAGUE_NEXT_MATCHES = 	SITE_URL + "/soccer/belgium/proximus-league";
+
+	
+	
+	//Bulgaria
+	public static String BUL_PARVA_LIGA_RESULTS = 				SITE_URL + "/soccer/bulgaria/parva-liga/results";
+	public static String BUL_PARVA_LIGA_NEXT_MATCHES = 			SITE_URL + "/soccer/bulgaria/parva-liga";
+	
+	
+	//Croatia
+	public static String CRO_1_HNL_RESULTS =					SITE_URL + "/soccer/croatia/1-hnl/results";
+	public static String CRO_1_HNL_NEXT_MATCHES = 				SITE_URL + "/soccer/croatia/1-hnl";
+
+	
+	//Cyprus
+	public static String CYP_FIRST_DIVISION_RESULTS =			SITE_URL + "/soccer/cyprus/first-division/results";
+	public static String CYP_FIRST_DIVISION_NEXT_MATCHES = 		SITE_URL + "/soccer/cyprus/first-division";
+
+	
+	//Denmark
+	public static String DEN_SUPERLIGA_RESULTS =				SITE_URL + "/soccer/denmark/superliga/results";
+	public static String DEN_SUPERLIGA_NEXT_MATCHES = 			SITE_URL + "/soccer/denmark/superliga";
+
+	public static String DEN_1ST_DIVISION_RESULTS =				SITE_URL + "/soccer/denmark/1st-division/results";
+	public static String DEN_1ST_DIVISION_NEXT_MATCHES = 		SITE_URL + "/soccer/denmark/1st-division";
 	
 	
 	
@@ -61,6 +90,8 @@ public class AppConstants {
 	public static String GER_2_BUNDESLIGA_RESULTS = 			SITE_URL + "/soccer/germany/2-bundesliga/results";
 	public static String GER_2_BUNDESLIGA_NEXT_MATCHES = 		SITE_URL + "/soccer/germany/2-bundesliga";
 	
+	public static String GER_3_LIGA_RESULTS = 					SITE_URL + "/soccer/germany/3-liga/results";
+	public static String GER_3_LIGA_NEXT_MATCHES = 				SITE_URL + "/soccer/germany/3-liga";
 	
 	
 	//Greece
@@ -146,6 +177,11 @@ public class AppConstants {
 	//Turkey
 	public static String TUR_SUPER_LIG_RESULTS = 				SITE_URL + "/soccer/turkey/super-lig/results";
 	public static String TUR_SUPER_LIG_NEXT_MATCHES = 			SITE_URL + "/soccer/turkey/super-lig";
+	
+	public static String TUR_TFF_1_LIG_RESULTS = 				SITE_URL + "/soccer/turkey/tff-1-lig/results";
+	public static String TUR_TFF_1_LIG_NEXT_MATCHES = 			SITE_URL + "/soccer/turkey/tff-1-lig";
+	
+	
 	
 	
 }
