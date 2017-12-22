@@ -35,6 +35,7 @@ import app.logic._5_goodnessCalculator.GoodnessCalculator;
 import app.logic._6_betCreator.BetCreator;
 import app.logic._7_betAnalyzer.BetAnalyzer;
 import app.logic._9_alghoritmTester.AlghoritmTester;
+import app.utils.AppConstants;
 import app.utils.ChampEnum;
 import app.utils.Utils;
 
@@ -127,7 +128,8 @@ public class FacadeController {
 	public ResponseEntity<String>  calculateTeamsStats3() {
 		long startTime = System.nanoTime();
 
-		
+		//calcola le statistiche su tutte le partite prima del primo giorno della season day,
+		// se gli passo la season day precedente a quella di oggi allora si perde tutta la scorsa settimana
 		
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
 //		resetStats(actualSeasonDay);
@@ -176,7 +178,7 @@ public class FacadeController {
 		long startTime = System.nanoTime();
 		
 		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
-		removeAllEventOdds(actualSeasonDay);
+//		removeAllEventOdds(actualSeasonDay);
 //		ChampEnum[] champs = {ChampEnum.ITA_SERIE_A_2017};
 //		goodnessCalculator.execute(actualSeasonDay-1, champs);
 		goodnessCalculator.execute(actualSeasonDay);
@@ -236,7 +238,7 @@ public class FacadeController {
 	@RequestMapping(value = "/testAlghoritm", method = RequestMethod.GET)
 	public ResponseEntity<String>  testAlghoritm9() {
 		long startTime = System.nanoTime();
-
+		AppConstants.PRINT_FASE = true;
 		alghoritmTester.execute();
 
 		long currentTime = System.nanoTime();
@@ -384,10 +386,12 @@ public class FacadeController {
 	@RequestMapping(value = "/deleteMatch/{idMatch}", method = RequestMethod.GET)
 	@Transactional
 	public void deleteMatch(@PathVariable Integer idMatch) {
-		eventOddsDao.removeByMatchId(idMatch);
-		singleBetDao.removeByMatchId(idMatch);
-		matchDao.deleteMatch(idMatch);
+		
+			eventOddsDao.removeByMatchId(idMatch);
+			singleBetDao.removeByMatchId(idMatch);
+			matchDao.deleteMatch(idMatch);
 	}
+	
 
 	@Autowired
 	private WinRangeStatsDao winRangeStatsDao;
@@ -408,9 +412,17 @@ public class FacadeController {
 		
 	}
 	
+	
 	// @GetMapping(path="/all")
 	// public @ResponseBody Iterable<User> getAllUsers() {
 	// // This returns a JSON or XML with the users
 	// return userRepository.findAll();
 	// }
+	
+	@RequestMapping(value = "/getActualSeasonDay", method = RequestMethod.GET)
+	public ResponseEntity<String>  getActualSeasonDay() {
+		Integer actualSeasonDay = Utils.getActualTrenoSeasonDay();
+		ResponseEntity<String> response = new ResponseEntity<String>(actualSeasonDay+"", HttpStatus.OK);
+		return response;
+	}
 }

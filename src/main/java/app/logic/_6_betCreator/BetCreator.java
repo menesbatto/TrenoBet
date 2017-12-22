@@ -65,6 +65,7 @@ public class BetCreator {
 
 	private boolean printBet = true; 
 	
+	private int i = 1;
 	
 
 	public void execute(int seasonDay) {
@@ -78,14 +79,14 @@ public class BetCreator {
 //		initStaticFields();
 //		System.out.println(matchesOddWithGoodness);
 		List<RankingRow> ranking;
-
+		printBet = true;
 		for (ChampEnum champ : champs){
-			System.out.println("\tBC t1 deleteSingleBets");
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBC t1 deleteSingleBets");
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
-			System.out.println("\tBC t2 createBetsOfChamp");
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBC t2 createBetsOfChamp");
 			System.out.println(champ);
 			createBetsOfChamp(champ, seasonDay);
-			System.out.println("\tBC t3 createBetsOfChampComplete");
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBC t3 createBetsOfChampComplete");
 //			Collections.sort(mainBet.get(champ));
 //			ranking = rankingRowDao.findByChamp(champ);
 //			rankingCalculator.printRanking(ranking, champ);
@@ -111,9 +112,9 @@ public class BetCreator {
 	}
 	
 	private void createBetsOfChamp(ChampEnum champ, Integer seasonDay) {
-		System.out.println("\t\tBC 1 retrieveEventsOdds");
+		if (AppConstants.PRINT_FASE) 	System.out.println("\t\tBC 1 retrieveEventsOdds");
 		List<EventOddsBean> eventsOdds = eventOddsDao.getNextEventsOdds(champ, seasonDay);
-		System.out.println("\t\tBC 2 saveBetsInit");
+		if (AppConstants.PRINT_FASE) 	System.out.println("\t\tBC 2 saveBetsInit");
 //		for (MatchResult m : matches){
 		List<SingleBetBean> singleBetList = new ArrayList<SingleBetBean>();
 
@@ -182,7 +183,7 @@ public class BetCreator {
 		}
 		singleBetDao.saveBetResult(singleBetList, champ);
 		
-		System.out.println("\t\tBC 3 saveBetsComplete");
+		if (AppConstants.PRINT_FASE) 	System.out.println("\t\tBC 3 saveBetsComplete");
 		//eventOddsDao.saveBetResult(eventsOdds, champ);
 	}
 
@@ -367,7 +368,7 @@ public class BetCreator {
 		System.out.println(Utils.redimString(eo.getHomeTeam(), 16) + " " + uoBeanH);
 		System.out.println(Utils.redimString(eo.getAwayTeam(), 16) + " " + uoBeanA.toStringAway());
 		
-		System.out.print(br);
+		System.out.print(i++ + "\t" + br);
 		System.out.println("----------------");
 		
 	}
@@ -442,7 +443,7 @@ public class BetCreator {
 		System.out.println(Utils.redimString(eo.getHomeTeam(), 16) + " " + uoBeanH);
 		System.out.println(Utils.redimString(eo.getAwayTeam(), 16) + " " + uoBeanA);
 		
-		System.out.print(br);
+		System.out.print(i++ + "\t" + br);
 		System.out.println("----------------");
 	}
 
@@ -499,7 +500,7 @@ public class BetCreator {
 		System.out.println(Utils.redimString(eo.getHomeTeam(), 16) + " " + _1x2BeanH);
 		System.out.println(Utils.redimString(eo.getAwayTeam(), 16) + " " + _1x2BeanA.toStringAway());
 		
-		System.out.print(br);
+		System.out.print(i++ + "\t" + br);
 		System.out.println("----------------");
 		
 	}

@@ -26,7 +26,7 @@ public class TeamDao {
 	private HashMap<Champ, HashMap<String, Team>> cacheMap;
 
 	
-	
+	@Cacheable("champTeamsNames")
 	public ArrayList<String> findTeamsNamesByChamp(ChampEnum champEnum) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		List<Team> teams = teamRepo.findByChamp(champ);
@@ -37,6 +37,7 @@ public class TeamDao {
 		return teamsNames;
 	}
 	
+	@Cacheable("champTeams")
 	public List<Team> findByChamp(ChampEnum champEnum) {
 		Champ champ = champDao.findByChampEnum(champEnum);
 		List<Team> teams = teamRepo.findByChamp(champ);

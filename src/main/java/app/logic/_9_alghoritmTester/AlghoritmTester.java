@@ -79,47 +79,48 @@ public class AlghoritmTester {
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017, ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, ChampEnum.POR_PRIMERA_LIGA_2017, ChampEnum.NED_EREDIVISIE_2017};
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017, ChampEnum.GRE_SUPER_LEAGUE_2017, ChampEnum.BEL_PRO_LEAGUE_2017, ChampEnum.TUR_SUPER_LIG_2017};
-		ChampEnum[] champs = new ChampEnum[]{
-				
-				
-				ChampEnum.BEL_JUPILER_LEAGUE_2017, ChampEnum.BEL_PROXIMUS_LEAGUE_2017,
-				ChampEnum.BUL_PARVA_LIGA_2017, ChampEnum.CRO_1_HNL_2017,
-				
-				//ChampEnum.CYP_FIRST_DIVISION_2017, 
-				ChampEnum.DEN_1ST_DIVISION_2017, ChampEnum.DEN_SUPERLIGA_2017,
-		
-				ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ENG_PREMIER_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, 
-				ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017,
-				
-				ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.GER_3_LIGA_2017, 
-				
-				ChampEnum.GRE_SUPER_LEAGUE_2017,
-				
-				 ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017,
-				 ChampEnum.NED_EREDIVISIE_2017, ChampEnum.NED_EERSTE_DIVISIE_2017,
-				 
-				 ChampEnum.POR_PRIMERA_LIGA_2017,  ChampEnum.POR_SEGUNDA_LIGA_2017, 
-				
-				 ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, 
-				 ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017,
-				   
-				ChampEnum.TUR_SUPER_LIG_2017,ChampEnum.TUR_TFF_1_LIG_2017,
-				};
+//		ChampEnum[] champs = new ChampEnum[]{
+//				
+//				
+//				ChampEnum.BEL_JUPILER_LEAGUE_2017, ChampEnum.BEL_PROXIMUS_LEAGUE_2017,
+//				ChampEnum.BUL_PARVA_LIGA_2017, ChampEnum.CRO_1_HNL_2017,
+//				
+//				//ChampEnum.CYP_FIRST_DIVISION_2017, 
+//				ChampEnum.DEN_1ST_DIVISION_2017, ChampEnum.DEN_SUPERLIGA_2017,
+//		
+//				ChampEnum.ENG_CHAMPIONSHIP_2017, ChampEnum.ENG_PREMIER_2017, ChampEnum.ENG_LEAGUE_ONE_2017,  ChampEnum.ENG_LEAGUE_TWO_2017, 
+//				ChampEnum.FRA_LIGUE_1_2017, ChampEnum.FRA_LIGUE_2_2017,
+//				
+//				ChampEnum.GER_BUNDESLIGA_2017, ChampEnum.GER_2_BUNDESLIGA_2017, ChampEnum.GER_3_LIGA_2017, 
+//				
+//				ChampEnum.GRE_SUPER_LEAGUE_2017,
+//				
+//				 ChampEnum.ITA_SERIE_A_2017, ChampEnum.ITA_SERIE_B_2017, ChampEnum.ITA_SERIE_C_A_2017, ChampEnum.ITA_SERIE_C_B_2017, ChampEnum.ITA_SERIE_C_C_2017,
+//				 ChampEnum.NED_EREDIVISIE_2017, ChampEnum.NED_EERSTE_DIVISIE_2017,
+//				 
+//				 ChampEnum.POR_PRIMERA_LIGA_2017,  ChampEnum.POR_SEGUNDA_LIGA_2017, 
+//				
+//				 ChampEnum.SCO_CHAMPIONSHIP_2017, ChampEnum.SCO_PREMIERSHIP_2017, ChampEnum.SCO_LEAGUE_ONE_2017, ChampEnum.SCO_LEAGUE_TWO_2017, 
+//				 ChampEnum.SPA_LA_LIGA_2017, ChampEnum.SPA_LA_LIGA_2_2017,
+//				   
+//				ChampEnum.TUR_SUPER_LIG_2017,ChampEnum.TUR_TFF_1_LIG_2017,
+//				};
 		
 		
 //		ChampEnum[] champs = new ChampEnum[]{ChampEnum.BEL_PROXIMUS_LEAGUE_2017,ChampEnum.BUL_PARVA_LIGA_2017, ChampEnum.GER_3_LIGA_2017, ChampEnum.TUR_TFF_1_LIG_2017, ChampEnum.CRO_1_HNL_2017,
 //				ChampEnum.CYP_FIRST_DIVISION_2017, ChampEnum.DEN_1ST_DIVISION_2017, ChampEnum.DEN_SUPERLIGA_2017};
 		
-//		ChampEnum[] champs = ChampEnum.values();
+		ChampEnum[] champs = ChampEnum.values();
 		
 		
 		seasonDayInfoMap = null;
 		if (seasonDayInfoMap == null) {
 			seasonDayInfoMap = new HashMap<Integer, HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>>>();
 	
-			
-			for (int seasonDay = 14; seasonDay < actualSeasonDay +1; seasonDay++) {
-//			for (int seasonDay = actualSeasonDay ; seasonDay < actualSeasonDay+1; seasonDay++) {
+			// la season day scatta alle 00.00 di giovedi (quindi la notte tra mercoledi e giovedi)
+//			for (int seasonDay = 14; seasonDay < actualSeasonDay; seasonDay++) {
+			for (int seasonDay = actualSeasonDay -1 ; seasonDay < actualSeasonDay; seasonDay++) {
+//			for (int seasonDay = actualSeasonDay ; seasonDay < actualSeasonDay+1; seasonDay++) {	//ultime due
 				System.out.println(seasonDay + " - 1");
 				
 				resultAnalyzer.execute(seasonDay, champs);
@@ -139,7 +140,7 @@ public class AlghoritmTester {
 				printSeasonDayTitle(seasonDay+"");
 				
 				
-				HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> seasonDayInfoTotal = printAllBetStats(bets);;
+				HashMap<TimeTypeEnum, HashMap<ChampEnum, SeasonDayBetResultInfo>> seasonDayInfoTotal = printAllBetStats(bets);
 				seasonDayInfoMap.put(seasonDay, seasonDayInfoTotal);
 				System.out.println(seasonDay + " - 6");
 			

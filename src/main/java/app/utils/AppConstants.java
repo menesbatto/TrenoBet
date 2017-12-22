@@ -15,6 +15,8 @@ public class AppConstants {
 
 	public static final boolean DO_NOT_UPDATE_NEXT_MATCH = true;
 
+	public static boolean PRINT_FASE = false;
+
 
 	
 	
@@ -27,6 +29,25 @@ public class AppConstants {
 
 	//http://www.oddsportal.com/soccer/england/premier-league/
 	
+	//Armenia
+	public static String ARM_PREMIER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/armenia/premier-league/results";
+	public static String ARM_PREMIER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/armenia/premier-league";
+	
+
+	//Austria
+	public static String AUT_TIPICO_BUNDESLIGA_RESULTS = 		SITE_URL + "/soccer/austria/tipico-bundesliga/results";
+	public static String AUT_TIPICO_BUNDESLIGA_NEXT_MATCHES = 	SITE_URL + "/soccer/austria/tipico-bundesliga";
+	
+	public static String AUT_ERSTE_LIGA_RESULTS = 				SITE_URL + "/soccer/austria/erste-liga/results";
+	public static String AUT_ERSTE_LIGA_NEXT_MATCHES = 			SITE_URL + "/soccer/austria/erste-liga";
+	
+	
+	//Azerbaijan
+	public static String AZE_PREMIER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/azerbaijan/premier-league/results";
+	public static String AZE_PREMIER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/azerbaijan/premier-league";
+
+	
+	
 	//Belgium
 	public static String BEL_JUPILER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/belgium/jupiler-league/results";
 	public static String BEL_JUPILER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/belgium/jupiler-league";
@@ -34,6 +55,10 @@ public class AppConstants {
 	public static String BEL_PROXIMUS_LEAGUE_RESULTS = 			SITE_URL + "/soccer/belgium/proximus-league/results";
 	public static String BEL_PROXIMUS_LEAGUE_NEXT_MATCHES = 	SITE_URL + "/soccer/belgium/proximus-league";
 
+	//Bosnia
+	public static String BOS_PREMIER_LEAGUE_RESULTS = 			SITE_URL + "/soccer/bosnia-and-herzegovina/premier-league/results";
+	public static String BOS_PREMIER_LEAGUE_NEXT_MATCHES = 		SITE_URL + "/soccer/bosnia-and-herzegovina/premier-league";
+	
 	
 	
 	//Bulgaria
@@ -44,6 +69,10 @@ public class AppConstants {
 	//Croatia
 	public static String CRO_1_HNL_RESULTS =					SITE_URL + "/soccer/croatia/1-hnl/results";
 	public static String CRO_1_HNL_NEXT_MATCHES = 				SITE_URL + "/soccer/croatia/1-hnl";
+	
+	public static String CRO_2_HNL_RESULTS =					SITE_URL + "/soccer/croatia/2-hnl/results";
+	public static String CRO_2_HNL_NEXT_MATCHES = 				SITE_URL + "/soccer/croatia/2-hnl";
+	
 
 	
 	//Cyprus

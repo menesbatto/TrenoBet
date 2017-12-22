@@ -290,7 +290,7 @@ public class MatchesDownloader implements Runnable {
 			//	RISULTATO
 				
 				String result = tableScoreElems.get(0).text();
-				if (result.equals("abn.") || result.equals("award.")) {
+				if (result.equals("abn.") || result.equals("award.") || result.equals("postp.")) {
 					return null;
 				}
 				Integer homeScoreScoredGoals = Integer.valueOf(result.split(":")[0]);
@@ -374,7 +374,8 @@ public class MatchesDownloader implements Runnable {
 			return m;
 		}
 		catch (Exception e) {
-			System.out.println("Problema nella creazione del match. " + e.getStackTrace());
+			System.out.println("Problema nella creazione del match. ");
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -613,15 +614,19 @@ public class MatchesDownloader implements Runnable {
 				continue;
 			}
 			BetHouseEnum betHouse = BetHouseEnum.valueOf(betHouseName);
-			oddsH = Double.valueOf(house.getElementsByClass("right").get(0).text());
-			oddsD = Double.valueOf(house.getElementsByClass("right").get(1).text());
-			oddsA = Double.valueOf(house.getElementsByClass("right").get(2).text());
-			
-			
-			_1x2Leaf _1x2Match = new _1x2Leaf(oddsH, oddsD, oddsA);
-			
-			m.get_1x2().get(timeType).getBetHouseTo1x2Odds().put(betHouse, _1x2Match);
-			
+			try {
+				oddsH = Double.valueOf(house.getElementsByClass("right").get(0).text());
+				oddsD = Double.valueOf(house.getElementsByClass("right").get(1).text());
+				oddsA = Double.valueOf(house.getElementsByClass("right").get(2).text());
+				
+				
+				_1x2Leaf _1x2Match = new _1x2Leaf(oddsH, oddsD, oddsA);
+				
+				m.get_1x2().get(timeType).getBetHouseTo1x2Odds().put(betHouse, _1x2Match);
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Problemi legati alla mancanza di quote, durante la creazione del match " + infoUrl);
+			}
 		}
 		
 		_1x2Leaf _1x2avgMatch;

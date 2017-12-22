@@ -121,6 +121,7 @@ public class BetAnalyzer {
 //			cal.add(Calendar.DATE, -7);
 //			Date endDate = cal.getTime();
 			
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBA t0 retrieveSingleBetsToCheckInDateRange");
 			List<SingleBetBean> singleBets = singleBetDao.retrieveSingleBetsToCheckInDateRange(champ, seasonDay);
 			List<SingleBetBean> singleBetsToPrint = new ArrayList<SingleBetBean>();
 			
@@ -215,8 +216,11 @@ public class BetAnalyzer {
 			//algoritmTester.printAllBetStats( singleBetsToPrint );
 			
 //			System.out.println(singleBets);
-			
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBA t1 deleteBetResultByChampAndSeasonDay");
+
 			singleBetDao.deleteBetResultByChampAndSeasonDay(champ, seasonDay);
+			if (AppConstants.PRINT_FASE) 	System.out.println("\tBA t2 saveBetResult");
+
 			singleBetDao.saveBetResult(singleBets, champ);
 			
 			allSingleBets.addAll(singleBets);
