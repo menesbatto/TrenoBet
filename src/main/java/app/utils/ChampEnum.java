@@ -285,7 +285,7 @@ public enum ChampEnum {
 	
 	ITA_SERIE_A_2017 			(	AppConstants.ITA_SERIE_A_RESULTS,
 									AppConstants.ITA_SERIE_A_NEXT_MATCHES,
-									new Integer[]{ 1,2,3,6,17 },   
+									new Integer[]{ 1,4,5,6,17 },   
 										new RankCritEnum[]{	RankCritEnum.POINTS, 
 													RankCritEnum.HEAD_TO_HEAD_POINTS, 
 													RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
@@ -297,7 +297,7 @@ public enum ChampEnum {
 	
 	ITA_SERIE_B_2017			(	AppConstants.ITA_SERIE_B_RESULTS,
 									AppConstants.ITA_SERIE_B_NEXT_MATCHES,
-									new Integer[]{ 2, 8, 9 },   
+									new Integer[]{ 2, 8, 17, 19 },   
 									new RankCritEnum[]{	RankCritEnum.POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
@@ -311,7 +311,7 @@ public enum ChampEnum {
 	
 	ITA_SERIE_C_A_2017			(	AppConstants.ITA_SERIE_C_A_RESULTS,
 									AppConstants.ITA_SERIE_C_A_NEXT_MATCHES,
-									new Integer[]{1, 3, 10, 16 },   
+									new Integer[]{1, 10, 15 },   
 									new RankCritEnum[]{	RankCritEnum.POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
@@ -324,7 +324,7 @@ public enum ChampEnum {
 	
 	ITA_SERIE_C_B_2017			(	AppConstants.ITA_SERIE_C_B_RESULTS,
 									AppConstants.ITA_SERIE_C_B_NEXT_MATCHES,
-									new Integer[]{1, 3, 10, 16 },   
+									new Integer[]{1, 10, 15 },   
 									new RankCritEnum[]{	RankCritEnum.POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 
@@ -337,7 +337,7 @@ public enum ChampEnum {
 	
 	ITA_SERIE_C_C_2017			(	AppConstants.ITA_SERIE_C_C_RESULTS,
 									AppConstants.ITA_SERIE_C_C_NEXT_MATCHES,
-									new Integer[]{1, 3, 10, 16 },   
+									new Integer[]{1, 10, 15 },   
 									new RankCritEnum[]{	RankCritEnum.POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_POINTS, 
 														RankCritEnum.HEAD_TO_HEAD_GOALS_DIFFERENCE, 

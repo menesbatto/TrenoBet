@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import app.dao.tabelle.ChampDao;
@@ -25,6 +26,7 @@ import app.dao.tabelle.SingleBetDao;
 import app.dao.tabelle.SingleBetRepo;
 import app.dao.tabelle.WinRangeStatsDao;
 import app.dao.tabelle.entities.Matcho;
+import app.dao.tipologiche.PenalityDao;
 import app.logic.UtilityModel;
 import app.logic._1_matchesDownlaoder.NextMatchesDownloader;
 import app.logic._1_matchesDownlaoder.PastMatchesDownlaoder;
@@ -275,6 +277,34 @@ public class FacadeController {
 	
 	@Autowired
 	private SingleBetDao singleBetDao;
+
+	@Autowired
+	private PenalityDao penalityDao;
+	
+	
+
+	@RequestMapping(value = "/insertPenality", params= {"champName", "teamName", "points"}, method = RequestMethod.GET)
+	public @ResponseBody void insertPenality(	@RequestParam (value = "champName") String champName, 
+												@RequestParam (value = "teamName") String teamName,
+												@RequestParam (value = "points") Integer points) {
+		ChampEnum champEnum = ChampEnum.valueOf(champName);
+		penalityDao.insertPenality(champEnum, teamName, points);
+//		
+//		Map<String, Integer> penalityMap = new HashMap<String, Integer>();
+//		penalityMap.put("Andria", 1);
+//		penalityMap.put("Catanzaro", 1);
+//		penalityMap.put("Matera", 2);
+//		penalityMap.put("Akragas", 3);
+//		
+//		penalityMap.put("Santarcangelo", 1);
+//		
+//		penalityMap.put("Arezzo", 2);
+//		
+		
+		
+	}
+	
+	
 	
 
 	

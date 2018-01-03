@@ -7,13 +7,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.dao.tabelle.ChampDao;
 import app.dao.tabelle.MatchoDao;
 import app.dao.tabelle.RankingRowDao;
+import app.dao.tipologiche.PenalityDao;
 import app.logic._1_matchesDownlaoder.model.MatchResult;
 import app.logic._2_matchResultAnalyzer.ResultAnalyzer;
 import app.logic._3_rankingCalculator.model.Distances;
@@ -37,20 +40,25 @@ public class RankingCalculator {
 	@Autowired
 	private ResultAnalyzer resultAnalyzer;
 
+	@Autowired
+	private PenalityDao penalityDao;
+
 	public void execute(int seasonDay) {
 		ChampEnum[] allChamps = ChampEnum.values();
+		allChamps = new ChampEnum[]{ ChampEnum.ITA_SERIE_A_2017, ChampEnum.ITA_SERIE_B_2017, ChampEnum.ITA_SERIE_C_A_2017,  ChampEnum.ITA_SERIE_C_B_2017,  ChampEnum.ITA_SERIE_C_C_2017};
 		execute(seasonDay, allChamps);
 	}
 	
 	public void execute(Integer seasonDay, ChampEnum[] champs){
 		
-		for (ChampEnum champ : champs){
-			calculateChampRanking(champ, seasonDay);
+		for (ChampEnum champEnum : champs){
+			Map<String, Integer> penalityMap = penalityDao.findByChamp(champEnum);
+			calculateChampRanking(champEnum, seasonDay, penalityMap);
 		}
 
 	}
 	
-	private void calculateChampRanking(ChampEnum champ, Integer seasonDay) {
+	private void calculateChampRanking(ChampEnum champ, Integer seasonDay, Map<String, Integer> penalityMap) {
 		
 		Date dateOfBet = Utils.getDateOfBet(seasonDay);
 		
@@ -74,6 +82,8 @@ public class RankingCalculator {
 			ranking.add(rr);
 		}
 		
+		applyPenalityPoints(ranking, penalityMap);
+		
 		applyCriteria(champ, ranking);
 		
 		Integer maxPlayedMatches = calculateMaxPlayedMatches(ranking);
@@ -90,12 +100,26 @@ public class RankingCalculator {
 		calculateMotivationalIndexes(ranking, champ, thereAreMatchesToRecover);
 		
 		
-//		printRanking(ranking, champ);
+		printRanking(ranking, champ);
 		System.out.println("########################\n\n\n");
 		rankingRowDao.saveRanking(champ, ranking);
 		
 	}
 
+
+	private void applyPenalityPoints(ArrayList<RankingRow> ranking, Map<String, Integer> penalityMap) {
+
+		if (!penalityMap.isEmpty()) {
+			for (RankingRow rr : ranking) {
+				Integer penalityPoints = penalityMap.get(rr.getTeamName());
+				if (penalityPoints != null) {
+					rr.setAllPoints(rr.getAllPoints()-penalityPoints);
+					rr.setTeamName(rr.getTeamName() + " *-" + penalityPoints);
+				}
+			};
+		}
+		
+	}
 
 	private static void calculateMotivationalIndexes(ArrayList<RankingRow> ranking, ChampEnum champ, boolean thereAreMatchesToRecover) {
 			
